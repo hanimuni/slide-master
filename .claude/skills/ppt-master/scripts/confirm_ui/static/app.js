@@ -29,6 +29,7 @@
             sec_canvas: "Canvas format",
             sec_pages: "Page count",
             sec_audience: "Target audience",
+            sec_intent: "Presentation intent",
             sec_style: "Style objective",
             sec_template: "Template",
             template_locked_note: "Installed at Step 3 — shown for reference; not changeable here",
@@ -48,6 +49,22 @@
             recommended: "Recommended",
             placeholder_audience: "Who is this deck for?",
             placeholder_pages: "e.g. 12-15",
+            time_budget_minutes: "Time budget (minutes)",
+            time_budget_hint: "Leave blank when no presentation time is fixed.",
+            placeholder_time_budget: "e.g. 5, 20, or blank",
+            audience_knowledge: "Audience knowledge",
+            audience_stance: "Audience stance",
+            desired_outcome: "Desired outcome",
+            desired_outcome_detail: "Concrete outcome",
+            placeholder_outcome_detail: "What should the audience understand, remember, approve, decide, or do?",
+            evidence_rigor: "Evidence rigor",
+            content_priority: "Content priority",
+            content_priority_hint: "Shown only for long or multi-source inputs. Separate what must stay from what may be compressed or omitted.",
+            must_keep: "Must keep",
+            condense_ok: "May condense",
+            omit_ok: "May omit",
+            placeholder_priority: "Claims, evidence, or sections…",
+            invalid_time_budget: "Time budget must be a positive whole number or blank.",
             hex_override: "Custom HEX override:",
             formula_policy: "Formula rendering policy",
             image_ai_path: "AI image source",
@@ -144,6 +161,7 @@
             sec_canvas: "キャンバス形式",
             sec_pages: "ページ数",
             sec_audience: "想定読者",
+            sec_intent: "プレゼンテーションの意図",
             sec_style: "スタイルの狙い",
             sec_template: "テンプレート",
             template_locked_note: "Step 3でインストール済み — 参考表示のためここでは変更できません",
@@ -163,6 +181,22 @@
             recommended: "おすすめ",
             placeholder_audience: "この資料は誰に向けたもの？",
             placeholder_pages: "例：12-15",
+            time_budget_minutes: "持ち時間（分）",
+            time_budget_hint: "発表時間が決まっていない場合は空欄にします。",
+            placeholder_time_budget: "例：5、20、または空欄",
+            audience_knowledge: "聴衆の知識レベル",
+            audience_stance: "聴衆の態度",
+            desired_outcome: "期待する成果",
+            desired_outcome_detail: "具体的な成果",
+            placeholder_outcome_detail: "聴衆に何を理解・記憶・承認・決定・実行してほしいですか？",
+            evidence_rigor: "根拠の厳密さ",
+            content_priority: "内容の優先順位",
+            content_priority_hint: "長い資料や複数資料の場合のみ表示します。必須内容と、圧縮・省略できる内容を分けます。",
+            must_keep: "必ず残す",
+            condense_ok: "圧縮可",
+            omit_ok: "省略可",
+            placeholder_priority: "主張、根拠、セクションなど…",
+            invalid_time_budget: "持ち時間は正の整数、または空欄で入力してください。",
             hex_override: "カスタムHEXで上書き：",
             formula_policy: "数式レンダリング方針",
             image_ai_path: "AI画像の生成元",
@@ -259,6 +293,7 @@
             sec_canvas: "캔버스 형식",
             sec_pages: "페이지 수",
             sec_audience: "대상 청중",
+            sec_intent: "발표 의도",
             sec_style: "스타일 목표",
             sec_template: "템플릿",
             template_locked_note: "Step 3에서 설치됨 — 참고용 표시이며 여기서 변경할 수 없습니다",
@@ -278,6 +313,22 @@
             recommended: "추천",
             placeholder_audience: "이 덱은 누구를 위한 것인가요?",
             placeholder_pages: "예: 12-15",
+            time_budget_minutes: "발표 시간 (분)",
+            time_budget_hint: "정해진 발표 시간이 없으면 비워 두세요.",
+            placeholder_time_budget: "예: 5, 20 또는 미지정",
+            audience_knowledge: "청중 지식 수준",
+            audience_stance: "청중 태도",
+            desired_outcome: "원하는 결과",
+            desired_outcome_detail: "구체적인 목표",
+            placeholder_outcome_detail: "청중이 무엇을 이해·기억·승인·결정·실행해야 하나요?",
+            evidence_rigor: "근거 엄밀도",
+            content_priority: "콘텐츠 우선순위",
+            content_priority_hint: "긴 자료나 여러 문서를 결합할 때만 표시합니다. 반드시 남길 내용과 압축·생략 가능한 내용을 구분하세요.",
+            must_keep: "반드시 유지",
+            condense_ok: "압축 가능",
+            omit_ok: "생략 가능",
+            placeholder_priority: "주장, 근거 또는 섹션…",
+            invalid_time_budget: "발표 시간은 양의 정수이거나 비어 있어야 합니다.",
             hex_override: "커스텀 HEX로 재정의:",
             formula_policy: "수식 렌더링 정책",
             image_ai_path: "AI 이미지 생성 방식",
@@ -374,6 +425,7 @@
             sec_canvas: "画布格式",
             sec_pages: "页数",
             sec_audience: "目标受众",
+            sec_intent: "演示意图",
             sec_style: "风格目标",
             sec_template: "模板",
             template_locked_note: "已在 Step 3 安装 — 仅供参考，此处不可更改",
@@ -393,6 +445,22 @@
             recommended: "推荐",
             placeholder_audience: "这份演示文稿面向谁？",
             placeholder_pages: "如：12-15",
+            time_budget_minutes: "演示时长（分钟）",
+            time_budget_hint: "未确定演示时长时可留空。",
+            placeholder_time_budget: "例如：5、20，或留空",
+            audience_knowledge: "受众知识水平",
+            audience_stance: "受众态度",
+            desired_outcome: "期望结果",
+            desired_outcome_detail: "具体目标",
+            placeholder_outcome_detail: "希望受众理解、记住、批准、决定或采取什么行动？",
+            evidence_rigor: "证据严谨度",
+            content_priority: "内容优先级",
+            content_priority_hint: "仅在长资料或多文档输入时显示。请区分必须保留、可压缩和可省略的内容。",
+            must_keep: "必须保留",
+            condense_ok: "可压缩",
+            omit_ok: "可省略",
+            placeholder_priority: "论点、证据或章节…",
+            invalid_time_budget: "演示时长必须是正整数或留空。",
             hex_override: "自定义色值覆盖：",
             formula_policy: "公式渲染策略",
             image_ai_path: "生成配图来源",
@@ -1014,6 +1082,15 @@
         parent.appendChild(input);
     }
 
+    function textareaField(parent, getVal, setVal, placeholderKey) {
+        var input = el("textarea", "text-input");
+        input.rows = 2;
+        input.value = getVal() || "";
+        input.placeholder = t(placeholderKey);
+        input.addEventListener("input", function () { setVal(input.value); });
+        parent.appendChild(input);
+    }
+
     function normPalette(c) {
         function read(src, keys) {
             if (!src) return undefined;
@@ -1196,6 +1273,71 @@
                 function () { return STATE.delivery_purpose; },
                 function (v) { STATE.delivery_purpose = v; });
             sec.appendChild(purposeField);
+        }
+        host.appendChild(sec);
+    }
+
+    function renderIntent(host) {
+        var sec = section(4, "sec_intent");
+
+        var timeField = el("div", "subfield");
+        timeField.appendChild(el("div", "subfield-label", t("time_budget_minutes")));
+        timeField.appendChild(el("div", "toggle-desc", t("time_budget_hint")));
+        var timeInput = el("input", "num-input");
+        timeInput.type = "number";
+        timeInput.min = "1";
+        timeInput.step = "1";
+        timeInput.value = STATE.time_budget_minutes || "";
+        timeInput.placeholder = t("placeholder_time_budget");
+        timeInput.addEventListener("input", function () { STATE.time_budget_minutes = timeInput.value; });
+        timeField.appendChild(timeInput);
+        sec.appendChild(timeField);
+
+        var knowledgeField = el("div", "subfield");
+        knowledgeField.appendChild(el("div", "subfield-label", t("audience_knowledge")));
+        enumField(knowledgeField, CAT.audience_knowledge, STATE.audience_profile.knowledge,
+            function () { return STATE.audience_profile.knowledge; },
+            function (v) { STATE.audience_profile.knowledge = v; });
+        sec.appendChild(knowledgeField);
+
+        var stanceField = el("div", "subfield");
+        stanceField.appendChild(el("div", "subfield-label", t("audience_stance")));
+        enumField(stanceField, CAT.audience_stance, STATE.audience_profile.stance,
+            function () { return STATE.audience_profile.stance; },
+            function (v) { STATE.audience_profile.stance = v; });
+        sec.appendChild(stanceField);
+
+        var outcomeField = el("div", "subfield");
+        outcomeField.appendChild(el("div", "subfield-label", t("desired_outcome")));
+        enumField(outcomeField, CAT.desired_outcome, STATE.desired_outcome.type,
+            function () { return STATE.desired_outcome.type; },
+            function (v) { STATE.desired_outcome.type = v; });
+        var outcomeDetail = el("div", "subfield");
+        outcomeDetail.appendChild(el("div", "subfield-label", t("desired_outcome_detail")));
+        textareaField(outcomeDetail, function () { return STATE.desired_outcome.detail; },
+            function (v) { STATE.desired_outcome.detail = v; }, "placeholder_outcome_detail");
+        outcomeField.appendChild(outcomeDetail);
+        sec.appendChild(outcomeField);
+
+        var evidenceField = el("div", "subfield");
+        evidenceField.appendChild(el("div", "subfield-label", t("evidence_rigor")));
+        enumField(evidenceField, CAT.evidence_rigor, recOrFirst("evidence_rigor", CAT.evidence_rigor),
+            function () { return STATE.evidence_rigor; },
+            function (v) { STATE.evidence_rigor = v; });
+        sec.appendChild(evidenceField);
+
+        if (STATE.content_priority) {
+            var priorityField = el("div", "subfield");
+            priorityField.appendChild(el("div", "subfield-label", t("content_priority")));
+            priorityField.appendChild(el("div", "toggle-desc", t("content_priority_hint")));
+            ["must_keep", "condense_ok", "omit_ok"].forEach(function (key) {
+                var item = el("div", "subfield");
+                item.appendChild(el("div", "subfield-label", t(key)));
+                textareaField(item, function () { return STATE.content_priority[key]; },
+                    function (v) { STATE.content_priority[key] = v; }, "placeholder_priority");
+                priorityField.appendChild(item);
+            });
+            sec.appendChild(priorityField);
         }
         host.appendChild(sec);
     }
@@ -2376,6 +2518,7 @@
             renderTemplate(host);
             renderCanvas(host);
             renderAudience(host);
+            renderIntent(host);
             renderStyle(host);
         } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
@@ -2397,6 +2540,7 @@
             renderTemplate(host);
             renderCanvas(host);
             renderAudience(host);
+            renderIntent(host);
             renderStyle(host);
             renderPages(host);
             var legacyStyleGroup = el("div", "style-group");
@@ -2434,6 +2578,24 @@
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
+        var rawTimeBudget = REC.time_budget_minutes && REC.time_budget_minutes.value;
+        STATE.time_budget_minutes = rawTimeBudget == null ? "" : String(rawTimeBudget);
+        var rawAudienceProfile = (REC.audience_profile && typeof REC.audience_profile === "object") ? REC.audience_profile : {};
+        STATE.audience_profile = {
+            knowledge: rawAudienceProfile.knowledge || "mixed",
+            stance: rawAudienceProfile.stance || "neutral"
+        };
+        var rawDesiredOutcome = (REC.desired_outcome && typeof REC.desired_outcome === "object") ? REC.desired_outcome : {};
+        STATE.desired_outcome = {
+            type: rawDesiredOutcome.type || "understand",
+            detail: rawDesiredOutcome.detail || ""
+        };
+        STATE.evidence_rigor = recId("evidence_rigor") || "explanatory";
+        STATE.content_priority = (REC.content_priority && typeof REC.content_priority === "object") ? {
+            must_keep: REC.content_priority.must_keep || "",
+            condense_ok: REC.content_priority.condense_ok || "",
+            omit_ok: REC.content_priority.omit_ok || ""
+        } : null;
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
         var templateField = templateFieldState();
@@ -2525,6 +2687,31 @@
     }
 
     // ---- staged submit + re-derive transitions --------------------------
+    function normalizedTimeBudget() {
+        var raw = String(STATE.time_budget_minutes == null ? "" : STATE.time_budget_minutes).trim();
+        if (!raw) return null;
+        var value = Number(raw);
+        return Number.isInteger(value) && value > 0 ? value : undefined;
+    }
+
+    function applyIntentPayload(payload) {
+        payload.time_budget_minutes = normalizedTimeBudget();
+        payload.audience_profile = JSON.parse(JSON.stringify(STATE.audience_profile));
+        payload.desired_outcome = JSON.parse(JSON.stringify(STATE.desired_outcome));
+        payload.evidence_rigor = STATE.evidence_rigor;
+        if (STATE.content_priority) {
+            payload.content_priority = JSON.parse(JSON.stringify(STATE.content_priority));
+        } else {
+            delete payload.content_priority;
+        }
+    }
+
+    function validateIntent() {
+        if (normalizedTimeBudget() !== undefined) return true;
+        document.getElementById("confirm-status").textContent = t("invalid_time_budget");
+        return false;
+    }
+
     function stage1Payload() {
         var payload = {
             stage: "stage1",
@@ -2538,6 +2725,7 @@
         if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
         // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+        applyIntentPayload(payload);
         return payload;
     }
 
@@ -2558,6 +2746,7 @@
         if (STATE.template) payload.template = STATE.template;
         if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+        applyIntentPayload(payload);
         normalizeTypographyForSubmit(payload);
         return payload;
     }
@@ -2579,9 +2768,15 @@
         });
     }
 
-    function submitStage1() { submitStage(stage1Payload(), 2); }
+    function submitStage1() {
+        if (!validateIntent()) return;
+        submitStage(stage1Payload(), 2);
+    }
 
-    function submitStage2() { submitStage(stage2Payload(), 3); }
+    function submitStage2() {
+        if (!validateIntent()) return;
+        submitStage(stage2Payload(), 3);
+    }
 
     function showDeriving() {
         document.getElementById("sections").style.display = "none";
@@ -2631,7 +2826,9 @@
 
     function confirm() {
         var btn = document.getElementById("btn-confirm");
+        if (!validateIntent()) return;
         var payload = JSON.parse(JSON.stringify(STATE));
+        applyIntentPayload(payload);
         normalizeTypographyForSubmit(payload);
         payload.stage = "final";
         payload.image_usage = selectedImageUsageIds(payload.image_usage);

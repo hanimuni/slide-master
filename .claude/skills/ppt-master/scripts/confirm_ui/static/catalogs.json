@@ -641,6 +641,179 @@
       "desc_ko": "수식을 렌더링하지 않고 편집 가능한 텍스트/유니코드로 유지합니다."
     }
   ],
+  "audience_knowledge": [
+    {
+      "id": "novice",
+      "label_en": "novice",
+      "label_ja": "初学者",
+      "label_ko": "초보",
+      "label_zh": "初学者",
+      "desc_en": "Explain terms, context, and reading cues before complexity.",
+      "desc_ja": "複雑さに入る前に用語・背景・読み方を説明する。",
+      "desc_ko": "복잡한 내용에 앞서 용어·배경·읽는 법을 설명합니다.",
+      "desc_zh": "在复杂内容前解释术语、背景和阅读方法。"
+    },
+    {
+      "id": "mixed",
+      "label_en": "mixed",
+      "label_ja": "混合",
+      "label_ko": "혼합",
+      "label_zh": "混合",
+      "desc_en": "Keep the main path accessible and layer specialist detail.",
+      "desc_ja": "本筋は分かりやすく保ち、専門的な詳細を段階的に重ねる。",
+      "desc_ko": "핵심 흐름은 쉽게 유지하고 전문 세부정보를 단계적으로 더합니다.",
+      "desc_zh": "主线保持易懂，并分层补充专业细节。"
+    },
+    {
+      "id": "expert",
+      "label_en": "expert",
+      "label_ja": "専門家",
+      "label_ko": "전문가",
+      "label_zh": "专家",
+      "desc_en": "Minimize basics and foreground assumptions, methods, and edge cases.",
+      "desc_ja": "基礎説明を抑え、前提・方法・例外条件を前面に出す。",
+      "desc_ko": "기초 설명은 줄이고 전제·방법·예외 조건을 전면에 둡니다.",
+      "desc_zh": "减少基础说明，突出前提、方法和边界情况。"
+    }
+  ],
+  "audience_stance": [
+    {
+      "id": "unaware",
+      "label_en": "unaware",
+      "label_ja": "未認知",
+      "label_ko": "미인지",
+      "label_zh": "不了解",
+      "desc_en": "Establish relevance and the problem before presenting the answer.",
+      "desc_ja": "答えの前に、関連性と課題を明確にする。",
+      "desc_ko": "해답을 제시하기 전에 관련성과 문제를 먼저 세웁니다.",
+      "desc_zh": "在给出答案前先建立相关性和问题意识。"
+    },
+    {
+      "id": "neutral",
+      "label_en": "neutral",
+      "label_ja": "中立",
+      "label_ko": "중립",
+      "label_zh": "中立",
+      "desc_en": "Use a balanced explanation without manufacturing resistance.",
+      "desc_ja": "抵抗感を作り出さず、バランスの取れた説明を行う。",
+      "desc_ko": "가상의 반발을 만들지 않고 균형 있게 설명합니다.",
+      "desc_zh": "平衡说明，不人为制造反对意见。"
+    },
+    {
+      "id": "skeptical",
+      "label_en": "skeptical",
+      "label_ja": "懐疑的",
+      "label_ko": "회의적",
+      "label_zh": "怀疑",
+      "desc_en": "Address objections, alternatives, uncertainty, and proof quality.",
+      "desc_ja": "反論・代替案・不確実性・根拠の質に正面から対応する。",
+      "desc_ko": "반론·대안·불확실성·근거의 질을 정면으로 다룹니다.",
+      "desc_zh": "正面回应异议、替代方案、不确定性和证据质量。"
+    },
+    {
+      "id": "aligned",
+      "label_en": "aligned",
+      "label_ja": "賛同済み",
+      "label_ko": "공감",
+      "label_zh": "认同",
+      "desc_en": "Move quickly from shared context to coordination and next steps.",
+      "desc_ja": "共有済みの前提から、調整と次の行動へ素早く進む。",
+      "desc_ko": "공유된 맥락에서 조율과 다음 행동으로 빠르게 이동합니다.",
+      "desc_zh": "从共同认知快速进入协同和下一步。"
+    }
+  ],
+  "desired_outcome": [
+    {
+      "id": "understand",
+      "label_en": "understand",
+      "label_ja": "理解する",
+      "label_ko": "이해",
+      "label_zh": "理解",
+      "desc_en": "Build a clear mental model and close with a concise synthesis.",
+      "desc_ja": "明確な理解モデルを作り、簡潔な統合で締める。",
+      "desc_ko": "명확한 이해 구조를 만들고 핵심 요약으로 마무리합니다.",
+      "desc_zh": "建立清晰的认知模型，并以简洁总结收束。"
+    },
+    {
+      "id": "remember",
+      "label_en": "remember",
+      "label_ja": "記憶する",
+      "label_ko": "기억",
+      "label_zh": "记住",
+      "desc_en": "Prioritize a small set of durable takeaways and repetition with variation.",
+      "desc_ja": "少数の記憶に残る要点と、変化をつけた反復を優先する。",
+      "desc_ko": "소수의 오래 남을 핵심과 변주된 반복을 우선합니다.",
+      "desc_zh": "优先少量持久要点，并用变化式重复强化。"
+    },
+    {
+      "id": "approve",
+      "label_en": "approve",
+      "label_ja": "承認する",
+      "label_ko": "승인",
+      "label_zh": "批准",
+      "desc_en": "Make the requested approval, trade-offs, and safeguards explicit.",
+      "desc_ja": "求める承認内容・トレードオフ・安全策を明示する。",
+      "desc_ko": "요청할 승인, 상충점, 안전장치를 명확히 제시합니다.",
+      "desc_zh": "明确所需批准、权衡和保障措施。"
+    },
+    {
+      "id": "decide",
+      "label_en": "decide",
+      "label_ja": "決定する",
+      "label_ko": "결정",
+      "label_zh": "决策",
+      "desc_en": "Frame options, criteria, consequences, and the decision point.",
+      "desc_ja": "選択肢・判断基準・結果・決定点を整理する。",
+      "desc_ko": "선택지·판단 기준·결과·결정 지점을 구조화합니다.",
+      "desc_zh": "组织选项、标准、后果和决策点。"
+    },
+    {
+      "id": "act",
+      "label_en": "act",
+      "label_ja": "行動する",
+      "label_ko": "실행",
+      "label_zh": "行动",
+      "desc_en": "End with a concrete owner, action, timing, or next checkpoint.",
+      "desc_ja": "担当者・行動・時期・次の確認点を具体的に示して終える。",
+      "desc_ko": "담당자·행동·시점·다음 점검을 구체적으로 제시해 끝냅니다.",
+      "desc_zh": "以明确的负责人、行动、时间或下一检查点收尾。"
+    }
+  ],
+  "evidence_rigor": [
+    {
+      "id": "explanatory",
+      "label_en": "explanatory",
+      "label_ja": "説明用",
+      "label_ko": "설명형",
+      "label_zh": "说明型",
+      "desc_en": "Use sufficient support for comprehension without audit-level detail.",
+      "desc_ja": "監査レベルの詳細までは求めず、理解に十分な根拠を示す。",
+      "desc_ko": "감사 수준의 세부정보 없이 이해에 충분한 근거를 제시합니다.",
+      "desc_zh": "提供足以理解的支持，无需审计级细节。"
+    },
+    {
+      "id": "decision-grade",
+      "label_en": "decision-grade",
+      "label_ja": "意思決定用",
+      "label_ko": "의사결정형",
+      "label_zh": "决策级",
+      "desc_en": "Show sources, units, assumptions, alternatives, and material uncertainty.",
+      "desc_ja": "出典・単位・前提・代替案・重要な不確実性を示す。",
+      "desc_ko": "출처·단위·전제·대안·중요한 불확실성을 제시합니다.",
+      "desc_zh": "展示来源、单位、假设、替代方案和重大不确定性。"
+    },
+    {
+      "id": "public-auditable",
+      "label_en": "public-auditable",
+      "label_ja": "公開検証可能",
+      "label_ko": "공개 검증형",
+      "label_zh": "公开可审计",
+      "desc_en": "Make claims traceable and qualify uncertainty for external scrutiny.",
+      "desc_ja": "外部検証に耐えるよう、主張を追跡可能にし不確実性を明示する。",
+      "desc_ko": "외부 검증에 대비해 주장을 추적 가능하게 하고 불확실성을 명시합니다.",
+      "desc_zh": "让主张可追溯，并明确不确定性，以接受外部审查。"
+    }
+  ],
   "generation_mode": [
     {
       "id": "continuous",

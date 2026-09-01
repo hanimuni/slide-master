@@ -516,10 +516,12 @@ _ANCHOR_RECOMMEND_KEYS = (
     'mode',
     'visual_style',
     'delivery_purpose',
+    'evidence_rigor',
     'template',
     'template_adherence',
 )
-_ANCHOR_VALUE_KEYS = ('audience', 'content_divergence')
+_ANCHOR_VALUE_KEYS = ('audience', 'content_divergence', 'time_budget_minutes')
+_ANCHOR_OBJECT_KEYS = ('audience_profile', 'desired_outcome', 'content_priority')
 _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
 
 
@@ -591,6 +593,9 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     for key in _ANCHOR_VALUE_KEYS:
         if key in res:
             data[key] = {'value': res.get(key) or ''}
+    for key in _ANCHOR_OBJECT_KEYS:
+        if isinstance(res.get(key), dict):
+            data[key] = res[key]
     if _recommendation_stage(data) < 3:
         return
     for key in _DESIGN_RECOMMEND_KEYS:
