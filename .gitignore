@@ -28,3 +28,6 @@ docs/superpowers/
 # OS
 .DS_Store
 Thumbs.db
+
+# Browser trace scratch (playwright MCP)
+.playwright-mcp/
