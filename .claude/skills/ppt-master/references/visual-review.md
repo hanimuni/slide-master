@@ -78,6 +78,10 @@ Subagents must apply the **明显** ("clearly bad") threshold — when in doubt,
 | S8 | Emphasis mismatch | most visually prominent element ≠ the element `design_spec §IX` declares as the page's primary | rescale to match intent |
 | S9 | Image-text relationship | caption > 60 px from its image; text on busy image without scrim; image clearly purposeless | tighten / add scrim / remove |
 | S10 | Breathing violation | only when `page_role = breathing`: ≥3 rounded card grid | replace with naked text / single hero |
+| S11 | Korean word split | an ordinary Korean eojeol is visibly broken inside the word; URLs, code, and genuinely long proper nouns exempt | re-break at an eojeol / phrase boundary without changing wording |
+| S12 | Claim hierarchy | title and Core message point in different argumentative directions, or body/support copy is visibly stronger than both | rescale hierarchy when the claim is already aligned; otherwise `needs_human` — do not rewrite content |
+| S13 | Chart evidence | an external-data chart lacks a visible unit or source, or shows an unverified number as settled fact | restore exact §IX / §VII evidence when present; otherwise `needs_human` with `Needs-Manual`, never invent |
+| S14 | Intent realization | §I time budget, audience profile, desired outcome, or evidence rigor is clearly contradicted by page density, explanation depth, objection treatment, or the genuine closing page | `needs_human`; report the mismatched anchor and page evidence, do not create a new review stage |
 
 ## §3 Don't-touch
 
@@ -90,6 +94,8 @@ Hard boundary, equal weight to §1.
 - **Atomicity** — one edit per fix, no bulk multi-element replacements
 
 If a "violation" requires reinterpreting `design_spec.md` to fix → mark `needs_human` with a one-line `suggested_fix_summary`.
+
+For S13, copying an exact unit/source line already required by §IX / §VII is restoration of a missing key element, not new copy. If the exact evidence text is absent, the content boundary wins: mark `needs_human` and never fabricate it.
 
 ## §4 Iteration protocol
 
@@ -179,7 +185,13 @@ Each subagent writes exactly one file to `<project>/.review/<page>.json`:
   "design_intent_check": {
     "spec_says": "TL;DR — emphasize 意图 as the core abstraction",
     "render_delivers": true,
-    "note": "..."
+    "note": "...",
+    "intent_anchors": {
+      "time_budget_minutes": "reflected|mismatch|not_applicable",
+      "audience_profile": "reflected|mismatch|not_applicable",
+      "desired_outcome": "reflected|mismatch|not_applicable",
+      "evidence_rigor": "reflected|mismatch|not_applicable"
+    }
   }
 }
 ```

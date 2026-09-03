@@ -520,9 +520,141 @@ _ANCHOR_RECOMMEND_KEYS = (
     'template',
     'template_adherence',
 )
-_ANCHOR_VALUE_KEYS = ('audience', 'content_divergence', 'time_budget_minutes')
 _ANCHOR_OBJECT_KEYS = ('audience_profile', 'desired_outcome', 'content_priority')
 _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
+_USER_FIXED_FIELDS = {'mode', 'visual_style', 'page_count', 'color', 'typography'}
+
+
+def _confirmed_stage_from_payload(data: dict) -> Optional[str]:
+    """Return a result payload's confirmed stage, including legacy finals."""
+    stage = _stage_key(data.get('stage'))
+    if stage:
+        return stage
+    if data.get('status') == 'confirmed':
+        return 'final'
+    return None
+
+
+def _confirmed_user_fixed_fields(data: dict) -> Optional[set[str]]:
+    """Return sanitized pin metadata; ``None`` means a legacy result."""
+    raw = data.get('user_fixed_fields')
+    if not isinstance(raw, list):
+        return None
+    return {
+        field for field in raw
+        if isinstance(field, str) and field in _USER_FIXED_FIELDS
+    }
+
+
+def _valid_page_count(value: object) -> bool:
+    """Accept positive integer counts or non-empty prose/range values, never bool."""
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return value > 0
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _clean_color(value: object) -> Optional[dict]:
+    """Return a UI-safe confirmed color object, or None when unusable."""
+    if not isinstance(value, dict):
+        return None
+    clean = {}
+    for key in ('name', 'custom'):
+        if isinstance(value.get(key), str):
+            clean[key] = value[key]
+    palette = value.get('palette')
+    if isinstance(palette, dict):
+        clean_palette = {
+            key: palette[key]
+            for key in (
+                'background', 'secondary_bg', 'primary', 'accent',
+                'secondary_accent', 'body_text',
+            )
+            if isinstance(palette.get(key), str) and palette[key].strip()
+        }
+        if clean_palette:
+            clean['palette'] = clean_palette
+    if clean.get('custom') or clean.get('palette'):
+        return clean
+    return None
+
+
+def _clean_typography(value: object) -> Optional[dict]:
+    """Return the supported, scalar subset of a confirmed typography object."""
+    if not isinstance(value, dict):
+        return None
+    clean = {}
+    for key in ('name', 'custom'):
+        if isinstance(value.get(key), str):
+            clean[key] = value[key]
+    for role in ('heading', 'body'):
+        raw_role = value.get(role)
+        if not isinstance(raw_role, dict):
+            continue
+        clean_role = {
+            key: raw_role[key]
+            for key in ('cjk', 'latin', 'css', 'sample_cjk', 'sample_latin')
+            if isinstance(raw_role.get(key), str)
+        }
+        if clean_role:
+            clean[role] = clean_role
+    body_size = value.get('body_size')
+    if (
+        isinstance(body_size, str) and body_size.strip()
+        or isinstance(body_size, (int, float)) and not isinstance(body_size, bool)
+    ):
+        clean['body_size'] = body_size
+    sizes = value.get('sizes')
+    if isinstance(sizes, dict):
+        clean_sizes = {
+            key: sizes[key]
+            for key in ('title', 'subtitle', 'annotation')
+            if (
+                isinstance(sizes.get(key), str) and sizes[key].strip()
+                or isinstance(sizes.get(key), (int, float))
+                and not isinstance(sizes[key], bool)
+            )
+        }
+        if clean_sizes:
+            clean['sizes'] = clean_sizes
+    if clean.get('custom') or clean.get('heading') or clean.get('body') or 'body_size' in clean:
+        return clean
+    return None
+
+
+def _clean_anchor_object(key: str, value: object) -> Optional[dict]:
+    """Keep only valid intent-object keys so malformed legacy data cannot win."""
+    if not isinstance(value, dict):
+        return None
+    if key == 'audience_profile':
+        clean = {}
+        knowledge = value.get('knowledge')
+        stance = value.get('stance')
+        if isinstance(knowledge, str) and knowledge in {'novice', 'mixed', 'expert'}:
+            clean['knowledge'] = knowledge
+        if isinstance(stance, str) and stance in {'unaware', 'neutral', 'skeptical', 'aligned'}:
+            clean['stance'] = stance
+        return clean or None
+    if key == 'desired_outcome':
+        clean = {}
+        outcome_type = value.get('type')
+        detail = value.get('detail')
+        if isinstance(outcome_type, str) and outcome_type in {
+            'understand', 'remember', 'approve', 'decide', 'act'
+        }:
+            clean['type'] = outcome_type
+        if isinstance(detail, str):
+            clean['detail'] = detail
+        return clean or None
+    if key == 'content_priority':
+        clean = {
+            field: value[field]
+            for field in ('must_keep', 'condense_ok', 'omit_ok')
+            if isinstance(value.get(field), str)
+        }
+        return clean or None
+    return None
 
 
 def _template_adherence_enabled(project_path: Path) -> bool:
@@ -587,27 +719,73 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
         recommend = data['recommend'] = {}
+    clean_color = _clean_color(res.get('color'))
+    clean_typography = _clean_typography(res.get('typography'))
+    fixed_fields = _confirmed_user_fixed_fields(res)
+    if fixed_fields is None:
+        # Legacy staged results predate explicit pin metadata. Preserve their
+        # confirmed values conservatively and emit equivalent metadata so a
+        # later reopen-and-submit cannot silently unpin those choices.
+        fixed_fields = {
+            key for key in ('mode', 'visual_style')
+            if isinstance(res.get(key), str) and res[key]
+        }
+        if _result_stage_number(_confirmed_stage_from_payload(res)) >= 2:
+            if _valid_page_count(res.get('page_count')):
+                fixed_fields.add('page_count')
+            if clean_color is not None:
+                fixed_fields.add('color')
+            if clean_typography is not None:
+                fixed_fields.add('typography')
+    if not isinstance(res.get('mode'), str) or not res['mode']:
+        fixed_fields.discard('mode')
+    if not isinstance(res.get('visual_style'), str) or not res['visual_style']:
+        fixed_fields.discard('visual_style')
+    if not _valid_page_count(res.get('page_count')):
+        fixed_fields.discard('page_count')
+    if clean_color is None:
+        fixed_fields.discard('color')
+    if clean_typography is None:
+        fixed_fields.discard('typography')
+    data['user_fixed_fields'] = sorted(fixed_fields)
     for key in _ANCHOR_RECOMMEND_KEYS:
-        if res.get(key) not in (None, ''):
-            recommend[key] = res[key]
-    for key in _ANCHOR_VALUE_KEYS:
-        if key in res:
-            data[key] = {'value': res.get(key) or ''}
+        value = res.get(key)
+        if key in {'mode', 'visual_style'} and key not in fixed_fields:
+            continue
+        if isinstance(value, str) and value:
+            if key != 'evidence_rigor' or value in {
+                'explanatory', 'decision-grade', 'public-auditable'
+            }:
+                recommend[key] = value
+    for key in ('audience', 'content_divergence'):
+        if key in res and isinstance(res.get(key), str):
+            data[key] = {'value': res[key]}
+    if 'time_budget_minutes' in res:
+        time_budget = res.get('time_budget_minutes')
+        if time_budget is None:
+            data['time_budget_minutes'] = {'value': ''}
+        elif isinstance(time_budget, int) and not isinstance(time_budget, bool) and time_budget > 0:
+            data['time_budget_minutes'] = {'value': time_budget}
     for key in _ANCHOR_OBJECT_KEYS:
-        if isinstance(res.get(key), dict):
-            data[key] = res[key]
-    if _recommendation_stage(data) < 3:
+        clean = _clean_anchor_object(key, res.get(key))
+        if clean is not None:
+            data[key] = clean
+    if _result_stage_number(_confirmed_stage_from_payload(res)) < 2:
         return
     for key in _DESIGN_RECOMMEND_KEYS:
-        if res.get(key) not in (None, ''):
-            recommend[key] = res[key]
-    if 'page_count' in res:
-        data['page_count'] = {'value': res.get('page_count') or ''}
-    if isinstance(res.get('color'), dict):
-        data['color'] = {'selected': 0, 'candidates': [res['color']]}
-    if isinstance(res.get('typography'), dict):
-        typography = {'selected': 0, 'candidates': [res['typography']]}
-        if res.get('formula_policy') not in (None, ''):
+        value = res.get(key)
+        if isinstance(value, str) and value:
+            recommend[key] = value
+    preserve_page_count = 'page_count' in fixed_fields
+    if preserve_page_count and _valid_page_count(res.get('page_count')):
+        data['page_count'] = {'value': res['page_count']}
+    preserve_color = 'color' in fixed_fields
+    if preserve_color and clean_color is not None:
+        data['color'] = {'selected': 0, 'candidates': [clean_color]}
+    preserve_typography = 'typography' in fixed_fields
+    if preserve_typography and clean_typography is not None:
+        typography = {'selected': 0, 'candidates': [clean_typography]}
+        if res.get('formula_policy') in {'mixed', 'render-all', 'text-only'}:
             typography['formula_policy'] = {'value': res['formula_policy']}
         data['typography'] = typography
 
@@ -1046,7 +1224,7 @@ def create_app(
         # Later stages render only downstream sections, so fold earlier confirmed
         # choices from result.json back in. A refresh / reopen then re-inits from
         # the user's choices instead of catalog defaults.
-        if _recommendation_stage(data) >= 2 and result_file.exists():
+        if result_file.exists():
             _merge_confirmed_choices(data, result_file)
         template_adherence_enabled = _template_adherence_enabled(project_path)
         data['_template_adherence_enabled'] = template_adherence_enabled

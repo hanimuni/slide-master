@@ -644,6 +644,7 @@
   "audience_knowledge": [
     {
       "id": "novice",
+      "label": "novice",
       "label_en": "novice",
       "label_ja": "初学者",
       "label_ko": "초보",
@@ -655,6 +656,7 @@
     },
     {
       "id": "mixed",
+      "label": "mixed",
       "label_en": "mixed",
       "label_ja": "混合",
       "label_ko": "혼합",
@@ -666,6 +668,7 @@
     },
     {
       "id": "expert",
+      "label": "expert",
       "label_en": "expert",
       "label_ja": "専門家",
       "label_ko": "전문가",
@@ -679,6 +682,7 @@
   "audience_stance": [
     {
       "id": "unaware",
+      "label": "unaware",
       "label_en": "unaware",
       "label_ja": "未認知",
       "label_ko": "미인지",
@@ -690,6 +694,7 @@
     },
     {
       "id": "neutral",
+      "label": "neutral",
       "label_en": "neutral",
       "label_ja": "中立",
       "label_ko": "중립",
@@ -701,6 +706,7 @@
     },
     {
       "id": "skeptical",
+      "label": "skeptical",
       "label_en": "skeptical",
       "label_ja": "懐疑的",
       "label_ko": "회의적",
@@ -712,6 +718,7 @@
     },
     {
       "id": "aligned",
+      "label": "aligned",
       "label_en": "aligned",
       "label_ja": "賛同済み",
       "label_ko": "공감",
@@ -725,6 +732,7 @@
   "desired_outcome": [
     {
       "id": "understand",
+      "label": "understand",
       "label_en": "understand",
       "label_ja": "理解する",
       "label_ko": "이해",
@@ -736,6 +744,7 @@
     },
     {
       "id": "remember",
+      "label": "remember",
       "label_en": "remember",
       "label_ja": "記憶する",
       "label_ko": "기억",
@@ -747,6 +756,7 @@
     },
     {
       "id": "approve",
+      "label": "approve",
       "label_en": "approve",
       "label_ja": "承認する",
       "label_ko": "승인",
@@ -758,6 +768,7 @@
     },
     {
       "id": "decide",
+      "label": "decide",
       "label_en": "decide",
       "label_ja": "決定する",
       "label_ko": "결정",
@@ -769,6 +780,7 @@
     },
     {
       "id": "act",
+      "label": "act",
       "label_en": "act",
       "label_ja": "行動する",
       "label_ko": "실행",
@@ -782,6 +794,7 @@
   "evidence_rigor": [
     {
       "id": "explanatory",
+      "label": "explanatory",
       "label_en": "explanatory",
       "label_ja": "説明用",
       "label_ko": "설명형",
@@ -793,6 +806,7 @@
     },
     {
       "id": "decision-grade",
+      "label": "decision-grade",
       "label_en": "decision-grade",
       "label_ja": "意思決定用",
       "label_ko": "의사결정형",
@@ -804,6 +818,7 @@
     },
     {
       "id": "public-auditable",
+      "label": "public-auditable",
       "label_en": "public-auditable",
       "label_ja": "公開検証可能",
       "label_ko": "공개 검증형",

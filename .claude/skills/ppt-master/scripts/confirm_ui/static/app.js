@@ -1,6 +1,7 @@
 /* PPT Master - Strategist confirmation stage UI
  * Finite/enumerable fields (canvas, mode, visual style, template adherence,
- * icons, image usage, AI source, formula policy, generation mode) list ALL options from
+ * audience profile, outcome, evidence rigor, icons, image usage, AI source,
+ * formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
  * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
  * Custom controls. On confirm the page saves result.json and closes.
@@ -690,6 +691,10 @@
     var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
     var AI_IMAGE_COMPARISON = {};  // /api/ai-image-comparison — reference preview options
     var STATE = {};
+    var USER_FIXED = {};
+    function markUserFixed(field) { USER_FIXED[field] = true; }
+    function clearUserFixed(field) { delete USER_FIXED[field]; }
+    function isUserFixed(field) { return USER_FIXED[field] === true; }
     // Stage-1 recommendation overlay driven by the selected deck card: while a
     // deck is picked, `recId()` answers from here first for the fields the deck
     // declares (canvas + index `defaults`), so the ★ badge and re-seeded values
@@ -958,6 +963,9 @@
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
         list = list || [];
         opts2 = opts2 || {};
+        parent.setAttribute("role", "radiogroup");
+        var fieldLabel = parent.querySelector(".subfield-label") || parent.querySelector(".section-title");
+        parent.setAttribute("aria-label", opts2.ariaLabel || (fieldLabel && fieldLabel.textContent) || "Options");
         var grouped = list.length && list[0] && list[0].items;
         var flat = grouped ? list.reduce(function (a, g) { return a.concat(g.items || []); }, []) : list;
         var ids = flat.map(function (o) { return o.id; });
@@ -988,12 +996,41 @@
         customInput.placeholder = opts2.placeholder || t("custom_placeholder");
         customInput.style.display = "none";
 
-        function deselect() { allChips.forEach(function (c) { c.classList.remove("selected"); }); }
+        function deselect() {
+            allChips.forEach(function (c) {
+                c.classList.remove("selected");
+                c.setAttribute("aria-checked", "false");
+                c.tabIndex = -1;
+            });
+        }
+        function handleRadioKey(event, chip, selectChip) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectChip();
+                return;
+            }
+            var targetIndex = null;
+            var currentIndex = allChips.indexOf(chip);
+            if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                targetIndex = (currentIndex + 1) % allChips.length;
+            } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                targetIndex = (currentIndex - 1 + allChips.length) % allChips.length;
+            } else if (event.key === "Home") {
+                targetIndex = 0;
+            } else if (event.key === "End") {
+                targetIndex = allChips.length - 1;
+            }
+            if (targetIndex == null || !allChips.length) return;
+            event.preventDefault();
+            allChips[targetIndex].click();
+            allChips[targetIndex].focus();
+        }
         function makeChip(o) {
             var label = optionLabel(o);
             var desc = optionDesc(o);
             var spec = specById[o.id];
             var chip = el("div", "chip");
+            chip.setAttribute("role", "radio");
             var preview = previewNode(opts2.preview, o.id);
             if (preview) {
                 chip.classList.add("chip-with-preview");
@@ -1018,12 +1055,21 @@
                 copy.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
             }
             chip.appendChild(copy);
-            if (!isCustom && o.id === cur) chip.classList.add("selected");
-            chip.addEventListener("click", function () {
+            var initiallySelected = !isCustom && o.id === cur;
+            if (initiallySelected) chip.classList.add("selected");
+            chip.setAttribute("aria-checked", initiallySelected ? "true" : "false");
+            chip.tabIndex = initiallySelected ? 0 : -1;
+            function selectChip() {
                 deselect();
                 chip.classList.add("selected");
+                chip.setAttribute("aria-checked", "true");
+                chip.tabIndex = 0;
                 customInput.style.display = "none";
                 setVal(o.id);
+            }
+            chip.addEventListener("click", selectChip);
+            chip.addEventListener("keydown", function (event) {
+                handleRadioKey(event, chip, selectChip);
             });
             allChips.push(chip);
             return chip;
@@ -1051,6 +1097,7 @@
 
         function buildCustomChip() {
             var customChip = el("div", "chip", t("custom"));
+            customChip.setAttribute("role", "radio");
             if (recommendedId && ids.indexOf(recommendedId) === -1) {
                 customChip.classList.add("recommended");
                 customChip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
@@ -1060,12 +1107,20 @@
                 customInput.style.display = "block";
                 customInput.value = customInvalidValues.indexOf(cur) >= 0 ? "" : cur;
             }
-            customChip.addEventListener("click", function () {
+            customChip.setAttribute("aria-checked", isCustom ? "true" : "false");
+            customChip.tabIndex = isCustom ? 0 : -1;
+            function selectCustomChip() {
                 deselect();
                 customChip.classList.add("selected");
+                customChip.setAttribute("aria-checked", "true");
+                customChip.tabIndex = 0;
                 customInput.style.display = "block";
                 customInput.focus();
                 setVal(customInput.value || customSentinel);
+            }
+            customChip.addEventListener("click", selectCustomChip);
+            customChip.addEventListener("keydown", function (event) {
+                handleRadioKey(event, customChip, selectCustomChip);
             });
             allChips.push(customChip);
             return customChip;
@@ -1082,11 +1137,12 @@
         parent.appendChild(input);
     }
 
-    function textareaField(parent, getVal, setVal, placeholderKey) {
+    function textareaField(parent, getVal, setVal, placeholderKey, ariaLabelKey) {
         var input = el("textarea", "text-input");
         input.rows = 2;
         input.value = getVal() || "";
         input.placeholder = t(placeholderKey);
+        if (ariaLabelKey) input.setAttribute("aria-label", t(ariaLabelKey));
         input.addEventListener("input", function () { setVal(input.value); });
         parent.appendChild(input);
     }
@@ -1243,7 +1299,7 @@
     function renderPages(host) {
         var sec = section(2, "sec_pages");
         textField(sec, function () { return STATE.page_count; },
-            function (v) { STATE.page_count = v; }, "placeholder_pages", true);
+            function (v) { STATE.page_count = v; markUserFixed("page_count"); }, "placeholder_pages", true);
         host.appendChild(sec);
     }
 
@@ -1289,33 +1345,41 @@
         timeInput.step = "1";
         timeInput.value = STATE.time_budget_minutes || "";
         timeInput.placeholder = t("placeholder_time_budget");
+        timeInput.setAttribute("aria-label", t("time_budget_minutes"));
         timeInput.addEventListener("input", function () { STATE.time_budget_minutes = timeInput.value; });
         timeField.appendChild(timeInput);
         sec.appendChild(timeField);
 
         var knowledgeField = el("div", "subfield");
         knowledgeField.appendChild(el("div", "subfield-label", t("audience_knowledge")));
-        enumField(knowledgeField, CAT.audience_knowledge, STATE.audience_profile.knowledge,
+        enumField(knowledgeField, CAT.audience_knowledge,
+            (REC.audience_profile && REC.audience_profile.knowledge) || "mixed",
             function () { return STATE.audience_profile.knowledge; },
-            function (v) { STATE.audience_profile.knowledge = v; });
+            function (v) { STATE.audience_profile.knowledge = v; },
+            { ariaLabel: t("audience_knowledge") });
         sec.appendChild(knowledgeField);
 
         var stanceField = el("div", "subfield");
         stanceField.appendChild(el("div", "subfield-label", t("audience_stance")));
-        enumField(stanceField, CAT.audience_stance, STATE.audience_profile.stance,
+        enumField(stanceField, CAT.audience_stance,
+            (REC.audience_profile && REC.audience_profile.stance) || "neutral",
             function () { return STATE.audience_profile.stance; },
-            function (v) { STATE.audience_profile.stance = v; });
+            function (v) { STATE.audience_profile.stance = v; },
+            { ariaLabel: t("audience_stance") });
         sec.appendChild(stanceField);
 
         var outcomeField = el("div", "subfield");
         outcomeField.appendChild(el("div", "subfield-label", t("desired_outcome")));
-        enumField(outcomeField, CAT.desired_outcome, STATE.desired_outcome.type,
+        enumField(outcomeField, CAT.desired_outcome,
+            (REC.desired_outcome && REC.desired_outcome.type) || "understand",
             function () { return STATE.desired_outcome.type; },
-            function (v) { STATE.desired_outcome.type = v; });
+            function (v) { STATE.desired_outcome.type = v; },
+            { ariaLabel: t("desired_outcome") });
         var outcomeDetail = el("div", "subfield");
         outcomeDetail.appendChild(el("div", "subfield-label", t("desired_outcome_detail")));
         textareaField(outcomeDetail, function () { return STATE.desired_outcome.detail; },
-            function (v) { STATE.desired_outcome.detail = v; }, "placeholder_outcome_detail");
+            function (v) { STATE.desired_outcome.detail = v; }, "placeholder_outcome_detail",
+            "desired_outcome_detail");
         outcomeField.appendChild(outcomeDetail);
         sec.appendChild(outcomeField);
 
@@ -1323,7 +1387,8 @@
         evidenceField.appendChild(el("div", "subfield-label", t("evidence_rigor")));
         enumField(evidenceField, CAT.evidence_rigor, recOrFirst("evidence_rigor", CAT.evidence_rigor),
             function () { return STATE.evidence_rigor; },
-            function (v) { STATE.evidence_rigor = v; });
+            function (v) { STATE.evidence_rigor = v; },
+            { ariaLabel: t("evidence_rigor") });
         sec.appendChild(evidenceField);
 
         if (STATE.content_priority) {
@@ -1334,7 +1399,7 @@
                 var item = el("div", "subfield");
                 item.appendChild(el("div", "subfield-label", t(key)));
                 textareaField(item, function () { return STATE.content_priority[key]; },
-                    function (v) { STATE.content_priority[key] = v; }, "placeholder_priority");
+                    function (v) { STATE.content_priority[key] = v; }, "placeholder_priority", key);
                 priorityField.appendChild(item);
             });
             sec.appendChild(priorityField);
@@ -1416,6 +1481,7 @@
         TEMPLATE_OVERLAY = next;  // replaced before restore so recId() answers fresh
         prev.forEach(function (field) {
             if (Object.prototype.hasOwnProperty.call(next, field)) return;
+            if (field === "mode" || field === "visual_style") clearUserFixed(field);
             if (field === "canvas") STATE.canvas = pick("canvas", CAT.canvas);
             else if (field === "mode") STATE.mode = pick("mode", CAT.modes);
             else if (field === "visual_style") STATE.visual_style = pick("visual_style", CAT.visual_styles);
@@ -1425,6 +1491,7 @@
             }
         });
         Object.keys(next).forEach(function (field) {
+            if (field === "mode" || field === "visual_style") clearUserFixed(field);
             STATE[field] = normalizeRecId(field, next[field]);
         });
         if (next.canvas) {
@@ -1504,14 +1571,14 @@
     }
 
     function renderStyle(host) {
-        var sec = section(4, "sec_style");
+        var sec = section(5, "sec_style");
         sec.appendChild(el("div", "subfield-label", t("sub_mode")));
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
-            function () { return STATE.mode; }, function (v) { STATE.mode = v; }, { allowCustom: true });
+            function () { return STATE.mode; }, function (v) { STATE.mode = v; markUserFixed("mode"); }, { allowCustom: true });
         var sub2 = el("div", "subfield");
         sub2.appendChild(el("div", "subfield-label", t("sub_visual")));
         enumField(sub2, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
-            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; refreshDirectionPreview(); },
+            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; markUserFixed("visual_style"); refreshDirectionPreview(); },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
         host.appendChild(sec);
@@ -1662,7 +1729,7 @@
 
     function renderColor(host) {
         var cands = (REC.color && REC.color.candidates) || [];
-        var sec = section(5, "sec_color");
+        var sec = section(6, "sec_color");
         var grid = el("div", "color-grid");
         var hexInputs = {};
         var hexSwatches = {};
@@ -1722,15 +1789,16 @@
             card.appendChild(sw);
             card.appendChild(el("div", "color-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             if (localized(c, "note")) card.appendChild(el("div", "color-note", localized(c, "note")));
-            card.addEventListener("click", function () { selectCard(idx); });
+            card.addEventListener("click", function () { markUserFixed("color"); selectCard(idx); });
             grid.appendChild(card);
         });
         var customCard = el("div", "color-card color-card-custom");
         customCard.appendChild(el("div", "color-name", t("custom_color")));
-        customCard.addEventListener("click", selectCustomColor);
+        customCard.addEventListener("click", function () { markUserFixed("color"); selectCustomColor(); });
         grid.appendChild(customCard);
         sec.appendChild(grid);
         customInput.addEventListener("input", function () {
+            markUserFixed("color");
             if (!STATE.color || STATE.color.name !== "custom") selectCustomColor();
             STATE.color.custom = customInput.value;
             refreshStylePreview();
@@ -1748,6 +1816,7 @@
             var inp = document.createElement("input");
             inp.type = "text"; inp.placeholder = "#";
             inp.addEventListener("input", function () {
+                markUserFixed("color");
                 if (!STATE.color) STATE.color = { name: "custom", palette: {} };
                 if (!STATE.color.palette) STATE.color.palette = {};
                 STATE.color.palette[role] = inp.value;
@@ -1783,7 +1852,7 @@
     }
 
     function renderIcons(host) {
-        var sec = section(6, "sec_icons");
+        var sec = section(7, "sec_icons");
         enumField(sec, CAT.icons, recOrFirst("icons", CAT.icons),
             function () { return STATE.icons; }, function (v) { STATE.icons = v; refreshStylePreview(); },
             { allowCustom: true });
@@ -1817,7 +1886,7 @@
     function renderTypography(host) {
         var f = REC.typography || {};
         var cands = f.candidates || [];
-        var sec = section(7, "sec_type");
+        var sec = section(8, "sec_type");
         var grid = el("div", "font-grid");
         var customInput = el("textarea", "text-input custom-typography-input");
         customInput.rows = 2;
@@ -1874,15 +1943,16 @@
             var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css, "heading"); card.appendChild(hbox);
             var bbox = el("div", "font-sample-body-box"); fontSample(bbox, body, body.css, "body"); card.appendChild(bbox);
             if (localized(c, "note")) card.appendChild(el("div", "color-note", localized(c, "note")));
-            card.addEventListener("click", function () { selectFont(idx); });
+            card.addEventListener("click", function () { markUserFixed("typography"); selectFont(idx); });
             grid.appendChild(card);
         });
         var customCard = el("div", "font-card font-card-custom");
         customCard.appendChild(el("div", "font-card-name", t("custom_typography")));
-        customCard.addEventListener("click", selectCustomTypography);
+        customCard.addEventListener("click", function () { markUserFixed("typography"); selectCustomTypography(); });
         grid.appendChild(customCard);
         sec.appendChild(grid);
         customInput.addEventListener("input", function () {
+            markUserFixed("typography");
             if (!STATE.typography || STATE.typography.name !== "custom") selectCustomTypography();
             STATE.typography.custom = customInput.value;
             refreshStylePreview();
@@ -1901,6 +1971,7 @@
         sizeInput.value = (STATE.typography && STATE.typography.body_size) || "";
         sizeInput.placeholder = isPptCanvas(STATE.canvas) ? "16 / 20 / 24" : "40 / 48";
         sizeInput.addEventListener("input", function () {
+            markUserFixed("typography");
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
             STATE.typography.body_size = sizeInput.value;
             // Cascade: a valid body edit rescales every role from its remembered
@@ -1990,6 +2061,7 @@
             var inp = document.createElement("input");
             inp.type = "number"; inp.min = "6"; inp.max = "200"; inp.step = "1";
             inp.addEventListener("input", function () {
+                markUserFixed("typography");
                 if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
                 if (!STATE.typography.sizes) STATE.typography.sizes = {};
                 // A role edit sets its own value only — but records its exact
@@ -2254,7 +2326,7 @@
     }
 
     function renderImages(host) {
-        var sec = section(8, "sec_images");
+        var sec = section(9, "sec_images");
         var usageChips = el("div", "chips");
         var usageNote = el("div", "subfield");
         usageNote.appendChild(el("div", "subfield-label", t("image_usage_notes")));
@@ -2575,23 +2647,29 @@
     }
 
     function initStage1State() {
+        USER_FIXED = {};
+        if (Array.isArray(REC.user_fixed_fields)) {
+            REC.user_fixed_fields.forEach(function (field) {
+                if (typeof field === "string") USER_FIXED[field] = true;
+            });
+        }
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         var rawTimeBudget = REC.time_budget_minutes && REC.time_budget_minutes.value;
         STATE.time_budget_minutes = rawTimeBudget == null ? "" : String(rawTimeBudget);
-        var rawAudienceProfile = (REC.audience_profile && typeof REC.audience_profile === "object") ? REC.audience_profile : {};
+        var rawAudienceProfile = (REC.audience_profile && typeof REC.audience_profile === "object" && !Array.isArray(REC.audience_profile)) ? REC.audience_profile : {};
         STATE.audience_profile = {
             knowledge: rawAudienceProfile.knowledge || "mixed",
             stance: rawAudienceProfile.stance || "neutral"
         };
-        var rawDesiredOutcome = (REC.desired_outcome && typeof REC.desired_outcome === "object") ? REC.desired_outcome : {};
+        var rawDesiredOutcome = (REC.desired_outcome && typeof REC.desired_outcome === "object" && !Array.isArray(REC.desired_outcome)) ? REC.desired_outcome : {};
         STATE.desired_outcome = {
             type: rawDesiredOutcome.type || "understand",
             detail: rawDesiredOutcome.detail || ""
         };
         STATE.evidence_rigor = recId("evidence_rigor") || "explanatory";
-        STATE.content_priority = (REC.content_priority && typeof REC.content_priority === "object") ? {
+        STATE.content_priority = (REC.content_priority && typeof REC.content_priority === "object" && !Array.isArray(REC.content_priority)) ? {
             must_keep: REC.content_priority.must_keep || "",
             condense_ok: REC.content_priority.condense_ok || "",
             omit_ok: REC.content_priority.omit_ok || ""
@@ -2616,9 +2694,10 @@
         // anchors at boot too — same cascade as a manual card pick. Gated to a
         // stage-1 payload in selector mode: on stage-2/3 reopens the server has
         // folded the user's confirmed anchors into `recommend`, and those must
-        // win over the deck overlay.
+        // win over the deck overlay. The same applies to a stage-1 recovery
+        // while the agent is still deriving Stage 2 (`_already_confirmed`).
         if (templateField.mode !== "locked" && STATE.template && STATE.template !== "free"
-                && stageNumber(REC) === 1) {
+                && stageNumber(REC) === 1 && !REC._already_confirmed) {
             applyTemplateDefaults(STATE.template);
         } else {
             TEMPLATE_OVERLAY = {};
@@ -2699,6 +2778,9 @@
         payload.audience_profile = JSON.parse(JSON.stringify(STATE.audience_profile));
         payload.desired_outcome = JSON.parse(JSON.stringify(STATE.desired_outcome));
         payload.evidence_rigor = STATE.evidence_rigor;
+        payload.user_fixed_fields = Object.keys(USER_FIXED).filter(function (field) {
+            return USER_FIXED[field] === true;
+        }).sort();
         if (STATE.content_priority) {
             payload.content_priority = JSON.parse(JSON.stringify(STATE.content_priority));
         } else {
@@ -2707,8 +2789,12 @@
     }
 
     function validateIntent() {
-        if (normalizedTimeBudget() !== undefined) return true;
-        document.getElementById("confirm-status").textContent = t("invalid_time_budget");
+        var status = document.getElementById("confirm-status");
+        if (normalizedTimeBudget() !== undefined) {
+            status.textContent = "";
+            return true;
+        }
+        status.textContent = t("invalid_time_budget");
         return false;
     }
 
@@ -2814,6 +2900,10 @@
 
     function enterStage(data, stage) {
         REC = data;
+        if (stage >= 2) {
+            if (!isUserFixed("mode")) STATE.mode = recOrFirst("mode", CAT.modes);
+            if (!isUserFixed("visual_style")) STATE.visual_style = recOrFirst("visual_style", CAT.visual_styles);
+        }
         if (stage >= 2) initStage2State();
         if (stage >= 3) initStage3State();
         STAGE = stage;

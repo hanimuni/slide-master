@@ -30,6 +30,7 @@ This workflow edits the global brand library, not any specific `projects/<x>/`. 
 | **A** Brand asset | Logo (SVG/PNG/JPG), brand site URL, branded PPTX, brand PDF | Step 2A — Asset extraction |
 | **B** Verbal spec | User dictates HEX / font / tone directly in chat | Step 2B — Verbal capture |
 | **C** Nothing | User wants to set up a brand but provides no asset and no spec | Step 2C — Empty skeleton |
+| **D** Explicit `DESIGN.md` visual reference | User designates one DESIGN.md as brand inspiration | Step 2D — Safe reference normalization |
 
 ---
 
@@ -68,11 +69,15 @@ Whatever the user gives is `[user]`-labelled. Skip Step 3 unless the user explic
 
 Write `templates/brands/<brand_id>/templates/design_spec.md` with the full schema, every value as a TODO comment. Tell the user where the file is. No further prompting — the user owns it from here.
 
+## Step 2D: Safe DESIGN.md normalization
+
+Read [`../references/design-reference-adaptation.md`](../references/design-reference-adaptation.md). Extract 3–5 slide-relevant invariants and at most 3 prohibitions, then keep only the identity-level implications this workflow owns: color roles, title/body contrast, imagery mood, voice, and icon character. Discard hover, navigation, buttons, breakpoints, touch targets, page layout, spacing systems, and other web or slide-structure rules. Do not create a company-named style or reproduce trade dress. Copy logos, proprietary fonts, illustrations, or distinctive graphics only when the user supplied them or confirmed the right to use them; otherwise record the principle, not the asset.
+
 ---
 
-## Step 3: Chat fill-in (Type A only)
+## Step 3: Chat fill-in (Types A / D only)
 
-For fields not covered by the asset, ask the user in a single bundled message. Skip fields irrelevant to the user's intent.
+For fields not covered by the asset or normalized reference, ask the user in a single bundled message. Skip fields irrelevant to the user's intent.
 
 | Field | When to ask |
 |---|---|
@@ -151,6 +156,7 @@ primary_color: "#XXXXXX"
 
 **Section scope rules**:
 - Layout / canvas / spacing / radius / shadow / page roster / signature design elements are OUT of brand scope. Those live in layout / deck workspaces (`templates/layouts/<id>/templates/design_spec.md` or `templates/decks/<id>/templates/design_spec.md`) or `shared-standards.md`. Do NOT add those sections here.
+- An explicit `DESIGN.md` may inform the identity fields above only through the normalized 3–5 invariants / 0–3 prohibitions. It never expands brand scope into layout or interaction behavior.
 - HEX must be `#RRGGBB`
 - Font names are free strings; not validated against locally installed fonts
 - §VII is fully optional — list only directories that actually exist

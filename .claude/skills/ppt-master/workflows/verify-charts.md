@@ -63,10 +63,11 @@ For each page in the Step 1 list:
    - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-base.md §3.1](../references/executor-base.md)). Read coordinates directly.
    - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
 3. Read the data series from the SVG's `<text>` label/value elements.
-4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
+4. **Check evidence display before geometry.** Cross-read the page's §IX / §VII entry. When the chart uses external data, confirm that the rendered SVG visibly includes the declared unit and source in the chart area or a dedicated slide source zone. A source present only in speaker notes does not count. If the exact unit or source is absent from the plan, do not infer it: add `evidence=Needs-Manual (unit|source unverified)` to the receipt and continue the geometry check without fabricating copy. Internal concept diagrams and clearly identified illustrative data are exempt from source display; record `evidence=internal/illustrative` when relevant.
+5. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
 
    **Local vs absolute coordinates.** Many chart templates wrap chart content in `<g transform="translate(cx, cy)">` or similar, so child `<circle>`/`<polygon>`/`<rect>` coords are relative to that origin (e.g. radar polygon at `0,-198`, donut paths starting from `0,0` inside a translated `<g>`, dumbbell circles at `cy="0"` inside a per-row translated `<g>`). The calculator outputs **absolute** SVG coordinates. Before comparing, either add the wrapping translate's offset to the SVG coords or subtract it from the calculator's output — pick one direction and apply it consistently.
-5. Run the matching calculator command:
+6. Run the matching calculator command:
 
    ```bash
    # column_chart / horizontal_bar_chart (add --horizontal for the latter)
@@ -98,7 +99,7 @@ For each page in the Step 1 list:
    M first_x,first_y ... L last_x,last_y L last_x,y_max L first_x,y_max Z
    ```
 
-6. **Scale-aware comparison.** Compare calculator output against the SVG's existing coordinates. Before declaring a mismatch, verify that every calculator invocation used the same axis range, plot area, center/radius, start angle, or size scale that the SVG visually declares. For `calc bar`, the output header must show `Value scale: axis ticks (...)` when the SVG has explicit ticks; if it shows `auto (max*1.1)`, go back to step 4 and re-run with the correct `--value-range`. **Do NOT update the SVG with mismatched-scale output.** Only update SVG attributes when the scale is confirmed to match and coordinates genuinely differ. Update by hand (do NOT use regex / bulk replacement — coordinates are positional and easy to swap incorrectly).
+7. **Scale-aware comparison.** Compare calculator output against the SVG's existing coordinates. Before declaring a mismatch, verify that every calculator invocation used the same axis range, plot area, center/radius, start angle, or size scale that the SVG visually declares. For `calc bar`, the output header must show `Value scale: axis ticks (...)` when the SVG has explicit ticks; if it shows `auto (max*1.1)`, go back to step 5 and re-run with the correct `--value-range`. **Do NOT update the SVG with mismatched-scale output.** Only update SVG attributes when the scale is confirmed to match and coordinates genuinely differ. Update by hand (do NOT use regex / bulk replacement — coordinates are positional and easy to swap incorrectly).
 
 After updating any page, re-run the quality checker on the project to confirm nothing broke:
 
@@ -232,8 +233,8 @@ python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc line \
 Output one line per page from the Step 1 list. Receipt count MUST equal Step 1 list length — that is the gate-closing artifact.
 
 ```
-verify-charts: 03_market_share.svg | type=bar | mode=direct-calc | scale=0-100 (from ticks) | calc=ran | svg=updated
-verify-charts: 07_growth.svg | type=line | mode=direct-calc | scale=0-120 (from ticks) | calc=ran | svg=unchanged (already accurate)
+verify-charts: 03_market_share.svg | type=bar | mode=direct-calc | evidence=unit+source visible | scale=0-100 (from ticks) | calc=ran | svg=updated
+verify-charts: 07_growth.svg | type=line | mode=direct-calc | evidence=Needs-Manual (source unverified) | scale=0-120 (from ticks) | calc=ran | svg=unchanged (already accurate)
 verify-charts: 11_share_split.svg | type=pie | mode=direct-calc | scale=N/A | calc=ran | svg=updated | marker=added (was missing)
 verify-charts: 14_revenue_mix.svg | type=stacked-bar | mode=decomposable-calc | scale=0-200 (from ticks) | calc=ran×3 | svg=updated (per stacked recipe)
 verify-charts: 15_unit_economics.svg | type=stacked-area | mode=manual-verify | scale=N/A | reason=percent-stacked, recipe does not apply

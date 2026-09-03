@@ -99,6 +99,7 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 - **Prose render recipe**: one `<text>` per paragraph; wrap lines with sibling `<tspan>` where the first line uses `dy="0"` and every subsequent line repeats the parent `<text>`'s **exact `x`** and the **same positive relative `dy`** (the line-height). Equal relative `dy` + matching `x` + the same effective `font-size` lets lines flow inside one PowerPoint paragraph; a font-size change preserves a new paragraph inside the same text frame, while a growing/cumulative `dy`, an irregular gap, or a mismatched `x` (e.g. `x="0"` under `<text x="60">`) may split them into separate single-line boxes. Set the line-height `dy` from the font size × a line-height factor. **Default — line-height by density (may override per content fit)**: ~1.4–1.5× for dense / small-body blocks (CLReq comfortable minimum), 1.6–2.0× for large-type, sparse, or `breathing` blocks. Fit about width ÷ font-size CJK glyphs per line (Latin fits roughly twice that); the last line runs short. Use the body ramp size, not a new one.
 - **Template precedence**: when an inherited template slot is a bullet list but the §IX block is prose, the prose wins — widen or reflow the container to hold the paragraph, or drop that card; do not pour the sentence back into the list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
+- **Title / core-message alignment**: on an AI-authored content or data page, render the §IX title and Core message as the same-direction claim. The title is the shortest expression of the conclusion; the lead explains it. Do not let a stronger body statement visually outrank or contradict the title. Preserve the documented exemptions: cover, agenda, section divider, exploratory question, user-authored title, and verbatim preservation routes.
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
@@ -121,6 +122,8 @@ is `0.55 × font-size`, and a space is `0.25 × font-size`.
    (`+ 0.2 × font-size` descent) MUST clear the next element's top edge and
    the canvas bottom margin. Allocate wrapped-line count × line-height before
    placing the block (§1.0).
+
+**Korean wrap rule (soft authoring rule)**: prefer line breaks at eojeol (space-delimited word-unit) boundaries and never split an ordinary eojeol merely to fill the line. Rebalance the zone or use a balanced phrase break first. URLs, code tokens, and genuinely long proper nouns are exceptions; preserve them intact when possible and use an explicit technical break only when the token cannot fit its zone.
 
 **Mandatory — run the fit helper before drawing each non-trivial page, do NOT eyeball the arithmetic**: hand-computing the width/vertical budget in your head is the documented failure mode — it passes width but misses vertical stacks and cross-group collisions (the checker's A-class errors), which then force a gate repair cycle. For every page that has a multi-line text block, a block in the lower third, or text placed beside/over another element, author one `text_fit.py --batch` **page object** and read its verdict **before** writing the `<text>`:
 
@@ -262,6 +265,8 @@ into `svg_output/`.
 > The [`verify-charts`](../workflows/verify-charts.md) workflow enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. Missing marker → verify-charts has to re-derive the plot area from axis lines, paying the cost on every run.
 
 **Hard rule**: every SVG page that contains a data visualization chart includes a plot-area marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
+
+**Evidence display (soft content-integrity rule)**: an external-data chart must visibly show its unit and source in the chart area or a dedicated slide source zone, using the §IX / §VII evidence text. Never invent a missing number, unit, source, or uncertainty statement; render `Needs-Manual` / unverified when the plan says it is unresolved. Internal concept diagrams and clearly identified illustrative data do not need a decorative source line. Do not move chart sources into speaker notes or treat TTS notes as the attribution channel.
 
 **Rectangular plot area** (bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly):
 

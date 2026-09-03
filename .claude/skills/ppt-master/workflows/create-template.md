@@ -80,8 +80,11 @@ Branch by the type of reference source the user supplied. This step produces ana
 | **B** Existing SVG assets | `projects/<x>/svg_output/`, a current template workspace root, a legacy flat template root, or a loose `.svg` folder | Normalize the source directory, create a lightweight projection with `svg_authoring_view.py`, then read projected page SVGs; also read companion `design_spec.md` / `spec_lock.md` when present | `standard` / `fidelity`; `mirror` only when the source already carries a complete explicit Master/Layout/placeholder/native-object contract |
 | **C** Image / visual references | Screenshot folder, single image, PDF pages | `ls` + `Read` each file (multimodal visual recognition) | `standard` only |
 | **D** No reference source | Verbal description only ("McKinsey style", "tech blue", "dark minimal") | — | `standard` only |
+| **E** Explicit `DESIGN.md` visual reference | User designates one DESIGN.md as design inspiration | Read through `references/design-reference-adaptation.md` | `standard` only |
 
-`fidelity` and `mirror` are not available for type C / D — visual references and verbal-only briefs cannot drive page-by-page replication. Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, complete-page lossless `svg-flat/`, and inheritance facts are the restoration authority. In `standard` / `fidelity`, those files supply factual canvas/asset/visual references only and do not define output topology.
+`fidelity` and `mirror` are not available for type C / D / E — image references, verbal briefs, and textual design rules cannot prove page geometry or drive page-by-page replication. Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, complete-page lossless `svg-flat/`, and inheritance facts are the restoration authority. In `standard` / `fidelity`, those files supply factual canvas/asset/visual references only and do not define output topology.
+
+**Type E normalization contract**: read [`../references/design-reference-adaptation.md`](../references/design-reference-adaptation.md) and retain exactly 3–5 slide invariants plus at most 3 prohibitions. Translate color roles, typography contrast, spacing posture, corner/line character, imagery mood, and density; discard hover, navigation, buttons, breakpoints, touch targets, and other interaction-only rules. Map to the closest existing visual style or a neutral custom behavior. Do not reproduce trade dress or copy logos, proprietary fonts, or distinctive assets unless the user supplied them or confirmed usage rights. A textual DESIGN.md supports `standard` adaptation only; it never justifies `literal`, `fidelity`, or `mirror` claims.
 
 **Type B source normalization**: when the supplied root contains `templates/design_spec.md`, use `<input>/templates/` as the SVG/spec source and resolve its workspace assets from sibling `<input>/images/` and `<input>/icons/`. Otherwise, use the supplied directory itself as the legacy-flat/loose SVG source. Directory flatness is not a semantic-structure signal.
 
@@ -281,16 +284,16 @@ Items to surface:
 | Tone summary | Yes | `[suggested]` from analysis (e.g. `Modern, restrained, data-driven`) |
 | Theme mode | Yes | A: `[fact]` from `manifest.json` background colors. B: `[fact]` from SVG `fill`. C: `[suggested]` from visual estimate. D: `[decision]` |
 | Canvas format and dimensions | Yes | A/B: `[fact]` from slide size or SVG `width` / `height` / `viewBox`; show `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, and `source_viewbox`. C: `[suggested]` from image aspect ratio. D: `[decision]`, default `ppt169` (`1280x720`, `0 0 1280 720`) |
-| Replication mode | Yes | `[decision]` — `standard` always available; `fidelity` is available for A/B; `mirror` is available for A only when every source Master/Layout is reachable from a source slide, and only for B sources with a complete explicit structure contract whose declared identities are all page-referenced. `standard` / `fidelity` author new SVG semantics, while mirror retains one restored prototype per source slide in source order. Reject `fidelity` / `mirror` for C/D. |
+| Replication mode | Yes | `[decision]` — `standard` always available; `fidelity` is available for A/B; `mirror` is available for A only when every source Master/Layout is reachable from a source slide, and only for B sources with a complete explicit structure contract whose declared identities are all page-referenced. `standard` / `fidelity` author new SVG semantics, while mirror retains one restored prototype per source slide in source order. Reject `fidelity` / `mirror` for C/D/E. |
 | Native structure facts | Type A and structured Type B | `[fact]` from `native_structure.json` / source SVG contract: master/layout counts, parentage, page assignments, placeholder identities, and multi-master status. Mirror restores these facts; authored modes do not use them as output topology. |
 | Mode-specific ownership | Yes | `standard` / `fidelity`: `[decision]` newly authored Master/Layout ownership. `mirror`: `[fact]` source ownership restored without synthesis. Export never infers either contract. |
-| Visual fidelity for fixed pages | Yes for `standard` / `fidelity` when reference exists; **N/A for `mirror`** (mirror restores the source visual) | `[decision]` — `literal` (closely reproduce reference geometry / decoration / sprite crops within a newly authored structure) or `adapted` (use reference tone/composition but allow design evolution). Different page types may take different settings. |
-| Basic template norms | Yes when reference exists | `[fact]` / `[suggested]` — layout grammar, image system, density rhythm, page roster semantics, and asset policy extracted in Step 1 |
+| Visual fidelity for fixed pages | Yes for `standard` / `fidelity` when a geometric reference exists; **N/A for `mirror`** (mirror restores the source visual) | `[decision]` — `literal` (closely reproduce reference geometry / decoration / sprite crops within a newly authored structure) or `adapted` (use reference tone/composition but allow design evolution). Different page types may take different settings. Type E is always `adapted`; text rules do not prove geometry. |
+| Basic template norms | Yes when reference exists | `[fact]` / `[suggested]` — layout grammar, image system, density rhythm, page roster semantics, and asset policy extracted in Step 1; Type E records only its normalized 3–5 invariants / 0–3 prohibitions |
 | Reference source | Optional | already known if Step 1 ran |
-| Theme color | Optional | A: `[fact]` from theme XML. B: `[fact]` from dominant SVG `fill`. C: `[suggested]` from visual estimate (HEX is approximate). D: `[decision]` |
-| Fonts | Optional | A: `[fact]` from `manifest.json`. B: `[fact]` from SVG `font-family`. C / D: not derivable — `[decision]` if user wants a custom stack |
+| Theme color | Optional | A: `[fact]` from theme XML. B: `[fact]` from dominant SVG `fill`. C: `[suggested]` from visual estimate (HEX is approximate). D: `[decision]`. E: `[reference]` color roles only, subordinate to template/brand locks. |
+| Fonts | Optional | A: `[fact]` from `manifest.json`. B: `[fact]` from SVG `font-family`. C / D: not derivable — `[decision]` if user wants a custom stack. E: character / contrast is usable; exact proprietary families require user-supplied files or confirmed rights and installation. |
 | Design style | Optional | `[suggested]` from analysis |
-| Assets list | Optional | A: `[fact]` from `assets/` listing; user picks which to bundle. B / C: `[decision]` per file. D: none |
+| Assets list | Optional | A: `[fact]` from `assets/` listing; user picks which to bundle. B / C: `[decision]` per file. D: none. E: none unless the user separately supplied or authorized an asset. |
 | Keywords | Yes | `[suggested]` from analysis (3–5 short tags); user confirms |
 
 For type A, also include in this message:
@@ -322,7 +325,7 @@ Skipping this gate — including silently inferring values from the reference so
 - [ ] User has replied with values or explicit acceptance of suggested defaults
 - [ ] Output scope is confirmed; both scopes use the same workspace shape, while `project` includes an explicit initialized target-project path
 - [ ] The canvas format is fixed before SVG generation
-- [ ] Replication mode is consistent with the input type (`fidelity` allowed for A/B; `mirror` allowed for A and structured B only; both forbidden for C/D)
+- [ ] Replication mode is consistent with the input type (`fidelity` allowed for A/B; `mirror` allowed for A and structured B only; both forbidden for C/D/E)
 - [ ] Before offering `mirror`, every source Layout has at least one source-slide reference and every source Master is reachable through those Layouts; otherwise the exact unsupported identities were reported and mirror was not selected
 - [ ] Basic template norms from prior content have been surfaced and accepted, or explicitly marked N/A when no reference exists
 - [ ] Mode-specific ownership policy is explicit: `standard` / `fidelity` author a new structure without source-topology distillation; `mirror` restores source ownership one-to-one
@@ -374,6 +377,7 @@ If the input source is type A, pass the following internal package to the role:
 For type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted icons; open individual `icons/*.svg` only when needed.
 For type C, pass the image file list and the visual analysis notes.
 For type D, pass only the finalized brief.
+For type E, pass the normalized 3–5 invariants, 0–3 prohibitions, source path, and asset-permission notes; do not pass the unfiltered DESIGN.md as a runtime catalog.
 
 The role interprets the package according to replication mode:
 

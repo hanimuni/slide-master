@@ -15,7 +15,13 @@
 | **Target Audience** | [Filled by Strategist] |
 | **Use Case** | [Filled by Strategist] |
 | **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at c; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
+| **Time Budget** | [Positive minutes or `unspecified` — drives page-count recommendation, speaking depth, and rhythm.] |
+| **Audience Profile** | [Knowledge: `novice` / `mixed` / `expert`; stance: `unaware` / `neutral` / `skeptical` / `aligned`. Keep the concrete audience description above.] |
+| **Desired Outcome** | [`understand` / `remember` / `approve` / `decide` / `act` + the concrete target.] |
+| **Evidence Rigor** | [`explanatory` / `decision-grade` / `public-auditable` — controls traceability, units, uncertainty, and claim strength.] |
+| **Content Priority** | [`must_keep` / `condense_ok` / `omit_ok` — include only for bulky or multi-source inputs.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
+| **Design Reference** | [Include only when the user explicitly designated a DESIGN.md: path + 3–5 normalized slide invariants + 0–3 prohibitions. See `references/design-reference-adaptation.md`.] |
 | **Template Adherence** | [`adaptive` / `strict` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. Also written under `spec_lock.md pptx_structure`.] |
 | **Created Date** | {date_str} |
 
@@ -281,9 +287,10 @@ Catalog read: 76 templates
 #### Slide 02 - [Page Name]
 
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
-- **Title**: [Page title]
+- **Title**: [For AI-authored content/data pages, prefer the page's supported conclusion or claim; keep it aligned with Core message. Topic labels remain valid for covers, agendas, section dividers, exploratory questions, user-authored titles, and preservation paths.]
 - **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
+- **Evidence**: [External-data charts only: unit + source + uncertainty / `Needs-Manual` when unverified. Omit for internal concept diagrams and clearly identified illustrative data. Reserve visible slide space; do not place this only in speaker notes.]
 - **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:
   - [a connected sentence or two that argues the point]
   - [parallel fragment] · [parallel fragment] · [parallel fragment]
@@ -299,7 +306,7 @@ Catalog read: 76 templates
 
 #### Slide NN - Closing  *(only if the deck genuinely lands on a conclusion / CTA / final-takeaway page — do NOT invent one to fill this slot; see strategist.md §6.2)*
 
-- **Closing impact**: [MANDATORY for the closing page — name the one thing the audience leaves with (distilled takeaway / forward call / memorable restatement of the core claim) + one composition that lands it. Do NOT write a generic "Thank you" / contact-only / centered-title reprise of the cover.]
+- **Closing impact**: [MANDATORY for the closing page — for `approve` / `decide` / `act`, state the concrete judgment or next action; for `understand` / `remember`, use synthesis or a memorable restatement without a forced CTA. Add one composition that lands it. Do NOT write a generic "Thank you" / contact-only / centered-title reprise of the cover.]
 - **Layout**: [realize the Closing impact above — the deck's final impression, not a default sign-off]
 - **Content**: [the takeaway / call-to-action itself, phrased to land]
 
