@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03c_content_transition" data-pptx-layout-name="Content Problem To Solution">
+  <!-- GrowUp - 03c Muted problem chip, purple arrow disc, solid purple solution card -->
+
+  <defs>
+    <filter id="shadow-purple" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="6.7" stdDeviation="10.7" flood-color="#9B86FF" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="panel-1" x="86.4" y="206.4" width="337.1" height="81.6" rx="13.4" fill="#FCEFE6" stroke="#EEEAF7" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-2" x="86.4" y="388.8" width="337.1" height="244.8" rx="17.3" fill="#7C6BFF" filter="url(#shadow-purple)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-3" x="471.5" y="206.4" width="337.1" height="81.6" rx="13.4" fill="#FCEFE6" stroke="#EEEAF7" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-4" x="471.5" y="388.8" width="337.1" height="244.8" rx="17.3" fill="#7C6BFF" filter="url(#shadow-purple)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-5" x="856.5" y="206.4" width="337.1" height="81.6" rx="13.4" fill="#FCEFE6" stroke="#EEEAF7" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-6" x="856.5" y="388.8" width="337.1" height="244.8" rx="17.3" fill="#7C6BFF" filter="url(#shadow-purple)" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="96" y="78.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="86 92 1104 86">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="96" y="145.4"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="40" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="pair-1">
+    <text x="254.9" y="252.2" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20" font-weight="bold" fill="#8A8696">{{PROBLEM_1}}</text>
+    <circle cx="254.9" cy="334.1" r="26.9" fill="#7C6BFF"/>
+    <text x="254.9" y="345.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="29.3" font-weight="bold" fill="#FFFFFF">↓</text>
+    <circle cx="254.9" cy="456.2" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="254.9" y="532.3" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{SOLUTION_1}}</text>
+  </g>
+
+  <g id="pair-2">
+    <text x="640" y="252.2" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20" font-weight="bold" fill="#8A8696">{{PROBLEM_2}}</text>
+    <circle cx="640" cy="334.1" r="26.9" fill="#7C6BFF"/>
+    <text x="640" y="345.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="29.3" font-weight="bold" fill="#FFFFFF">↓</text>
+    <circle cx="640.0" cy="456.2" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="640" y="532.3" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{SOLUTION_2}}</text>
+  </g>
+
+  <g id="pair-3">
+    <text x="1025" y="252.2" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20" font-weight="bold" fill="#8A8696">{{PROBLEM_3}}</text>
+    <circle cx="1025" cy="334.1" r="26.9" fill="#7C6BFF"/>
+    <text x="1025" y="345.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="29.3" font-weight="bold" fill="#FFFFFF">↓</text>
+    <circle cx="1025.0" cy="456.2" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="1025" y="532.3" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{SOLUTION_3}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

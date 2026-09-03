@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03f_content_feature_left" data-pptx-layout-name="Content Feature Phone Left">
+  <!-- GrowUp - 03f Feature page, phone mockup on the left, numbered copy column on the right -->
+
+  <defs>
+    <filter id="shadow-phone" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="6.7" stdDeviation="10.7" flood-color="#9B86FF" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <circle id="feature-disc" cx="1233.6" cy="638.4" r="312" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="phone-mockup">
+    <rect x="96" y="83" width="264.7" height="553.9" rx="21.1" fill="#241C45" filter="url(#shadow-phone)"/>
+    <image href="../images/phone_screen.png" xlink:href="../images/phone_screen.png" x="104.2" y="91.2" width="248.4" height="537.6" preserveAspectRatio="none"/>
+  </g>
+
+  <g id="page-eyebrow">
+    <text x="442.3" y="129.4" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="feature-badge">
+    <circle cx="467.3" cy="178.6" r="34.6" fill="#7C6BFF"/>
+    <text x="467.3" y="188.9" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="29.3" font-weight="bold" fill="#FFFFFF">01</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="524 144 674 72">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="533.5" y="188.3"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="33.3" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="body-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2" data-pptx-placeholder-bounds="433 245 766 144">
+    <text id="body-carrier" data-pptx-placeholder-carrier="true" x="442.3" y="267.2"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20.7" fill="#4A4658">{{CONTENT_AREA}}</text>
+  </g>
+
+  <g id="check-1">
+    <rect x="432.7" y="436.8" width="236" height="139.2" rx="11.5" fill="#EEEAF7"/>
+    <rect x="453.9" y="459.8" width="32.6" height="32.6" rx="7.7" fill="#7C6BFF"/>
+    <text x="470.2" y="483" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" font-weight="bold" fill="#FFFFFF">✓</text>
+    <text x="461.5" y="521.6" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#1F1B2E">{{CHECK_1}}</text>
+  </g>
+
+  <g id="check-2">
+    <rect x="697.5" y="436.8" width="236" height="139.2" rx="11.5" fill="#EEEAF7"/>
+    <rect x="718.7" y="459.8" width="32.6" height="32.6" rx="7.7" fill="#7C6BFF"/>
+    <text x="735" y="483" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" font-weight="bold" fill="#FFFFFF">✓</text>
+    <text x="726.4" y="521.6" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#1F1B2E">{{CHECK_2}}</text>
+  </g>
+
+  <g id="check-3">
+    <rect x="962.4" y="436.8" width="236" height="139.2" rx="11.5" fill="#EEEAF7"/>
+    <rect x="983.5" y="459.8" width="32.6" height="32.6" rx="7.7" fill="#7C6BFF"/>
+    <text x="999.8" y="483" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" font-weight="bold" fill="#FFFFFF">✓</text>
+    <text x="991.2" y="521.6" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#1F1B2E">{{CHECK_3}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

@@ -10,6 +10,12 @@
       "delivery_purpose": "balanced"
     }
   },
+  "growup": {
+    "summary": "GrowUp 도입제안서 스타일 — 사내 서비스/앱 도입 제안, 제품 소개, 파일럿 성과 보고, 따뜻한 베이지 위 보라 시그니처",
+    "canvas_format": "ppt169",
+    "page_count": 14,
+    "primary_color": "#7C6BFF"
+  },
   "jangpm": {
     "summary": "Korean editorial lecture / report decks — 강의, 워크숍, 전략 브리핑, 분석 리포트",
     "canvas_format": "ppt169",
@@ -20,6 +26,12 @@
       "visual_style": "editorial",
       "delivery_purpose": "balanced"
     }
+  },
+  "larana": {
+    "summary": "라라나마켓 스타일 — 구독·생활 서비스 런칭 제안, D2C 브랜드 소개, 앱 서비스 기획, 둥글고 친근한 그린-화이트",
+    "canvas_format": "ppt169",
+    "page_count": 10,
+    "primary_color": "#16A647"
   },
   "mckinsey": {
     "summary": "McKinsey consulting-style strategy decks — 전략 보고서, 시장/산업 분석, 경영진 브리핑, 실행 로드맵",

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
+  <!-- Larana - 01 Cover: white ground, two-line black headline with a green highlight capsule, brand rule, 2-dot mark -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="cover-rule" x="73.3" y="495.4" width="720" height="1.4" fill="#16A647" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="date-slot" data-pptx-placeholder="date" data-pptx-placeholder-bounds="940 38 267 24">
+    <text id="date-carrier" data-pptx-placeholder-carrier="true" x="1206.7" y="55" text-anchor="end"
+          font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#1F1F1F">{{DATE}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="73 253 1000 105">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="73.3" y="330"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="85.3" letter-spacing="-2.1" fill="#1F1F1F">{{TITLE_LINE_1}}</text>
+  </g>
+
+  <g id="title-line-2">
+    <rect x="73.3" y="373.6" width="300" height="94" rx="47" fill="#16A647"/>
+    <text x="223.3" y="444" text-anchor="middle"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="85.3" letter-spacing="-2.1" fill="#FFFFFF">{{HL}}</text>
+    <text x="397.3" y="444"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="85.3" letter-spacing="-2.1" fill="#1F1F1F">{{TITLE_LINE_2}}</text>
+  </g>
+
+  <g id="subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="2" data-pptx-placeholder-bounds="73 522 720 34">
+    <text id="subtitle-carrier" data-pptx-placeholder-carrier="true" x="73.3" y="546"
+          font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="25.3" fill="#1F1F1F">{{SUBTITLE}}</text>
+  </g>
+
+  <g id="brand-mark">
+    <circle cx="1071.5" cy="601.9" r="34.3" fill="#16A647"/>
+    <circle cx="1128.6" cy="601.9" r="34.3" fill="#16A647"/>
+  </g>
+
+  <g id="page-foot">
+    <text x="1206.7" y="670" text-anchor="end"
+          font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#1F1F1F">{{TAGLINE}}</text>
+  </g>
+</svg>

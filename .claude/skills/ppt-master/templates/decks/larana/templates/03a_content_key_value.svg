@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="03a_content_key_value" data-pptx-layout-name="Content Key Value">
+  <!-- Larana - 03a Overview: centered header, mint blob behind a left device, filled green capsule keys with plain values -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <ellipse id="mint-blob" cx="886.7" cy="666.7" rx="644" ry="448" fill="#E8F5EC" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="device-frame" x="160" y="253.3" width="253.3" height="520" rx="40" fill="#2A2A2A" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="device-screen" x="165.3" y="258.6" width="242.7" height="509.4" rx="34.7" fill="#1A1A1A" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="device-notch" x="240" y="265.3" width="93.3" height="16" rx="8" fill="#000000" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="640" y="103" text-anchor="middle"
+          font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" letter-spacing="2.9" fill="#16A647">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="160 121 960 61">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="640" y="169" text-anchor="middle"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="50.7" letter-spacing="-1" fill="#1F1F1F">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="kv-row-1">
+    <rect x="466.6" y="306.6" width="133.3" height="42.7" rx="21.4" fill="#16A647"/>
+    <text x="533.3" y="335" text-anchor="middle" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_1}}</text>
+    <text x="623.9" y="335" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#1F1F1F">{{VALUE_1}}</text>
+  </g>
+  <g id="kv-row-2">
+    <rect x="466.6" y="368" width="133.3" height="42.7" rx="21.4" fill="#16A647"/>
+    <text x="533.3" y="396.4" text-anchor="middle" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_2}}</text>
+    <text x="623.9" y="396.4" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#1F1F1F">{{VALUE_2}}</text>
+  </g>
+  <g id="kv-row-3">
+    <rect x="466.6" y="429.4" width="133.3" height="42.7" rx="21.4" fill="#16A647"/>
+    <text x="533.3" y="457.8" text-anchor="middle" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_3}}</text>
+    <text x="623.9" y="457.8" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#1F1F1F">{{VALUE_3}}</text>
+  </g>
+  <g id="kv-row-4">
+    <rect x="466.6" y="490.8" width="133.3" height="42.7" rx="21.4" fill="#16A647"/>
+    <text x="533.3" y="519.2" text-anchor="middle" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_4}}</text>
+    <text x="623.9" y="519.2" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#1F1F1F">{{VALUE_4}}</text>
+  </g>
+  <g id="kv-row-5">
+    <rect x="466.6" y="552.2" width="133.3" height="42.7" rx="21.4" fill="#16A647"/>
+    <text x="533.3" y="580.6" text-anchor="middle" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_5}}</text>
+    <text x="623.9" y="580.6" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#1F1F1F">{{VALUE_5}}</text>
+  </g>
+</svg>

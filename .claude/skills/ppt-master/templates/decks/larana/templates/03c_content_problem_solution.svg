@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="03c_content_problem_solution" data-pptx-layout-name="Content Problem To Solution">
+  <!-- Larana - 03c Outlined problem card, green chevron, filled green solution card - one stack per column -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="problem-1-panel" x="86.7" y="209" width="352.9" height="190" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="problem-2-panel" x="463.6" y="209" width="352.9" height="190" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="problem-3-panel" x="840.5" y="209" width="352.9" height="190" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="solution-1-panel" x="86.7" y="439" width="352.9" height="190" rx="16" fill="#16A647" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="solution-2-panel" x="463.6" y="439" width="352.9" height="190" rx="16" fill="#16A647" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="solution-3-panel" x="840.5" y="439" width="352.9" height="190" rx="16" fill="#16A647" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="86.7" y="93.5" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" letter-spacing="2.6" fill="#16A647">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="87 108 1107 55">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="86.7" y="151.2"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="45.3" letter-spacing="-0.9" fill="#1F1F1F">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="stack-1">
+    <circle cx="263.2" cy="253" r="18" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="263.2" cy="253.5" r="7.6" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="263.2" y="303" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" fill="#16A647">{{PROBLEM_1_TITLE}}</text>
+    <text x="263.2" y="333" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#4A4A4A">{{PROBLEM_1_BODY}}</text>
+    <text x="263.2" y="427" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">»</text>
+    <circle cx="263.2" cy="481.5" r="12.6" fill="none" stroke="#FFFFFF" stroke-width="2.1"/>
+    <text x="263.2" y="532" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#FFFFFF">{{SOLUTION_1_TITLE}}</text>
+    <text x="263.2" y="563" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#FFFFFF">{{SOLUTION_1_BODY}}</text>
+  </g>
+
+  <g id="stack-2">
+    <circle cx="640" cy="253" r="18" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="640.0" cy="253.5" r="7.6" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="640" y="303" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" fill="#16A647">{{PROBLEM_2_TITLE}}</text>
+    <text x="640" y="333" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#4A4A4A">{{PROBLEM_2_BODY}}</text>
+    <text x="640" y="427" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">»</text>
+    <circle cx="640.0" cy="481.5" r="12.6" fill="none" stroke="#FFFFFF" stroke-width="2.1"/>
+    <text x="640" y="532" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#FFFFFF">{{SOLUTION_2_TITLE}}</text>
+    <text x="640" y="563" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#FFFFFF">{{SOLUTION_2_BODY}}</text>
+  </g>
+
+  <g id="stack-3">
+    <circle cx="1017" cy="253" r="18" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="1017.0" cy="253.5" r="7.6" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="1017" y="303" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" fill="#16A647">{{PROBLEM_3_TITLE}}</text>
+    <text x="1017" y="333" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#4A4A4A">{{PROBLEM_3_BODY}}</text>
+    <text x="1017" y="427" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">»</text>
+    <circle cx="1017.0" cy="481.5" r="12.6" fill="none" stroke="#FFFFFF" stroke-width="2.1"/>
+    <text x="1017" y="532" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" fill="#FFFFFF">{{SOLUTION_3_TITLE}}</text>
+    <text x="1017" y="563" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#FFFFFF">{{SOLUTION_3_BODY}}</text>
+  </g>
+</svg>

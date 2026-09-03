@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="03e_content_persona" data-pptx-layout-name="Content Persona Pair">
+  <!-- Larana - 03e Two persona cards: line-art green portrait, filled capsule name, caption, two labelled bullet groups, green summary bar -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="persona-1-panel" x="86.7" y="196" width="537.3" height="300" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="persona-2-panel" x="656" y="196" width="537.3" height="300" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="summary-panel" x="86.7" y="529" width="1106.6" height="110" rx="16" fill="#16A647" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="86.7" y="87" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" letter-spacing="2.6" fill="#16A647">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="87 102 1107 55">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="86.7" y="144.6"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="45.3" letter-spacing="-0.9" fill="#1F1F1F">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="persona-1">
+    <g transform="translate(147.1 228) scale(0.65)" fill="none" stroke="#16A647" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="100" cy="100" r="88" fill="#FFFFFF"/>
+      <path d="M 50 95 C 50 60, 75 38, 100 38 C 130 38, 152 60, 152 95"/>
+      <path d="M 56 92 C 60 70, 78 55, 100 55 C 122 55, 140 70, 144 92"/>
+      <path d="M 65 105 C 65 130, 80 152, 100 152 C 120 152, 135 130, 135 105"/>
+      <path d="M 82 110 C 82 112, 84 114, 86 114 C 88 114, 90 112, 90 110"/>
+      <path d="M 110 110 C 110 112, 112 114, 114 114 C 116 114, 118 112, 118 110"/>
+      <path d="M 88 132 C 92 138, 108 138, 112 132"/>
+      <path d="M 88 152 L 88 170 M 112 152 L 112 170"/>
+      <path d="M 60 200 C 60 180, 78 168, 100 168 C 122 168, 140 180, 140 200"/>
+    </g>
+    <rect x="132.1" y="381" width="160" height="42.6" rx="21.3" fill="#16A647"/>
+    <text x="212.1" y="409" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{P1_NAME}}</text>
+    <text x="212.1" y="444" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#4A4A4A">{{PERSONA_1_CAPTION}}</text>
+    <text x="329.4" y="243" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#16A647">{{PERSONA_1_GROUP_1}}</text>
+    <text x="329.4" y="265" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_1_POINT_1}}</text>
+    <text x="329.4" y="287" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_1_POINT_2}}</text>
+    <text x="329.4" y="309" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_1_POINT_3}}</text>
+    <text x="329.4" y="345" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#16A647">{{PERSONA_1_GROUP_2}}</text>
+    <text x="329.4" y="367" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_1_VALUE_1}}</text>
+    <text x="329.4" y="389" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_1_VALUE_2}}</text>
+  </g>
+
+  <g id="persona-2">
+    <g transform="translate(716.4 228) scale(0.65)" fill="none" stroke="#16A647" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="100" cy="100" r="88" fill="#FFFFFF"/>
+      <circle cx="100" cy="38" r="14"/>
+      <path d="M 55 100 C 55 65, 78 45, 100 45 C 122 45, 145 65, 145 100"/>
+      <path d="M 65 105 C 65 130, 80 152, 100 152 C 120 152, 135 130, 135 105"/>
+      <path d="M 82 110 C 82 112, 84 114, 86 114 C 88 114, 90 112, 90 110"/>
+      <path d="M 110 110 C 110 112, 112 114, 114 114 C 116 114, 118 112, 118 110"/>
+      <path d="M 88 132 C 92 138, 108 138, 112 132"/>
+      <path d="M 88 152 L 88 170 M 112 152 L 112 170"/>
+      <path d="M 68 200 L 78 175 L 122 175 L 132 200"/>
+    </g>
+    <rect x="701.4" y="381" width="160" height="42.6" rx="21.3" fill="#16A647"/>
+    <text x="781.4" y="409" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{P2_NAME}}</text>
+    <text x="781.4" y="444" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="13.3" fill="#4A4A4A">{{PERSONA_2_CAPTION}}</text>
+    <text x="898.7" y="243" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#16A647">{{PERSONA_2_GROUP_1}}</text>
+    <text x="898.7" y="265" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_2_POINT_1}}</text>
+    <text x="898.7" y="287" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_2_POINT_2}}</text>
+    <text x="898.7" y="309" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_2_POINT_3}}</text>
+    <text x="898.7" y="345" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#16A647">{{PERSONA_2_GROUP_2}}</text>
+    <text x="898.7" y="367" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_2_VALUE_1}}</text>
+    <text x="898.7" y="389" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14" fill="#1F1F1F">{{PERSONA_2_VALUE_2}}</text>
+  </g>
+
+  <g id="summary-bar">
+    <text x="640" y="578" text-anchor="middle" font-family="'Pretendard SemiBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="20" fill="#FFFFFF">{{KEY_MESSAGE}}</text>
+  </g>
+</svg>

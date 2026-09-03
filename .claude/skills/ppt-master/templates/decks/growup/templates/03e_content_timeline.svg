@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03e_content_timeline" data-pptx-layout-name="Content Progression">
+  <!-- GrowUp - 03e Seven-stage progression: baseline-aligned discs that grow left to right, chevron separators -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="timeline-ground" width="1280" height="720" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="96" y="78.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="86 92 1104 86">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="96" y="145.4"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="40" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="stage-1">
+    <circle cx="158.1" cy="420" r="55.2" fill="#EEEAF7"/>
+    <circle cx="158.1" cy="420.7" r="16.0" fill="none" stroke="#5A49C9" stroke-width="2.7"/>
+    <text x="158.1" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S1_NAME}}</text>
+    <text x="158.1" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S1_CODE}}</text>
+    <text x="158.1" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S1_VAL}}</text>
+  </g>
+  <text x="237.4" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-2">
+    <circle cx="318.7" cy="416.6" r="58.6" fill="#E2DCF7"/>
+    <circle cx="318.7" cy="417.0" r="16.8" fill="none" stroke="#5A49C9" stroke-width="2.8"/>
+    <text x="318.7" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S2_NAME}}</text>
+    <text x="318.7" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S2_CODE}}</text>
+    <text x="318.7" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S2_VAL}}</text>
+  </g>
+  <text x="398.1" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-3">
+    <circle cx="479.4" cy="413.3" r="61.9" fill="#D5CDF6"/>
+    <circle cx="479.4" cy="413.3" r="17.6" fill="none" stroke="#5A49C9" stroke-width="2.9"/>
+    <text x="479.4" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S3_NAME}}</text>
+    <text x="479.4" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S3_CODE}}</text>
+    <text x="479.4" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S3_VAL}}</text>
+  </g>
+  <text x="558.7" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-4">
+    <circle cx="640" cy="409.9" r="65.3" fill="#C7BCF6"/>
+    <circle cx="640.0" cy="409.6" r="18.5" fill="none" stroke="#FFFFFF" stroke-width="3.1"/>
+    <text x="640" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S4_NAME}}</text>
+    <text x="640" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S4_CODE}}</text>
+    <text x="640" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S4_VAL}}</text>
+  </g>
+  <text x="719.3" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-5">
+    <circle cx="800.6" cy="406.6" r="68.6" fill="#B7A9FF"/>
+    <circle cx="800.6" cy="405.9" r="19.3" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="800.6" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S5_NAME}}</text>
+    <text x="800.6" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S5_CODE}}</text>
+    <text x="800.6" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S5_VAL}}</text>
+  </g>
+  <text x="880" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-6">
+    <circle cx="961.3" cy="403.2" r="72" fill="#9A8CFF"/>
+    <circle cx="961.3" cy="402.2" r="20.2" fill="none" stroke="#FFFFFF" stroke-width="3.4"/>
+    <text x="961.3" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S6_NAME}}</text>
+    <text x="961.3" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S6_CODE}}</text>
+    <text x="961.3" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S6_VAL}}</text>
+  </g>
+  <text x="1040.6" y="420.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="26.7" fill="#8A8696">›</text>
+
+  <g id="stage-7">
+    <circle cx="1121.9" cy="399.8" r="75.4" fill="#7C6BFF"/>
+    <circle cx="1121.9" cy="398.5" r="21.0" fill="none" stroke="#FFFFFF" stroke-width="3.5"/>
+    <text x="1121.9" y="501.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#1F1B2E">{{S7_NAME}}</text>
+    <text x="1121.9" y="533.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12.7" fill="#8A8696">{{S7_CODE}}</text>
+    <text x="1121.9" y="563.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" font-weight="bold" fill="#7C6BFF">{{S7_VAL}}</text>
+  </g>
+
+  <g id="closing-note">
+    <text x="640" y="652.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" fill="#8A8696">{{SUMMARY_NOTE}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

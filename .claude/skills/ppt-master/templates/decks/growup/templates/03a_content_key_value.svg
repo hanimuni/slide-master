@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03a_content_key_value" data-pptx-layout-name="Content Key Value">
+  <!-- GrowUp - 03a Overview: left phone mockup, right pill-key / value table (5 rows) -->
+
+  <defs>
+    <filter id="shadow-purple" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="6.7" stdDeviation="10.7" flood-color="#9B86FF" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="kv-ground" width="1280" height="720" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="kv-disc" cx="105.6" cy="432" r="316.8" fill="#EEEAF7" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="phone-mockup">
+    <rect x="129.6" y="120" width="238.1" height="496.3" rx="21.1" fill="#241C45" filter="url(#shadow-purple)"/>
+    <image href="../images/phone_screen.png" xlink:href="../images/phone_screen.png" x="137.8" y="128.2" width="221.8" height="480" preserveAspectRatio="none"/>
+  </g>
+
+  <g id="page-eyebrow">
+    <text x="547.2" y="129.4" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="538 144 672 67">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="547.2" y="187.6"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="40" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="kv-row-1">
+    <rect x="537.6" y="249.6" width="177.6" height="53.8" rx="26.9" fill="#7C6BFF"/>
+    <text x="626.4" y="281" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{KEY_1}}</text>
+    <text x="744" y="281.3" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="19.3" fill="#4A4658">{{VALUE_1}}</text>
+  </g>
+  <g id="kv-row-2">
+    <rect x="537.6" y="324.5" width="177.6" height="53.8" rx="26.9" fill="#7C6BFF"/>
+    <text x="626.4" y="355.9" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{KEY_2}}</text>
+    <text x="744" y="356.2" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="19.3" fill="#4A4658">{{VALUE_2}}</text>
+  </g>
+  <g id="kv-row-3">
+    <rect x="537.6" y="399.4" width="177.6" height="53.8" rx="26.9" fill="#7C6BFF"/>
+    <text x="626.4" y="430.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{KEY_3}}</text>
+    <text x="744" y="431.1" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="19.3" fill="#4A4658">{{VALUE_3}}</text>
+  </g>
+  <g id="kv-row-4">
+    <rect x="537.6" y="474.2" width="177.6" height="53.8" rx="26.9" fill="#7C6BFF"/>
+    <text x="626.4" y="505.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{KEY_4}}</text>
+    <text x="744" y="506" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="19.3" fill="#4A4658">{{VALUE_4}}</text>
+  </g>
+  <g id="kv-row-5">
+    <rect x="537.6" y="549.1" width="177.6" height="53.8" rx="26.9" fill="#7C6BFF"/>
+    <text x="626.4" y="580.5" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{KEY_5}}</text>
+    <text x="744" y="580.8" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="19.3" fill="#4A4658">{{VALUE_5}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

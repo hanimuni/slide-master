@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
+  <!-- GrowUp - 01 Cover (warm ground, corner-clipped lilac disc, character key visual) -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="cover-ground" width="1280" height="720" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="cover-disc" cx="1195.2" cy="206.4" r="360" fill="#EEEAF7" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="cover-visual">
+    <image href="../images/mascot_hero.png" xlink:href="../images/mascot_hero.png" x="820.8" y="129.6" width="384" height="384" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <g id="date-slot" data-pptx-placeholder="date" data-pptx-placeholder-bounds="992 43 250 29">
+    <text id="date-carrier" data-pptx-placeholder-carrier="true" x="1232" y="61.6" text-anchor="end"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#8A8696">{{DATE}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="91 226 730 192">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="100.8" y="338.9"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="66.7" font-weight="bold" fill="#1F1B2E">{{TITLE}}</text>
+  </g>
+
+  <g id="subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="2" data-pptx-placeholder-bounds="96 437 710 48">
+    <text id="subtitle-carrier" data-pptx-placeholder-carrier="true" x="105.6" y="466.8"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#4A4658">{{SUBTITLE}}</text>
+  </g>
+
+  <g id="brand-foot">
+    <circle cx="112.3" cy="635.5" r="16.3" fill="#7C6BFF"/>
+    <text x="144" y="642.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20" font-weight="bold" fill="#7C6BFF">{{BRAND_MARK}}</text>
+    <text x="348" y="641.8" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="15.3" fill="#8A8696">{{TAGLINE}}</text>
+  </g>
+</svg>

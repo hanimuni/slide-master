@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="04_ending" data-pptx-layout-name="Ending">
+  <!-- GrowUp - 04 Ending: warm ground, tall lilac oval, character key visual, outlined value chips -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="ending-ground" width="1280" height="720" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <ellipse id="ending-oval" cx="1147.2" cy="331.2" rx="360" ry="456" fill="#EEEAF7" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="ending-visual">
+    <image href="../images/mascot_closing.png" xlink:href="../images/mascot_closing.png" x="820.8" y="148.8" width="393.6" height="393.6" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <g id="page-eyebrow">
+    <text x="100.8" y="191.8" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="91 216 710 173">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="100.8" y="283"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="58.7" font-weight="bold" fill="#1F1B2E">{{THANK_YOU}}</text>
+  </g>
+
+  <g id="body-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2" data-pptx-placeholder-bounds="96 437 672 86">
+    <text id="body-carrier" data-pptx-placeholder-carrier="true" x="105.6" y="468.6"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="20.7" fill="#4A4658">{{ENDING_SUBTITLE}}</text>
+  </g>
+
+  <g id="value-chips">
+    <rect x="96" y="542.4" width="128.6" height="48" rx="24" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="1.7"/>
+    <text x="160.3" y="572.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#5A49C9">{{CHIP_1}}</text>
+    <rect x="248.6" y="542.4" width="128.6" height="48" rx="24" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="1.7"/>
+    <text x="312.9" y="572.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#5A49C9">{{CHIP_2}}</text>
+    <rect x="401.3" y="542.4" width="128.6" height="48" rx="24" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="1.7"/>
+    <text x="465.6" y="572.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#5A49C9">{{CHIP_3}}</text>
+    <rect x="553.9" y="542.4" width="128.6" height="48" rx="24" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="1.7"/>
+    <text x="618.2" y="572.7" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="17.3" font-weight="bold" fill="#5A49C9">{{CHIP_4}}</text>
+  </g>
+</svg>

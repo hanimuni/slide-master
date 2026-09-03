@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03d_content_five_topic" data-pptx-layout-name="Content Five Topic">
+  <!-- GrowUp - 03d Five white topic cards on warm ground, purple-tint icon discs, closing caption -->
+
+  <defs>
+    <filter id="shadow-card" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6.7" flood-color="#C9BEEA" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="topic-ground" width="1280" height="720" fill="#FCEFE6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-1" x="86.4" y="225.6" width="196.9" height="336" rx="15.4" fill="#FFFFFF" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-2" x="314" y="225.6" width="196.9" height="336" rx="15.4" fill="#FFFFFF" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-3" x="541.6" y="225.6" width="196.9" height="336" rx="15.4" fill="#FFFFFF" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-4" x="769.1" y="225.6" width="196.9" height="336" rx="15.4" fill="#FFFFFF" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-5" x="996.7" y="225.6" width="196.9" height="336" rx="15.4" fill="#FFFFFF" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="96" y="78.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="86 92 1104 86">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="96" y="145.4"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="40" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="topic-1">
+    <circle cx="184.8" cy="328.3" r="59.5" fill="#7C6BFF"/>
+    <circle cx="184.8" cy="323.8" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="184.8" y="442.8" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" font-weight="bold" fill="#1F1B2E">{{TOPIC_1}}</text>
+    <text x="184.8" y="510.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#4A4658">{{TOPIC_1_CAP}}</text>
+  </g>
+
+  <g id="topic-2">
+    <circle cx="412.4" cy="328.3" r="59.5" fill="#8F80FF"/>
+    <circle cx="412.4" cy="323.8" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="412.4" y="442.8" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" font-weight="bold" fill="#1F1B2E">{{TOPIC_2}}</text>
+    <text x="412.4" y="510.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#4A4658">{{TOPIC_2_CAP}}</text>
+  </g>
+
+  <g id="topic-3">
+    <circle cx="640" cy="328.3" r="59.5" fill="#A395FF"/>
+    <circle cx="640.0" cy="323.8" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="640" y="442.8" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" font-weight="bold" fill="#1F1B2E">{{TOPIC_3}}</text>
+    <text x="640" y="510.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#4A4658">{{TOPIC_3_CAP}}</text>
+  </g>
+
+  <g id="topic-4">
+    <circle cx="867.6" cy="328.3" r="59.5" fill="#B7AAFF"/>
+    <circle cx="867.6" cy="323.8" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="867.6" y="442.8" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" font-weight="bold" fill="#1F1B2E">{{TOPIC_4}}</text>
+    <text x="867.6" y="510.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#4A4658">{{TOPIC_4_CAP}}</text>
+  </g>
+
+  <g id="topic-5">
+    <circle cx="1095.1" cy="328.3" r="59.5" fill="#CBC1FF"/>
+    <circle cx="1095.1" cy="323.8" r="19.0" fill="none" stroke="#FFFFFF" stroke-width="3.2"/>
+    <text x="1095.1" y="442.8" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="24" font-weight="bold" fill="#1F1B2E">{{TOPIC_5}}</text>
+    <text x="1095.1" y="510.6" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#4A4658">{{TOPIC_5_CAP}}</text>
+  </g>
+
+  <g id="closing-note">
+    <text x="640" y="619.1" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" fill="#8A8696">{{SUMMARY_NOTE}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

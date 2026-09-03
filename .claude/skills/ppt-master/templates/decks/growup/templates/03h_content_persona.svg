@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="growup-master" data-pptx-master-name="GrowUp" data-pptx-layout="03h_content_persona" data-pptx-layout-name="Content Persona Pair">
+  <!-- GrowUp - 03h Two persona cards (outlined avatar disc + pill label + bullets) over a full-width purple message bar -->
+
+  <defs>
+    <filter id="shadow-card" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6.7" flood-color="#C9BEEA" flood-opacity="0.22"/>
+    </filter>
+    <filter id="shadow-purple" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="6.7" stdDeviation="10.7" flood-color="#9B86FF" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="panel-1" x="86.4" y="206.4" width="524.8" height="321.6" rx="17.3" fill="#FCEFE6" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-2" x="668.8" y="206.4" width="524.8" height="321.6" rx="17.3" fill="#FCEFE6" filter="url(#shadow-card)" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="panel-3" x="86.4" y="561.6" width="1107.2" height="91.2" rx="15.4" fill="#7C6BFF" filter="url(#shadow-purple)" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="96" y="78.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" font-weight="bold" letter-spacing="4" fill="#7C6BFF">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="86 92 1104 86">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="96" y="145.4"
+          font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="40" font-weight="bold" fill="#1F1B2E">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="persona-1">
+    <circle cx="182.4" cy="307.2" r="57.6" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="2.7"/>
+    <circle cx="182.4" cy="307.2" r="20.2" fill="none" stroke="#1F1B2E" stroke-width="3.4"/>
+    <rect x="264" y="254.4" width="240" height="48" rx="24" fill="#7C6BFF"/>
+    <text x="384" y="284.4" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#FFFFFF">{{PERSONA_1_NAME}}</text>
+    <text x="273.6" y="333.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#8A8696">{{PERSONA_1_CAPTION}}</text>
+    <text x="139.2" y="394.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_1_POINT_1}}</text>
+    <text x="139.2" y="420.6" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_1_POINT_2}}</text>
+    <text x="139.2" y="446.7" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_1_POINT_3}}</text>
+  </g>
+
+  <g id="persona-2">
+    <circle cx="764.8" cy="307.2" r="57.6" fill="#FFFFFF" stroke="#7C6BFF" stroke-width="2.7"/>
+    <circle cx="764.8" cy="307.2" r="20.2" fill="none" stroke="#1F1B2E" stroke-width="3.4"/>
+    <rect x="846.4" y="254.4" width="240" height="48" rx="24" fill="#7C6BFF"/>
+    <text x="966.4" y="284.4" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18.7" font-weight="bold" fill="#FFFFFF">{{PERSONA_2_NAME}}</text>
+    <text x="856" y="333.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="16.7" fill="#8A8696">{{PERSONA_2_CAPTION}}</text>
+    <text x="721.6" y="394.5" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_2_POINT_1}}</text>
+    <text x="721.6" y="420.6" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_2_POINT_2}}</text>
+    <text x="721.6" y="446.7" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="18" fill="#4A4658">{{PERSONA_2_POINT_3}}</text>
+  </g>
+
+  <g id="message-bar">
+    <text x="640" y="614.9" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="22.7" font-weight="bold" fill="#FFFFFF">{{KEY_MESSAGE}}</text>
+  </g>
+
+  <g id="page-foot">
+    <text x="1232" y="689.4" text-anchor="end" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="12" fill="#8A8696">{{PAGE_NUM}}</text>
+  </g>
+</svg>

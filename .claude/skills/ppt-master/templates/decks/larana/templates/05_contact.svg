@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="05_contact" data-pptx-layout-name="Contact Dark">
+  <!-- Larana - 05 Contact: dark ground, four green ALLCAPS labels over white values, green 3-dot mark bottom right -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="contact-ground" width="1280" height="720" fill="#2A2A2A" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="contact-1">
+    <text x="93.3" y="349.9" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" letter-spacing="1.3" fill="#16A647">{{LABEL_1}}</text>
+    <text x="93.3" y="382" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#FFFFFF">{{VALUE_1}}</text>
+  </g>
+  <g id="contact-2">
+    <text x="93.3" y="433.9" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" letter-spacing="1.3" fill="#16A647">{{LABEL_2}}</text>
+    <text x="93.3" y="466" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#FFFFFF">{{VALUE_2}}</text>
+  </g>
+  <g id="contact-3">
+    <text x="93.3" y="517.9" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" letter-spacing="1.3" fill="#16A647">{{LABEL_3}}</text>
+    <text x="93.3" y="550" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#FFFFFF">{{VALUE_3}}</text>
+  </g>
+  <g id="contact-4">
+    <text x="93.3" y="601.9" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" letter-spacing="1.3" fill="#16A647">{{LABEL_4}}</text>
+    <text x="93.3" y="634" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#FFFFFF">{{VALUE_4}}</text>
+  </g>
+
+  <g id="brand-mark">
+    <circle cx="1060.2" cy="576.2" r="27.5" fill="#16A647"/>
+    <circle cx="1100" cy="576.2" r="27.5" fill="#16A647"/>
+    <circle cx="1139.7" cy="576.2" r="27.5" fill="#16A647"/>
+  </g>
+
+  <g id="page-foot">
+    <text x="1173.3" y="636" text-anchor="end" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="16" fill="#FFFFFF">{{TAGLINE}}</text>
+  </g>
+</svg>

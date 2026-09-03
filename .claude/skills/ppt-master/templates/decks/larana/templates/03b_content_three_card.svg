@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-master="larana-master" data-pptx-master-name="Larana" data-pptx-layout="03b_content_three_card" data-pptx-layout-name="Content Three Card">
+  <!-- Larana - 03b Three green-stroke white cards: outlined icon disc, green heading, two-line body, image band -->
+
+  <rect id="master-bg" width="1280" height="720" fill="#FFFFFF" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="card-1-panel" x="86.7" y="216" width="352.9" height="400" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="card-2-panel" x="463.6" y="216" width="352.9" height="400" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="card-3-panel" x="840.5" y="216" width="352.9" height="400" rx="16" fill="#FFFFFF" stroke="#16A647" stroke-width="1.3" data-pptx-layer="layout" data-pptx-editable="false"/>
+
+  <g id="page-eyebrow">
+    <text x="86.7" y="93.5" font-family="'Pretendard ExtraBold', Pretendard, 'Malgun Gothic', sans-serif" font-size="21.3" letter-spacing="2.6" fill="#16A647">{{EYEBROW}}</text>
+  </g>
+
+  <g id="title-slot" data-pptx-placeholder="title" data-pptx-placeholder-bounds="87 108 1107 55">
+    <text id="title-carrier" data-pptx-placeholder-carrier="true" x="86.7" y="151.2"
+          font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="45.3" letter-spacing="-0.9" fill="#1F1F1F">{{PAGE_TITLE}}</text>
+  </g>
+
+  <g id="card-1">
+    <circle cx="263.2" cy="268" r="20" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="263.2" cy="268.5" r="8.4" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="263.2" y="323" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">{{CARD_1_TITLE}}</text>
+    <text x="263.2" y="355" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14.7" fill="#4A4A4A">{{CARD_1_BODY}}</text>
+    <rect x="110.7" y="395.7" width="304.9" height="196.3" rx="9.3" fill="#E8F5EC"/>
+    <text x="263.2" y="498" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="13" fill="#9A9A9A">{{CARD_1_IMAGE}}</text>
+  </g>
+
+  <g id="card-2">
+    <circle cx="640" cy="268" r="20" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="640.0" cy="268.5" r="8.4" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="640" y="323" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">{{CARD_2_TITLE}}</text>
+    <text x="640" y="355" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14.7" fill="#4A4A4A">{{CARD_2_BODY}}</text>
+    <rect x="487.6" y="395.7" width="304.9" height="196.3" rx="9.3" fill="#E8F5EC"/>
+    <text x="640" y="498" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="13" fill="#9A9A9A">{{CARD_2_IMAGE}}</text>
+  </g>
+
+  <g id="card-3">
+    <circle cx="1017" cy="268" r="20" fill="#FFFFFF" stroke="#16A647" stroke-width="1.7"/>
+    <circle cx="1017.0" cy="268.5" r="8.4" fill="none" stroke="#16A647" stroke-width="1.5"/>
+    <text x="1017" y="323" text-anchor="middle" font-family="'Pretendard Black', Pretendard, 'Malgun Gothic', sans-serif" font-size="24" fill="#16A647">{{CARD_3_TITLE}}</text>
+    <text x="1017" y="355" text-anchor="middle" font-family="'Pretendard Medium', Pretendard, 'Malgun Gothic', sans-serif" font-size="14.7" fill="#4A4A4A">{{CARD_3_BODY}}</text>
+    <rect x="864.5" y="395.7" width="304.9" height="196.3" rx="9.3" fill="#E8F5EC"/>
+    <text x="1017" y="498" text-anchor="middle" font-family="Pretendard, 'Malgun Gothic', sans-serif" font-size="13" fill="#9A9A9A">{{CARD_3_IMAGE}}</text>
+  </g>
+</svg>
