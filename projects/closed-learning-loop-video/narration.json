@@ -1,0 +1,23 @@
+{
+  "voice_note": "여성, 밝고 다정한 선생님 톤, 아이에게 설명하듯 또박또박. 모델 eleven_multilingual_v2.",
+  "scenes": [
+    { "id": "intro",   "est": 6.5, "text": "AI 비서한테 어제 다 설명했는데, 오늘 또 \"처음 뵙겠습니다!\" 한다면? 조금 답답하겠죠?" },
+    { "id": "two",     "est": 9.5, "text": "그래서 기억하는 방법이 두 가지 필요해요. 메모리는 나를 기억하는 수첩이고요, 학습 고리는 고친 이유를 기억하는 노트예요." },
+    { "id": "loop",    "est": 11,  "text": "고리는 이렇게 돌아요. 같이 일하고, 되돌아보고, 요령을 한 줄 적고, 다음에 다시 써요. 기록이 다음 일로 돌아오니까, 닫힌 고리라고 불러요." },
+    { "id": "bridge",  "est": 3.6, "text": "자, 이제 진짜 화면에서 여섯 단계로 따라 해 볼까요?" },
+    { "id": "step1",   "est": 6.5, "text": "첫 번째! 깃허브에서 헤르메스 에이전트를 검색해요. 이 아이디어가 처음 태어난 곳이에요." },
+    { "id": "step2",   "est": 7,   "text": "두 번째. 설명서에서 클로즈드 러닝 루프라는 말을 찾아요. 설치는 안 해요. 원리만 쏙 빌려 와요." },
+    { "id": "step3",   "est": 6.5, "text": "세 번째. 사이트에 있는 프롬프트를 복사해서 챗GPT에 붙여 넣어요. 내 환경에 맞게 만들어 줘!" },
+    { "id": "step4",   "est": 7,   "text": "네 번째. AI가 일하는 순서표, 스킬 문서를 만들어 줘요. 이름만 말고 내용까지 꼭 확인해요." },
+    { "id": "step5",   "est": 7,   "text": "다섯 번째. 스킬 목록에 클로즈드 러닝 루프가 보이는지 확인하고, 원문도 직접 열어 봐요." },
+    { "id": "step6",   "est": 9,   "text": "마지막 여섯 번째! 슬래시 클로즈드 러닝 루프, 그리고 하고 싶은 일을 적어요. 지난 기록이 이번 결과에 들어갔는지 확인하면 끝!" },
+    { "id": "outro",   "est": 9,   "text": "기억하세요. 기록만 하면 절반이에요. 다음에 써서 확인해야 고리가 닫혀요. 어제 고친 걸, 오늘 또 고치지 않기!" }
+  ],
+  "music_prompt": "Light, playful, upbeat acoustic background music for a children's educational explainer video: ukulele, glockenspiel, soft claps and pizzicato strings, bright and curious, steady 110 BPM, no vocals, gentle so narration stays clear.",
+  "sfx": {
+    "whoosh": { "text": "quick soft chalkboard eraser swipe whoosh", "dur": 0.7 },
+    "pop":    { "text": "short bright playful pop with a tiny chalk tap", "dur": 0.5 },
+    "click":  { "text": "single crisp computer mouse click", "dur": 0.5 },
+    "ding":   { "text": "cheerful short success ding chime", "dur": 1.0 }
+  }
+}

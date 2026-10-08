@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>닫힌 학습 고리 칠판 영상</title>
+<style>
+  @font-face { font-family: 'Gaegu'; font-weight: 400; src: url(fonts/Gaegu-Regular.ttf); }
+  @font-face { font-family: 'Gaegu'; font-weight: 700; src: url(fonts/Gaegu-Bold.ttf); }
+  :root {
+    --chalk: #f6f3ea; --yellow: #ffe27a; --pink: #ff9db0; --blue: #98d4ff; --green: #b9f39c;
+    --board: #29453a; --wood: #8a5a2e; --wall: #efe6d4;
+  }
+  html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden;
+    transform-origin: 0 0; background: var(--wall); font-family: 'Gaegu', sans-serif; color: var(--chalk); }
+  #cam { position: absolute; inset: 0; }
+  #wall { position: absolute; inset: -20px;
+    background: radial-gradient(ellipse at 70% 40%, #f7f0e1 0%, var(--wall) 60%, #e2d6bf 100%); }
+  #wall::after { content: ''; position: absolute; inset: 0; opacity: .5;
+    background-image: repeating-linear-gradient(90deg, transparent 0 46px, rgba(150,120,80,.05) 46px 48px); }
+
+  #board { position: absolute; left: 0; top: 0; height: 1080px; width: 1920px; box-sizing: border-box;
+    border: 22px solid var(--wood); border-radius: 6px;
+    box-shadow: inset 0 0 0 4px #6d4522, inset 0 0 90px rgba(0,0,0,.45), 6px 0 24px rgba(0,0,0,.25);
+    background:
+      radial-gradient(ellipse 40% 30% at 25% 35%, rgba(255,255,255,.05), transparent 70%),
+      radial-gradient(ellipse 35% 25% at 72% 68%, rgba(255,255,255,.04), transparent 70%),
+      radial-gradient(ellipse at 50% 50%, #2f4f42 0%, var(--board) 70%, #203830 100%);
+    overflow: hidden; }
+  #board .noise { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .16; pointer-events: none; }
+  #tray { position: absolute; left: 0; bottom: 0; height: 22px; width: 100%; }
+  #tray i { position: absolute; bottom: 4px; height: 9px; border-radius: 3px; }
+
+  .scene { position: absolute; inset: 0; display: none; filter: url(#chalky); }
+  .scene.on { display: block; }
+  .a { position: absolute; }
+  .t { white-space: nowrap; line-height: 1.15; }
+  .h1 { font-size: 124px; font-weight: 700; }
+  .h2 { font-size: 92px; font-weight: 700; }
+  .b { font-size: 72px; font-weight: 700; }
+  .s { font-size: 58px; font-weight: 700; }
+  .xs { font-size: 48px; font-weight: 700; }
+  .y { color: var(--yellow); } .p { color: var(--pink); } .bl { color: var(--blue); } .g { color: var(--green); }
+  .c { text-align: center; transform: translateX(-50%); }
+  svg.d { position: absolute; overflow: visible; }
+  svg.d * { fill: none; stroke: var(--chalk); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+  svg.d .y { stroke: var(--yellow); } svg.d .p { stroke: var(--pink); } svg.d .bl { stroke: var(--blue); } svg.d .g { stroke: var(--green); }
+  svg.d text { stroke: none; fill: var(--chalk); font-family: 'Gaegu'; font-weight: 700; }
+  .dust { position: absolute; width: 0; height: 0; pointer-events: none; }
+  .dust i { position: absolute; width: 9px; height: 9px; margin: -4px; border-radius: 50%; background: var(--chalk); opacity: 0; }
+
+  .num { position: absolute; left: 50px; top: 52px; width: 130px; height: 130px; }
+  .num b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 100px; font-weight: 700; color: var(--yellow); }
+  .dots { position: absolute; left: 60px; bottom: 64px; display: flex; gap: 20px; }
+  .dots i { width: 30px; height: 30px; border: 5px solid var(--chalk); border-radius: 50%; opacity: .55; }
+  .dots i.on { background: var(--yellow); border-color: var(--yellow); opacity: 1; }
+  #eraser { position: absolute; top: 0; width: 84px; height: 190px; margin-left: -42px; display: none; z-index: 5;
+    border-radius: 10px; background: linear-gradient(90deg, #a06a38 0 55%, #5d5b58 55% 100%);
+    box-shadow: 0 0 60px 40px rgba(240,240,230,.18), 4px 6px 12px rgba(0,0,0,.35); }
+
+  #win { position: absolute; left: 852px; top: 112px; width: 1030px; height: 812px; border-radius: 14px; overflow: hidden;
+    background: #fff; box-shadow: 0 18px 50px rgba(60,40,10,.28), 0 0 0 1px rgba(0,0,0,.12); opacity: 0; }
+  #win .bar { position: relative; z-index: 2; height: 44px; background: #ece9e2; display: flex; align-items: center; gap: 9px; padding: 0 16px; border-bottom: 1px solid #d9d4c8; }
+  #win .bar i { width: 13px; height: 13px; border-radius: 50%; }
+  #win .url { margin-left: 18px; flex: 1; height: 26px; border-radius: 13px; background: #fff; color: #555; font: 17px/26px 'Gaegu'; padding: 0 14px; }
+  #view { position: relative; width: 1030px; height: 768px; overflow: hidden; }
+  #rec { display: block; width: 1030px; height: 768px; transform-origin: 0 0; }
+  #ring { position: absolute; width: 90px; height: 90px; margin: -45px; border-radius: 50%; border: 7px solid #ff8a1c; opacity: 0; }
+  #tag { position: absolute; left: 852px; top: 948px; font: 700 40px 'Gaegu'; color: #6b4b2a; opacity: 0; }
+  #tag span { background: #ffe27a; padding: 2px 16px; border-radius: 8px; box-shadow: 2px 3px 0 rgba(0,0,0,.12); }
+</style>
+</head>
+<body>
+<div id="stage"><div id="cam">
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <filter id="chalky" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" result="wob"/>
+        <feDisplacementMap in="SourceGraphic" in2="wob" scale="4" xChannelSelector="R" yChannelSelector="G" result="moved"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="grain"/>
+        <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.6 0 0 0 -0.1" result="mask"/>
+        <feComposite in="moved" in2="mask" operator="in"/>
+      </filter>
+      <filter id="noisef"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" seed="2"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0"/></filter>
+      <marker id="ah" viewBox="0 0 20 20" refX="10" refY="10" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 3 L12 10 L2 17" style="fill:none;stroke:#f6f3ea;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <div id="wall"></div>
+  <div id="win">
+    <div class="bar"><i style="background:#ff6b5f"></i><i style="background:#ffbe3d"></i><i style="background:#34c84a"></i>
+      <div class="url">ai-secretary-memory.vercel.app</div></div>
+    <div id="view"><img id="rec" alt=""><div id="ring"></div></div>
+  </div>
+  <div id="tag"><span>실제 화면 녹화</span></div>
+
+  <div id="board">
+    <svg class="noise"><rect width="100%" height="100%" filter="url(#noisef)"/></svg>
+    <div id="tray"><i style="left:120px;width:60px;background:#f6f3ea"></i><i style="left:200px;width:42px;background:#ffe27a"></i><i style="left:262px;width:50px;background:#ff9db0"></i></div>
+    <div id="eraser"></div>
+
+    <!-- 데이터 규칙: data-a = write(왼→오 써짐) | fade | pop | stamp(쾅 + 분필 가루 + 흔들림) | draw(선 그리기)
+         data-t = 장면 시작 기준 초(나레이션 예상 길이 기준으로 작성, 실제 음성 길이에 맞춰 비례 조정) -->
+
+    <section class="scene" id="intro" data-layout="full">
+      <div class="a t h1 c" style="left:960px;top:56px" data-a="write" data-t="0.15">AI 비서가 나를 잊는다면?</div>
+      <svg class="d" style="left:470px;top:420px" width="200" height="420" data-a="draw" data-t="0.6" data-d="0.8">
+        <circle cx="100" cy="60" r="50"/><path d="M78 52 v6 M122 52 v6 M82 84 q18 -12 36 0"/>
+        <path d="M100 110 v150 M100 150 l-60 60 M100 150 l60 60 M100 260 l-50 110 M100 260 l50 110"/>
+      </svg>
+      <svg class="d" style="left:1250px;top:420px" width="220" height="420" data-a="draw" data-t="0.9" data-d="0.8">
+        <rect class="bl" x="45" y="10" width="130" height="105" rx="16"/><path class="bl" d="M110 10 v-26"/><circle class="bl" cx="110" cy="-22" r="8"/>
+        <circle cx="85" cy="58" r="9"/><circle cx="135" cy="58" r="9"/><path d="M88 90 h44"/>
+        <rect class="bl" x="60" y="130" width="100" height="130" rx="12"/><path class="bl" d="M60 170 l-50 50 M160 170 l50 50 M85 260 v110 M135 260 v110"/>
+      </svg>
+      <div class="a t s c" style="left:570px;top:270px" data-a="pop" data-t="1.0">“어제 다 말했는데…”</div>
+      <div class="a t b bl c" style="left:1360px;top:250px" data-a="stamp" data-t="3.1">“처음 뵙겠습니다!”</div>
+      <svg class="d" style="left:1500px;top:430px" width="120" height="160" data-a="pop" data-t="3.9"><text x="10" y="140" style="font-size:170px;fill:#ffe27a">?</text></svg>
+      <div class="a t h2 p c" style="left:960px;top:880px" data-a="stamp" data-t="5.2">답답해요!</div>
+    </section>
+
+    <section class="scene" id="two" data-layout="full">
+      <div class="a t h2 c" style="left:960px;top:52px" data-a="write" data-t="0.3">기억하는 방법은 두 가지!</div>
+      <svg class="d" style="left:350px;top:220px" width="260" height="300" data-a="draw" data-t="2.8" data-d="0.7">
+        <rect class="y" x="30" y="20" width="200" height="260" rx="10"/>
+        <path d="M70 80 h120 M70 125 h120 M70 170 h120 M70 215 h80"/>
+        <path class="y" d="M30 50 h-16 M30 100 h-16 M30 150 h-16 M30 200 h-16 M30 250 h-16"/>
+      </svg>
+      <div class="a t h2 y c" style="left:480px;top:545px" data-a="stamp" data-t="3.0">메모리 = 수첩</div>
+      <div class="a t s c" style="left:480px;top:670px" data-a="write" data-t="4.0">‘나’를 기억해요</div>
+      <div class="a t xs c" style="left:480px;top:770px;opacity:.85" data-a="fade" data-t="4.6">“짧은 보고서가 좋아”</div>
+      <div class="a t h1 c" style="left:960px;top:400px" data-a="pop" data-t="5.6">+</div>
+      <svg class="d" style="left:1310px;top:220px" width="260" height="300" data-a="draw" data-t="5.9" data-d="0.8">
+        <path class="p" d="M215 150 A85 85 0 1 1 180 82" marker-end="url(#ah)"/>
+        <path d="M110 150 l20 22 l40 -50"/>
+      </svg>
+      <div class="a t h2 p c" style="left:1440px;top:545px" data-a="stamp" data-t="6.2">학습 고리 = 노트</div>
+      <div class="a t s c" style="left:1440px;top:670px" data-a="write" data-t="7.3">‘고친 이유’를 기억해요</div>
+      <div class="a t xs c" style="left:1440px;top:770px;opacity:.85" data-a="fade" data-t="8.2">“표 위에 요약 한 줄!”</div>
+    </section>
+
+    <section class="scene" id="loop" data-layout="full">
+      <div class="a t h2 c" style="left:960px;top:40px" data-a="write" data-t="0.2">고리는 이렇게 돌아요</div>
+      <svg class="d" style="left:0;top:0" width="1920" height="1080">
+        <path data-a="draw" data-t="2.3" data-d="0.6" d="M1010 285 A280 280 0 0 1 1232 510" marker-end="url(#ah)"/>
+        <path data-a="draw" data-t="3.5" data-d="0.6" d="M1232 650 A280 280 0 0 1 1010 875" marker-end="url(#ah)"/>
+        <path data-a="draw" data-t="4.8" data-d="0.6" d="M910 875 A280 280 0 0 1 688 650" marker-end="url(#ah)"/>
+        <path data-a="draw" data-t="6.1" data-d="0.6" d="M688 510 A280 280 0 0 1 910 285" marker-end="url(#ah)"/>
+      </svg>
+      <div class="a t b y c" style="left:960px;top:180px" data-a="stamp" data-t="1.9">① 같이 일해요</div>
+      <div class="a t b p" style="left:1265px;top:540px" data-a="stamp" data-t="3.1">② 되돌아봐요</div>
+      <div class="a t b bl c" style="left:960px;top:885px" data-a="stamp" data-t="4.4">③ 요령 한 줄</div>
+      <div class="a t b g" style="left:650px;top:540px;transform:translateX(-100%)" data-a="stamp" data-t="5.7">④ 다음에 또</div>
+      <div class="a t s c" style="left:960px;top:470px" data-a="write" data-t="7.0">기록이</div>
+      <div class="a t s c" style="left:960px;top:540px" data-a="write" data-t="7.4">돌아와요!</div>
+      <svg class="d" style="left:810px;top:625px" width="300" height="40" data-a="draw" data-t="8.6" data-d="0.4"><path class="y" d="M10 20 q70 -18 140 0 t140 0"/></svg>
+      <div class="a t s y c" style="left:960px;top:665px" data-a="stamp" data-t="9.1">= 닫힌 고리</div>
+    </section>
+
+    <section class="scene" id="bridge" data-layout="full">
+      <div class="a t h1 c" style="left:960px;top:200px" data-a="write" data-t="0.2">진짜 화면에서</div>
+      <div class="a t h1 y c" style="left:960px;top:360px" data-a="stamp" data-t="1.3">6단계 따라 하기!</div>
+      <svg class="d" style="left:470px;top:640px" width="980" height="160">
+        <g data-a="draw" data-t="1.9" data-d="0.2"><rect x="10" y="20" width="120" height="120" rx="16"/><text x="47" y="112" style="font-size:90px">1</text></g>
+        <g data-a="draw" data-t="2.05" data-d="0.2"><rect x="180" y="20" width="120" height="120" rx="16"/><text x="214" y="112" style="font-size:90px">2</text></g>
+        <g data-a="draw" data-t="2.2" data-d="0.2"><rect x="350" y="20" width="120" height="120" rx="16"/><text x="384" y="112" style="font-size:90px">3</text></g>
+        <g data-a="draw" data-t="2.35" data-d="0.2"><rect x="520" y="20" width="120" height="120" rx="16"/><text x="554" y="112" style="font-size:90px">4</text></g>
+        <g data-a="draw" data-t="2.5" data-d="0.2"><rect x="690" y="20" width="120" height="120" rx="16"/><text x="724" y="112" style="font-size:90px">5</text></g>
+        <g data-a="draw" data-t="2.65" data-d="0.2"><rect class="y" x="860" y="20" width="120" height="120" rx="16"/><text x="894" y="112" style="font-size:90px;fill:#ffe27a">6</text></g>
+      </svg>
+    </section>
+
+    <section class="scene" id="step1" data-layout="split" data-clip="step1">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">1</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">원래 집 찾기</div>
+      <div class="a t s" style="left:60px;top:250px" data-a="write" data-t="1.1">GitHub에서</div>
+      <div class="a t s" style="left:60px;top:325px" data-a="write" data-t="1.6">이 이름을 검색!</div>
+      <div class="a t s y" style="left:60px;top:430px" data-a="stamp" data-t="2.3">hermes-agent</div>
+      <svg class="d" style="left:470px;top:560px" width="220" height="220" data-a="draw" data-t="3.4" data-d="0.6"><circle cx="85" cy="85" r="62"/><path d="M130 130 l60 60"/></svg>
+      <div class="a t xs" style="left:60px;top:600px" data-a="fade" data-t="3.9">아이디어가</div>
+      <div class="a t xs g" style="left:60px;top:665px" data-a="fade" data-t="4.4">태어난 곳!</div>
+    </section>
+
+    <section class="scene" id="step2" data-layout="split" data-clip="step2">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">2</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">비밀 문구 찾기</div>
+      <div class="a t s" style="left:60px;top:250px" data-a="write" data-t="1.1">설명서에서</div>
+      <div class="a t s" style="left:60px;top:325px" data-a="write" data-t="1.6">이 말을 찾아요</div>
+      <div class="a t xs y" style="left:60px;top:430px" data-a="stamp" data-t="2.4">closed learning loop</div>
+      <svg class="d" style="left:500px;top:540px" width="180" height="240" data-a="draw" data-t="3.6" data-d="0.6"><path class="y" d="M90 20 a60 60 0 0 1 35 108 v30 h-70 v-30 a60 60 0 0 1 35 -108 z"/><path d="M60 185 h60 M68 210 h44"/></svg>
+      <div class="a t xs" style="left:60px;top:600px" data-a="fade" data-t="4.0">설치는 안 해요</div>
+      <div class="a t xs g" style="left:60px;top:665px" data-a="stamp" data-t="5.2">원리만 쏙!</div>
+    </section>
+
+    <section class="scene" id="step3" data-layout="split" data-clip="step3">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">3</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">AI에게 부탁</div>
+      <div class="a t s" style="left:60px;top:250px" data-a="write" data-t="1.1">프롬프트 복사 →</div>
+      <div class="a t s" style="left:60px;top:325px" data-a="write" data-t="1.9">ChatGPT에 붙여 넣기</div>
+      <svg class="d" style="left:50px;top:450px" width="700" height="230" data-a="draw" data-t="3.0" data-d="0.6"><path class="bl" d="M20 20 h640 a20 20 0 0 1 20 20 v110 a20 20 0 0 1 -20 20 h-520 l-50 45 v-45 h-50 a20 20 0 0 1 -20 -20 v-110 a20 20 0 0 1 20 -20 z"/></svg>
+      <div class="a t s bl" style="left:90px;top:505px" data-a="stamp" data-t="4.6">“내게 맞게 만들어 줘!”</div>
+    </section>
+
+    <section class="scene" id="step4" data-layout="split" data-clip="step4">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">4</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">순서표 생성</div>
+      <div class="a t s" style="left:60px;top:250px" data-a="write" data-t="1.1">AI가 일하는 순서</div>
+      <div class="a t s y" style="left:60px;top:340px" data-a="stamp" data-t="2.4">SKILL.md</div>
+      <svg class="d" style="left:500px;top:520px" width="190" height="240" data-a="draw" data-t="3.0" data-d="0.6"><path d="M20 10 h110 l40 40 v170 h-150 z M130 10 v40 h40"/><path class="y" d="M50 90 h90 M50 130 h90 M50 170 h60"/></svg>
+      <div class="a t xs" style="left:60px;top:560px" data-a="fade" data-t="4.2">이름만 말고</div>
+      <div class="a t xs g" style="left:60px;top:625px" data-a="stamp" data-t="5.2">내용까지 확인!</div>
+    </section>
+
+    <section class="scene" id="step5" data-layout="split" data-clip="step5">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">5</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">잘 됐나 확인</div>
+      <div class="a t s" style="left:60px;top:250px" data-a="write" data-t="1.1">목록에 보이나요?</div>
+      <div class="a t xs y" style="left:60px;top:350px" data-a="stamp" data-t="2.2">Closed Learning Loop</div>
+      <svg class="d" style="left:500px;top:520px" width="190" height="190" data-a="draw" data-t="3.3" data-d="0.5"><circle class="g" cx="95" cy="95" r="78"/><path class="g" d="M52 97 l30 32 l58 -66"/></svg>
+      <div class="a t xs" style="left:60px;top:560px" data-a="fade" data-t="4.6">원문도 열어서</div>
+      <div class="a t xs g" style="left:60px;top:625px" data-a="fade" data-t="5.4">직접 읽어 봐요</div>
+    </section>
+
+    <section class="scene" id="step6" data-layout="split" data-clip="step6">
+      <div class="num"><svg class="d" width="130" height="130" data-a="draw" data-t="0.3" data-d="0.4"><circle class="y" cx="65" cy="65" r="58"/></svg><b data-a="stamp" data-t="0.25">6</b></div>
+      <div class="a t h2" style="left:205px;top:62px" data-a="write" data-t="0.6">불러서 쓰기</div>
+      <div class="a t xs y" style="left:60px;top:250px" data-a="stamp" data-t="1.6">/closed learning loop</div>
+      <div class="a t s" style="left:60px;top:320px" data-a="write" data-t="3.2">+ 하고 싶은 일</div>
+      <div class="a t xs" style="left:60px;top:470px" data-a="fade" data-t="4.6">지난 기록</div>
+      <svg class="d" style="left:290px;top:465px" width="140" height="60" data-a="draw" data-t="5.0" data-d="0.4"><path d="M10 30 h110" marker-end="url(#ah)"/></svg>
+      <div class="a t xs g" style="left:450px;top:470px" data-a="fade" data-t="5.3">이번 결과</div>
+      <div class="a t s p" style="left:60px;top:600px" data-a="stamp" data-t="7.6">확인하면 끝!</div>
+    </section>
+
+    <section class="scene" id="outro" data-layout="full">
+      <div class="a t h2 c" style="left:960px;top:60px" data-a="write" data-t="0.3">기억하세요!</div>
+      <div class="a t h1 c" style="left:960px;top:230px" data-a="write" data-t="1.1">“기록했다”</div>
+      <svg class="d" style="left:640px;top:250px" width="640" height="90" data-a="draw" data-t="2.4" data-d="0.25"><path class="p" d="M10 60 q300 -26 620 -8"/></svg>
+      <div class="a t h1 y c" style="left:960px;top:440px" data-a="write" data-t="3.4">“써서 확인했다”</div>
+      <svg class="d" style="left:470px;top:420px" width="980" height="200" data-a="draw" data-t="5.0" data-d="0.5"><ellipse class="y" cx="490" cy="100" rx="480" ry="92"/></svg>
+      <div class="a t b c" style="left:960px;top:720px" data-a="stamp" data-t="6.6">어제 고친 걸 또 고치지 않기!</div>
+      <div class="a t xs c" style="left:960px;top:930px;opacity:.75;font-weight:400" data-a="fade" data-t="7.8">출처 · ai-secretary-memory.vercel.app</div>
+    </section>
+  </div>
+</div></div>
+
+<script src="capture/manifest.js"></script>
+<script src="audio/timing.js" onerror="window.TIMING=null"></script>
+<script>
+(() => {
+  const M = window.MANIFEST, FPS = M.fps, TM = window.TIMING;
+  const FULL_W = 1920, SPLIT_W = 820, MORPH = 0.5, WIPE = 0.38;
+  const REC_K = 1030 / M.width; // 녹화 프레임 → 화면 배율
+  const scenes = [...document.querySelectorAll('.scene')];
+  // 장면 길이 = 실제 나레이션 길이(없으면 예상 길이) + 앞뒤 여유
+  const EST = { intro: 6.5, two: 9.5, loop: 11, bridge: 3.6, step1: 6.5, step2: 7, step3: 6.5, step4: 7, step5: 7, step6: 9, outro: 9 };
+  const LEAD = 0.35, TAIL = 0.55;
+  const events = []; // 오디오 합성용: {t, type}
+  let acc = 0;
+
+  // 분할 장면 진행 점
+  const splits = scenes.filter(s => s.dataset.layout === 'split');
+  splits.forEach((s, k) => {
+    const d = document.createElement('div'); d.className = 'dots';
+    d.innerHTML = splits.map((_, j) => `<i class="${j === k ? 'on' : ''}"></i>`).join('');
+    s.appendChild(d);
+  });
+
+  for (const s of scenes) {
+    const design = LEAD + EST[s.id] + TAIL;
+    s._dur = TM && TM.scenes[s.id] ? TM.scenes[s.id].dur : design;
+    s._k = s._dur / design; // 연출 타이밍을 실제 음성 길이에 비례 조정
+    s._start = acc; acc += s._dur;
+    if (s.dataset.layout === 'split' || s !== scenes[0]) events.push({ t: s._start, type: 'whoosh' });
+    events.push({ t: s._start + LEAD, type: 'narr', id: s.id });
+    s._els = [...s.querySelectorAll('[data-a]')];
+    for (const e of s._els) {
+      e._t = +e.dataset.t * s._k;
+      const a = e.dataset.a;
+      e._d = e.dataset.d ? +e.dataset.d : a === 'write' ? Math.max(0.35, e.textContent.length * 0.045) : a === 'draw' ? 0.6 : a === 'stamp' ? 0.22 : 0.3;
+      if (a === 'stamp') events.push({ t: s._start + e._t + e._d, type: 'pop' });
+    }
+    if (s.dataset.clip) {
+      const c = M[s.dataset.clip];
+      s._frames = c.frames;
+      s._clicks = c.clicks.map(k => ({ ...k, t: k.f / (c.frames - 1) * s._dur }));
+      s._clicks.forEach(k => events.push({ t: s._start + k.t, type: 'click' }));
+    }
+  }
+  const outro = scenes.find(s => s.id === 'outro');
+  events.push({ t: outro._start + 5.5 * outro._k, type: 'ding' });
+  const TOTAL = acc;
+
+  // 선 길이 측정, stamp 요소의 분필 가루 준비 (무축척 상태에서 측정)
+  const boardEl = document.getElementById('board');
+  for (const s of scenes) {
+    s.classList.add('on');
+    for (const e of s._els) {
+      if (e.dataset.a === 'draw') {
+        const shapes = e.matches('path,circle,rect,ellipse') ? [e] : [...e.querySelectorAll('path,circle,rect,ellipse')];
+        e._shapes = shapes.map(p => { const L = p.getTotalLength() + 2; p.style.strokeDasharray = L; p._marker = p.getAttribute('marker-end'); return [p, L]; });
+        e._texts = [...e.querySelectorAll('text')];
+      }
+      if (e.dataset.a === 'stamp') {
+        const r = e.getBoundingClientRect(), b = boardEl.getBoundingClientRect();
+        const d = document.createElement('div'); d.className = 'dust';
+        d.style.left = (r.left + r.width / 2 - b.left - 22) + 'px'; d.style.top = (r.top + r.height / 2 - b.top - 22) + 'px';
+        d._w = r.width; d._h = r.height;
+        d.innerHTML = '<i></i>'.repeat(14);
+        s.appendChild(d); e._dust = d;
+      }
+    }
+    s.classList.remove('on');
+  }
+
+  const clamp = v => Math.min(1, Math.max(0, v));
+  const easeOut = p => 1 - Math.pow(1 - p, 3);
+  const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+  const win = document.getElementById('win'), tag = document.getElementById('tag'), rec = document.getElementById('rec'),
+        ring = document.getElementById('ring'), cam = document.getElementById('cam'), eraser = document.getElementById('eraser');
+
+  function paint(s, lt) {
+    let shake = 0;
+    for (const e of s._els) {
+      const p = clamp((lt - e._t) / e._d), a = e.dataset.a;
+      if (a === 'write') e.style.clipPath = `inset(-30% ${(1 - p) * 100}% -30% -3%)`;
+      else if (a === 'fade') e.style.opacity = p;
+      else if (a === 'pop') { e.style.opacity = clamp(p * 2); e.style.scale = 0.4 + 0.6 * (1 + 2.4 * Math.pow(p - 1, 3) + 1.4 * Math.pow(p - 1, 2)); }
+      else if (a === 'stamp') {
+        e.style.opacity = clamp(p * 1.5); e.style.scale = 2.2 - 1.2 * easeOut(p);
+        const after = lt - (e._t + e._d); // 착지 이후 경과
+        if (after >= 0 && after < 0.35) shake = Math.max(shake, 1 - after / 0.35);
+        const q = clamp(after / 0.55), ds = e._dust.children;
+        for (let i = 0; i < ds.length; i++) {
+          const ang = i / ds.length * Math.PI * 2 + (i % 3) * 0.35, far = 0.55 + (i % 4) * 0.18;
+          const rx = e._dust._w / 2 * far + 70 * easeOut(q), ry = e._dust._h / 2 * far + 60 * easeOut(q);
+          ds[i].style.transform = `translate(${Math.cos(ang) * rx}px,${Math.sin(ang) * ry}px)`;
+          ds[i].style.opacity = after < 0 ? 0 : 0.85 * (1 - q);
+        }
+      } else if (a === 'draw') {
+        for (const [sh, L] of e._shapes) {
+          sh.style.strokeDashoffset = L * (1 - easeOut(p));
+          if (sh._marker) { if (p >= 0.97) sh.setAttribute('marker-end', sh._marker); else sh.removeAttribute('marker-end'); }
+        }
+        for (const tx of e._texts) tx.style.opacity = p;
+      }
+    }
+    return shake;
+  }
+
+  function seek(t) {
+    t = Math.min(Math.max(t, 0), TOTAL - 1e-6);
+    const i = scenes.findIndex(s => t < s._start + s._dur);
+    const s = scenes[i], lt = t - s._start, prev = scenes[i - 1];
+    const wiping = prev && lt < WIPE;
+    scenes.forEach((x, k) => x.classList.toggle('on', k === i || (!!wiping && x === prev)));
+    let shake = paint(s, lt);
+    if (wiping) paint(prev, prev._dur);
+    // 지우개 전환: 새 장면이 왼쪽부터 드러나고 지우개가 경계를 따라 이동
+    const bw = parseFloat(boardEl.style.width || FULL_W);
+    if (wiping) {
+      const p = easeInOut(lt / WIPE);
+      s.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`; prev.style.clipPath = `inset(0 0 0 ${p * 100}%)`;
+      eraser.style.display = 'block'; eraser.style.left = (p * (bw - 44)) + 'px';
+      eraser.style.top = (430 + Math.sin(p * Math.PI * 3) * 160) + 'px';
+    } else { s.style.clipPath = ''; eraser.style.display = 'none'; }
+    // 칠판 폭 (전체 ↔ 분할)
+    const cur = s.dataset.layout, pl = prev ? prev.dataset.layout : cur;
+    let split = cur === 'split' ? 1 : 0;
+    if (pl !== cur && lt < MORPH) { const q = easeInOut(lt / MORPH); split = cur === 'split' ? q : 1 - q; }
+    boardEl.style.width = (FULL_W + (SPLIT_W - FULL_W) * split) + 'px';
+    win.style.opacity = tag.style.opacity = split;
+    win.style.transform = `translateX(${(1 - split) * 260}px)`;
+    // 흔들림 (stamp 착지 직후)
+    const sh = shake * 7;
+    cam.style.transform = sh ? `translate(${Math.sin(t * 90) * sh}px,${Math.cos(t * 77) * sh}px)` : '';
+    // 녹화: 장면 길이에 맞춰 빠르게 재생 + 클릭 순간 확대
+    let clipName = s.dataset.clip, f = 0, zoom = 1, ox = 0, oy = 0, ringP = -1;
+    if (clipName) {
+      f = Math.min(s._frames - 1, Math.floor(clamp(lt / s._dur) * (s._frames - 1)));
+      for (const c of s._clicks) {
+        const dt = lt - c.t;
+        let z = 0;
+        if (dt > -0.35 && dt < 0) z = easeOut((dt + 0.35) / 0.35);
+        else if (dt >= 0 && dt < 1.0) z = 1;
+        else if (dt >= 1.0 && dt < 1.4) z = 1 - easeInOut((dt - 1.0) / 0.4);
+        if (z > 0) { zoom = 1 + 0.6 * z; ox = c.x * REC_K; oy = c.y * REC_K; }
+        if (dt >= 0 && dt < 0.6) { ringP = dt / 0.6; ring.style.left = ox + 'px'; ring.style.top = oy + 'px'; }
+      }
+    } else if (split > 0 && prev && prev.dataset.clip) { clipName = prev.dataset.clip; f = prev._frames - 1; }
+    rec.style.transformOrigin = `${ox}px ${oy}px`;
+    rec.style.transform = zoom > 1 ? `scale(${zoom})` : '';
+    ring.style.opacity = ringP >= 0 ? 1 - ringP : 0;
+    ring.style.scale = ringP >= 0 ? 0.5 + ringP : 1;
+    if (clipName) {
+      const src = `capture/${clipName}/${String(f).padStart(5, '0')}.jpg`;
+      if (!rec.src.endsWith(src)) rec.src = src;
+      return rec.decode().catch(() => {});
+    }
+    return Promise.resolve();
+  }
+  window.seek = seek; window.TOTAL = TOTAL; window.FPS = FPS; window.AUDIO_EVENTS = events;
+
+  const stage = document.getElementById('stage');
+  if (new URLSearchParams(location.search).has('render')) { seek(0); return; }
+  // 미리보기: 화면에 맞춰 축소, 실시간 재생 (스페이스: 일시정지, ←/→: 5초 이동)
+  const fit = () => { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `translate(${(innerWidth - 1920 * k) / 2}px,${(innerHeight - 1080 * k) / 2}px) scale(${k})`; };
+  addEventListener('resize', fit); fit();
+  let t0 = performance.now(), off = 0, paused = false;
+  addEventListener('keydown', e => {
+    const now = (performance.now() - t0) / 1000 + off;
+    if (e.code === 'Space') { paused = !paused; off = now; t0 = performance.now(); }
+    if (e.code === 'ArrowRight') { off = now + 5; t0 = performance.now(); }
+    if (e.code === 'ArrowLeft') { off = Math.max(0, now - 5); t0 = performance.now(); }
+  });
+  const loop = () => { const now = paused ? off : (performance.now() - t0) / 1000 + off; seek(now % TOTAL); requestAnimationFrame(loop); };
+  document.fonts.ready.then(loop);
+})();
+</script>
+</body>
+</html>
