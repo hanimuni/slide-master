@@ -174,6 +174,12 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 > Without rhythm variation, every page defaults to card grids (the "AI-generated" look). `page_rhythm` is the only narrative lever that survives context compression.
 
+**Hard rule — deck frame**: every content page draws its header zone (navigation or chapter tag, title, optional governing message), body zone, and footer zone at the bounds recorded in `design_spec.md §V`, with the same margins. After the first content page is authored, copy its header and footer coordinates, font sizes, and colors verbatim to each later content page; vary only the composition inside the body zone. The cover, the contents page, the closing page, and `breathing` pages may drop the chrome and keep palette, fonts, and outer margins.
+
+**Per-page impact**: a page whose §IX entry carries an `Impact` line delivers that hook and composition; all other pages stay within the frame. Do not add impact treatments the outline did not plan.
+
+**Default — pattern repetition (may override when §IX fixes the layout)**: before drawing a page, compare its body composition with the previous three pages. A fourth identical composition, or a row of equal text-only cards with no dominant element, gets one dominant element (large key term, height step, one dark or accent card, icon or image) inside the same frame.
+
 **Missing `page_rhythm` section** → emit `warning: spec_lock.md missing page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
 
 **Tag not found for current page** → emit `warning: spec_lock.md page_rhythm tag not found for P<NN> — falling back to dense` once per deck (aggregate; do not repeat per page), fall back to `dense`. Do not invent a tag.
