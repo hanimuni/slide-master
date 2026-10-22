@@ -28,23 +28,25 @@ Python is the only hard requirement.
 
 **Option A — Download ZIP** (easiest):
 
-1. Go to [github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+1. Go to [github.com/hanimuni/slide-master](https://github.com/hanimuni/slide-master)
 2. Click the green **Code** button → **Download ZIP**
-3. Unzip to `C:\Users\YourName\ppt-master`
+3. Unzip to `C:\Users\YourName\slide-master`
 
 **Option B — Git Clone** (requires [Git](https://git-scm.com/downloads)):
 
 ```powershell
-git clone https://github.com/hugohe3/ppt-master.git
-cd ppt-master
+git clone https://github.com/hanimuni/slide-master.git
+cd slide-master
 ```
+
+> Slide Master is a Korean fork of the upstream [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master); install from the fork above to get its customizations.
 
 ---
 
 ## Step 3 — Install Dependencies
 
 ```powershell
-cd C:\Users\YourName\ppt-master   # ← adjust to your actual path
+cd C:\Users\YourName\slide-master   # ← adjust to your actual path
 pip install -r requirements.txt
 ```
 
@@ -68,23 +70,26 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Step 5 — Run a Minimal Example
 
-Open your AI editor (Cursor, VS Code + Copilot, etc.), open the `ppt-master` folder, and type in the chat:
+Open your AI editor (Cursor, VS Code + Copilot, etc.), open the `slide-master` folder, and type in the chat:
 
 ```
 Please create a simple 3-page test PPT with a cover, one content page, and a closing page. Topic: "Hello World".
 ```
 
-If a `.pptx` file appears in `exports/` that opens in PowerPoint — **you're done.**
+If a `.pptx` file appears in `projects/<YYYYMMDD>_<title>/exports/` (named `<title>_ver1.pptx`) that opens in PowerPoint — **you're done.**
 
 ---
 
 ## Step 6 — Optional Enhancements (most users can skip this)
 
-With Python and `requirements.txt` installed, you already have everything needed to generate presentations. PPTX export writes native DrawingML shapes, so it does not require CairoSVG, GTK, or a separate SVG rasterization stack. The item below is an **edge-case fallback** — install it only if you hit the specific scenario.
+With Python and `requirements.txt` installed, you already have everything needed to generate presentations. PPTX export writes native DrawingML shapes, so it does not require CairoSVG, GTK, or a separate SVG rasterization stack. The items below are **optional** — install each one only if you hit its specific scenario.
 
 | Enhancement | Install only if… | How to install | Verify |
 |-------------|-----------------|----------------|--------|
 | **Pandoc** — legacy document formats | You need to convert `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python. | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
+| **OfficeCLI** — exported-PPTX checks | Optional for the main pipeline (adds OpenXML validation + a contact-sheet render to the post-export check), but **required** if you use the `ppt-template-fill` route, whose verification loop is a mandatory gate. Needs Node.js. | `npm install -g @officecli/officecli@1.0.135` | `officecli --version` |
+
+> The PowerPoint effects skills (`pptx-com-effects`, `html-slide-effects`) are not part of this repository. If you want them, install them separately from [hanimuni/slide-effects-skills](https://github.com/hanimuni/slide-effects-skills) into `.claude/skills/`.
 
 ---
 
@@ -147,5 +152,5 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ## Still stuck?
 
 - 📖 [FAQ](./faq.md)
-- 🐛 [GitHub Issues](https://github.com/hugohe3/ppt-master/issues) — include your Python version, Windows version, and full error message
-- 💬 [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
+- 🐛 [GitHub Issues](https://github.com/hanimuni/slide-master/issues) — include your Python version, Windows version, and full error message
+- 💬 Upstream [hugohe3/ppt-master Discussions](https://github.com/hugohe3/ppt-master/discussions) — for general PPT Master questions not specific to this fork

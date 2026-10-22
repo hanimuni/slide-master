@@ -24,6 +24,11 @@ selects native enhancement.
 3. Keep slide count, order, visible wording, and layout stable unless the user
    changes the request and routing selects a different route.
 
+**Output naming**: this route keeps its own project folder (created by
+`native_enhance_pptx.py init`) and writes `<project>/exports/<source>_enhanced.pptx`.
+It does not follow the main pipeline's `projects/<YYYYMMDD>_<title>` /
+`exports/<title>_verN.pptx` convention; report the actual path the script writes.
+
 Shared scripts do not imply main-pipeline inheritance. Do not load or execute
 the main SVG `ppt-master` skill, Strategist/Executor references,
 `finalize_svg.py`, `svg_to_pptx.py`, or `verify_deck.py` for this route unless

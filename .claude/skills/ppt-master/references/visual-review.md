@@ -33,10 +33,10 @@ The subagent reads inputs 2–4 **once** at the start of its turn, then iterates
 
 | # | Category | Trigger | Permitted fix |
 |---|----------|---------|---------------|
-| H1 | Out-of-bounds | element bbox falls outside `0,0,1280,720` | shrink or reposition into canvas |
-| H2 | Text overflow | text bbox extends past its visual container | reduce font-size or line-break |
+| H1 | Out-of-bounds | element bbox falls outside the page root `viewBox` (`0,0,<width>,<height>` — the project canvas from `spec_lock.md`; `0,0,1280,720` for `ppt169`) | shrink or reposition into canvas |
+| H2 | Text overflow | text bbox extends past its visual container | line-break first; otherwise reduce **body-text** font-size by at most 4px. Title / subtitle / lead / footnote text never shrinks — if line-breaking cannot fix it → `needs_human` |
 | H3 | Text overlap | two `<text>` elements' bboxes intersect (tspans within one text excluded) | reposition or resize |
-| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | if **neither** the foreground nor the background color is a brand token: position-only escape — add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. If **either** color is a brand token: do not edit the SVG → goto §1.1 escalation. |
+| H4 | Readability | contrast < 4.5:1 for any text (same threshold as `strategist.md` color rules, regardless of font-size); OR text directly atop a complex image with no scrim | if **neither** the foreground nor the background color is a brand token: add a `<rect>` scrim under the text. If **either** color is a brand token: do not edit the SVG → goto §1.1 escalation. |
 | ~~H5~~ | Font-ramp drift | *covered by `svg_quality_checker.py` — see §0 prerequisites* | n/a (do not re-check) |
 | H6 | Element collision | rect/circle/path bboxes overlap with z-order violating semantics | open spacing |
 | H7 | Anchored element displaced | page number / header / footer covered, missing, or out of canvas | restore to anchor position |
@@ -54,7 +54,7 @@ H8 → H9      (content)
 
 ### §1.1 Brand-token contrast escalation
 
-If H4 fires and the foreground or background color is a **brand token** (defined in `spec_lock.md`) — i.e., the violation will repeat on every page using that token — do **not** touch the SVG. Brand decisions are §3 Don't-Touch; even position-only escapes (scrim insertion, font-size escalation) shift the page's visual weight in ways that should be a brand-level decision, not a per-page subagent decision. Instead:
+If H4 fires and the foreground or background color is a **brand token** (defined in `spec_lock.md`) — i.e., the violation will repeat on every page using that token — do **not** touch the SVG. Brand decisions are §3 Don't-Touch; even a scrim insertion shifts the page's visual weight in ways that should be a brand-level decision, not a per-page subagent decision. Instead:
 
 1. Record the finding in the page JSON under `needs_human_items` with `rule: "H4"`, the offending element selector, and `suggested_fix_summary` describing the brand-level options (e.g., "raise body-text token from `#6E7681` to `#8B949E` deck-wide" or "introduce a scrim style in the brand").
 2. Append the finding to `<project>/.review/brand_review.json` (append-only log; one entry per distinct token+context pair). The orchestrator aggregates and surfaces this to the main agent at the end of the run so the user can make one cross-deck decision instead of N per-page ones.
@@ -89,7 +89,7 @@ Hard boundary, equal weight to §1.
 
 - **Brand decisions** — color tokens, font families, geometry style (decided by `spec_lock.md` / brand directory)
 - **Layout restructure** — do not change column counts, replace chart types, add/remove sections
-- **Content** — do not add or remove copy; only adjust position, font-size (within ramp), spacing, letter-spacing, alignment, scrim
+- **Content** — do not add or remove copy; only adjust position, body-text font-size (≤ 4px reduction, within ramp — never title / subtitle / lead / footnote), spacing, letter-spacing, alignment, scrim
 - **Other files** — never edit `design_spec.md` / `spec_lock.md` / `animations.json` / `image_prompts.json` / `images/` / other pages' SVGs
 - **Atomicity** — one edit per fix, no bulk multi-element replacements
 
@@ -104,7 +104,7 @@ For S13, copying an exact unit/source line already required by §IX / §VII is r
 Run before applying any rule:
 
 - PNG file exists and is non-zero bytes
-- PNG dimensions = 1280 × 720
+- PNG dimensions = the page root `viewBox` width × height (1280 × 720 for `ppt169`)
 - PNG is **not** all-background (a histogram check: count of background-color pixels < 99% of total) — guards against blank/white-out renders only, **does not** filter sparse dark layouts
 
 Any check fails → status = `render_failed`, abort without scanning rules.
@@ -241,7 +241,7 @@ Larger K is **not** always better: subagent context fills with prior pages' SVG 
 `visual_review.py <project> [pages...]` must guarantee:
 
 - Output PNG matches what the user would see in the live-preview browser (inlined `<use data-icon>`, resolved `<image href>`)
-- Output dimensions = 1280 × 720
+- Output dimensions = the page root `viewBox` width × height (1280 × 720 for `ppt169`)
 - File-lock serialization at `<project>/.preview/.render.lock`
 - Clean exit codes:
   - `0` — all requested pages rendered

@@ -22,8 +22,7 @@ class ErrorHelper:
             'message': 'Missing README.md file',
             'solutions': [
                 'Create a README.md file with project description, usage instructions, etc.',
-                'Reference template: examples/google_annual_report_ppt169_20251116/README.md',
-                'Or use command: cp examples/google_annual_report_ppt169_20251116/README.md <your_project>/'
+                'See projects/README.md for the expected project layout'
             ],
             'severity': 'error'
         },
@@ -65,12 +64,11 @@ class ErrorHelper:
             'severity': 'warning'
         },
         'missing_project_date': {
-            'message': 'Project directory missing date suffix',
+            'message': 'Project directory missing date prefix',
             'solutions': [
-                'Rename the project directory to add a date suffix: _YYYYMMDD',
-                'Format: {project_name}_{format}_{YYYYMMDD}',
-                'Example: my_project_ppt169_20251116',
-                'Command: mv old_name new_name_ppt169_20251116'
+                'Use the folder name printed by project_manager.py init: YYYYMMDD_<title>',
+                'Example: 20261022_my_project',
+                'Command: mv old_name 20261022_old_name'
             ],
             'severity': 'warning'
         },

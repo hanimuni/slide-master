@@ -21,7 +21,7 @@ Usage:
     python3 scripts/<name>.py <required_arg> [options]
 
 Examples:
-    python3 scripts/<name>.py projects/<project_name> -o output_dir
+    python3 scripts/<name>.py projects/<YYYYMMDD>_<title> -o output_dir
 
 Dependencies:
     None (only uses standard library)        <-- or list third-party deps

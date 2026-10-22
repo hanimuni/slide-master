@@ -83,6 +83,8 @@ officecli view "<project>/exports/<file>.pptx" screenshot --page 1-<N> \
 # per page: --page <k> -o .../p<k>.png ; whole-deck contact sheet: --grid
 ```
 
+**Render folders**: `verify_deck.py` writes its quick contact sheet to `<project>/_pptx_render/` (final-gate smoke check); this workflow writes the full per-page QA renders to `<project>/validation/pptx_render/`. Keep both; do not substitute one for the other.
+
 Read the rendered output and check every page:
 
 | Check | Signal |
@@ -113,7 +115,7 @@ Read the rendered output and check every page:
 
 | Deck route | Fix location | Re-export |
 |---|---|---|
-| Main SVG pipeline / beautify | `svg_output/<page>.svg` | Run `svg_to_pptx.py`; rerun on-demand Step 7.2 first only when `svg_final/` is requested or already exists |
+| Main SVG pipeline / beautify | `svg_output/<page>.svg` | Run `svg_to_pptx.py`; rerun on-demand Step 7.2 first only when the user asks for `svg_final/` previews or `svg_final/` already contains SVGs |
 | `ppt-template-fill` | `fill_plan.json` (shorten text, re-pick page) | [`ppt-template-fill`](../../ppt-template-fill/SKILL.md) Step 6–7 (its Step 7.2 gate already runs this scan) |
 | `native-enhance-pptx` | Enhancement plan / config | native-enhance apply + validate |
 

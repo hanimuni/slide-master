@@ -64,7 +64,7 @@ New layout creation uses the same portable workspace routing in both output scop
 | Scope | `<template_workspace>` | Difference |
 |---|---|---|
 | Library | `.claude/skills/ppt-master/templates/layouts/<layout_id>/` | Register in `layouts_index.json` |
-| Project | `projects/<project_name>/` | Do not register globally |
+| Project | `projects/<YYYYMMDD>_<title>/` | Do not register globally |
 
 `02_toc.svg` and other roster variants remain optional. All SVGs use `viewBox="0 0 1280 720"` for ppt169. Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`.
 

@@ -67,7 +67,7 @@ source.pptx
 | Existing `.pptx` + asks to optimize it but says not to change existing content or layout | Run this workflow only for V1 narration enhancements; clarify any visible-slide request |
 | Existing `.pptx` + asks to beautify or re-layout | Use [`beautify-pptx`](./beautify-pptx.md) |
 | Existing `.pptx` + asks to fill new content into the design | Use the [`ppt-template-fill` skill](../../ppt-template-fill/SKILL.md) |
-| PPT Master generated project with `svg_output/` | Use [`generate-audio`](./generate-audio.md) for narration |
+| PPT Master generated project with `svg_output/` | Use [`generate-audio`](./generate-audio.md) for narration; re-export with `svg_to_pptx.py -t` (or [`customize-animations`](./customize-animations.md)) for transitions |
 
 ---
 
@@ -78,7 +78,7 @@ source.pptx
 Run:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
 ```
 
 Project layout:
@@ -115,7 +115,7 @@ The `init` command also writes:
 If the project already existed or notes/audio coverage changed, refresh the draft:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py plan "<project>"
 ```
 
 Present the plan to the user before generating notes or audio:
@@ -186,7 +186,7 @@ Write:
 Run coverage check:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py validate "<project>"
 ```
 
 > Note: before audio generation, missing audio returns exit code `2` only when `audio.enabled` is true. Missing notes are not acceptable once this step is complete.
@@ -207,7 +207,7 @@ Follow the same one-shot interaction standard as [`generate-audio`](./generate-a
 For edge voices:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --list-voices --locale <locale>
 ```
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation of audio backend, voice, rate/settings, and embedding. Do not run `notes_to_audio.py` before this confirmation.
@@ -233,7 +233,7 @@ Record the confirmed audio config into `project.json`:
 Run with the confirmed values:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py "<project>" \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py "<project>" \
   --voice <chosen-ShortName> --rate <chosen-rate>
 ```
 
@@ -244,7 +244,7 @@ python3 .claude/skills/ppt-master/scripts/notes_to_audio.py "<project>" \
 Validate:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py validate "<project>"
 ```
 
 ---
@@ -256,13 +256,13 @@ python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py validate "<proj
 Run:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py apply "<project>"
 ```
 
 Optional:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py apply "<project>" \
   --transition fade \
   --transition-duration 0.5 \
   --narration-padding 0.4 \
@@ -295,7 +295,7 @@ Patch scope:
 Run read-back:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/source_to_md/ppt_to_md.py \
+python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py \
   "<project>/exports/<source>_enhanced.pptx" \
   -o "<project>/validation/readback.md"
 ```

@@ -404,7 +404,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("project", help="path to projects/<project_name>")
+    parser.add_argument("project", help="path to projects/<YYYYMMDD>_<title>")
     parser.add_argument("--run-id", help="explicit telemetry run id; never inferred")
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     return parser

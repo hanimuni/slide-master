@@ -71,25 +71,25 @@ For each page in the Step 1 list:
 
    ```bash
    # column_chart / horizontal_bar_chart (add --horizontal for the latter)
-   # IMPORTANT: always pass --value-range from axis tick labels (step 4)
-   python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc bar \
+   # IMPORTANT: always pass --value-range from axis tick labels (step 5)
+   python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc bar \
      --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" \
      --bar-width 120 --value-range "0,axis_max"
 
    # line_chart / area_chart / scatter_chart — area uses line output as the top boundary, then closes to y_max
-   python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc line \
+   python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc line \
      --data "x1:y1,x2:y2,..." --area "x_min,y_min,x_max,y_max" --y-range "0,max"
 
    # pie_chart — default start angle is -90 (12 o'clock); pass --start-angle only if the SVG starts elsewhere
-   python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc pie \
+   python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc pie \
      --data "Slice1:Value1,Slice2:Value2" --center "cx,cy" --radius 200 --start-angle -90
 
    # donut_chart (pie with inner-radius)
-   python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc pie \
+   python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc pie \
      --data "Slice1:Value1,Slice2:Value2" --center "cx,cy" --radius 200 --inner-radius 120 --start-angle -90
 
    # radar_chart (separate subcommand) — pass --max-value from the outermost ring tick
-   python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc radar \
+   python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc radar \
      --data "Dim1:Value1,Dim2:Value2,Dim3:Value3" --center "cx,cy" --radius 200 --max-value 100
    ```
 
@@ -104,7 +104,7 @@ For each page in the Step 1 list:
 After updating any page, re-run the quality checker on the project to confirm nothing broke:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 
 ---
@@ -118,11 +118,11 @@ python3 .claude/skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 ```bash
 # Example: two-series stack at category "Q1" with bottom=30, top=20, plot area y from 100 to 500
 # Run 1 — bottom segment (origin = baseline)
-python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc bar \
+python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc bar \
   --data "Q1:30,Q2:..." --area "x_min,100,x_max,500" \
   --bar-width 80 --value-range "0,axis_max"
 # Run 2 — top segment (origin shifted up by bottom segment's height in pixels)
-python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc bar \
+python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc bar \
   --data "Q1:20,Q2:..." --area "x_min,100,x_max,<500 - bottom_height_px>" \
   --bar-width 80 --value-range "0,axis_max"
 ```
@@ -147,10 +147,10 @@ Use these recipes for `decomposable-calc` and `partial-calc` pages. Each recipe 
 ```bash
 # Horizontal dumbbell, 3 categories, value axis 0–100, plot area (100,100)–(700,460).
 # Encode category index as the y value: row 1 → 0.5, row 2 → 1.5, row 3 → 2.5.
-python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc line \
+python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc line \
   --data "42:0.5,55:1.5,37:2.5" --area "100,100,700,460" \
   --x-range "0,100" --y-range "0,3"
-python3 .claude/skills/ppt-master/scripts/svg_position_calculator.py calc line \
+python3 ${SKILL_DIR}/scripts/svg_position_calculator.py calc line \
   --data "68:0.5,71:1.5,49:2.5" --area "100,100,700,460" \
   --x-range "0,100" --y-range "0,3"
 ```
@@ -260,7 +260,8 @@ verify-charts: 19_flow.svg | type=sankey | mode=manual-verify | link widths cons
 Continue with post-processing & export ([SKILL.md Step 7](../SKILL.md)):
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/total_md_split.py <project_path>  # only when notes were requested
-python3 .claude/skills/ppt-master/scripts/finalize_svg.py <project_path>  # only when svg_final/ is requested or already exists
-python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>  # only when notes were requested
+python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>  # only when the user asks for svg_final/ previews or svg_final/ already contains SVGs
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>   # repeat the export flags previously selected for this project
+python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 ```

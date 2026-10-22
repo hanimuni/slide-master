@@ -10,7 +10,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 
 ## How it works
 
-1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
+1. **Speaker notes are written as pure spoken narration.** Notes are opt-in during deck generation (a default run writes none); when you ask for narration and the deck has no notes yet, they are generated on demand first. PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "steady male voice for financial reporting"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
 4. **Generation runs.** The script writes page-level audio to `audio/`, then (if you kept embedding) re-exports the deck with audio attached. Long-audio import and automatic long-audio splitting are not supported.
@@ -21,7 +21,7 @@ The full step-by-step is in [`workflows/generate-audio.md`](../.claude/skills/pp
 
 | Command | Purpose |
 |---|---|
-| `--recorded-narration audio` | Prepare PowerPoint's recorded timings and narrations. Requires complete per-slide audio and writes page auto-advance timings. Use this for narrated/video export. The re-export is saved as `exports/<name>_<timestamp>_narrated.pptx`. |
+| `--recorded-narration audio` | Prepare PowerPoint's recorded timings and narrations. Requires complete per-slide audio and writes page auto-advance timings. Use this for narrated/video export. The re-export is saved as `projects/<YYYYMMDD>_<title>/exports/<title>_verN_narrated.pptx`. |
 | `--narration-audio-dir audio` | Lower-level audio embedding. Embeds matched files and allows partial coverage. Use this for testing or manual PowerPoint finishing. Exports get the same `_narrated` name suffix. |
 
 ## Triggering it
@@ -49,7 +49,8 @@ python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --list-voices --loca
 If you want to skip the AI flow and call the script directly:
 
 ```bash
-# 1. Make sure speaker notes are split (post-processing Step 7.1):
+# 1. Make sure speaker notes exist and are split (post-processing Step 7.1).
+#    Requires notes/total.md — notes are opt-in, so a default run has none; ask the AI to write them first.
 python3 .claude/skills/ppt-master/scripts/total_md_split.py <project_path>
 
 # 2A. Generate MP3s with edge-tts (default, no API key)
@@ -86,7 +87,7 @@ python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice-id <cosyvoice-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 3. (Optional) Re-export PPTX with audio embedded
+# 3. (Optional) Re-export PPTX with audio embedded — keep the flags you used before, then run verify_deck.py <project_path>
 python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --recorded-narration audio
 ```

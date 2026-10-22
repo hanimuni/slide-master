@@ -4,7 +4,7 @@ description: Opt-in spec-refinement loop between the Strategist confirmation sta
 
 # Refine Spec Workflow
 
-> Standalone, **opt-in** spec-review pass. The default pipeline writes `design_spec.md` + `spec_lock.md` and auto-proceeds. When the user explicitly asks to refine the spec, the Strategist produces the full spec first, then **stops** — the user reviews and revises any part of it (outline, color, typography, layout, image strategy, page rhythm, …) before any image generation or SVG work begins.
+> Standalone, **opt-in** spec-review pass. The default pipeline writes `design_spec.md` + `spec_lock.md` and auto-proceeds. When the user explicitly asks to refine the spec, the Strategist produces the full spec first, then **stops** — the user reviews and revises any part of it (outline, color, typography, layout, image strategy, page rhythm, …) before Step 5 image acquisition or any SVG work.
 
 This workflow is **conditional**, same shape as the split-mode choice: it never fires on its own and the default path is unchanged. The Strategist confirmation stage settles design directions up front as abstract recommendations; this pass lets the user revise the **concrete spec** the Strategist produced from them. It is most valuable for a zero-background user, who can judge a finished spec far better than the up-front recommendations — and the spec's content outline (`§IX`) is usually what they most want to adjust.
 
@@ -26,7 +26,7 @@ The user **explicitly asks** to refine / review / revise the spec before generat
 
 ## Step 1: Produce the full spec
 
-Run the default Strategist output exactly as SKILL.md Step 4 specifies: write `design_spec.md` (§I–X) and `spec_lock.md`. Read the relevant `sources/` files so the content outline (`§IX`) carries real facts, not skeleton points. Nothing special here — this is the normal spec, just produced under the knowledge that the user is about to review it.
+Run the default Strategist output exactly as SKILL.md Step 4 specifies: write `design_spec.md` (§I–X) and `spec_lock.md`, then run `python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>`. SKILL.md skips the Step 4 early background image launch when `refine_spec: true`, so no §VIII row is acquired yet; revised §VIII rows are acquired at Step 5. Read the relevant `sources/` files so the content outline (`§IX`) carries real facts, not skeleton points. Nothing special here — this is the normal spec, just produced under the knowledge that the user is about to review it.
 
 ---
 
@@ -49,12 +49,16 @@ These overlap with what the locked `mode`, visual style, and §6.1 already shape
 
 **Keep both files in sync on every change.** Any revision the user approves must land in both `design_spec.md` and `spec_lock.md`; on divergence `spec_lock.md` wins (see [`strategist.md`](../references/strategist.md) §6.2). Iterate as many rounds as the user wants. The loop ends only when the user explicitly approves the spec.
 
+**Mandatory — re-validate before approval**: after the last revision round, re-run `python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>` and fix every error before asking for (or accepting) final approval.
+
 **Re-run the structured-template preflight after structural revisions.** If the user changes `template_adherence`, `page_layouts`, the Master roster, or any page Layout choice, repeat the Strategist preflight in [`strategist.md`](../references/strategist.md) §6.2 before approval and hand-back. Every newly selected prototype must declare root Master/Layout identity, direct atomic Master/Layout visuals, and valid top-level slot groups with positive bounds plus one compatible carrier or explicit composite `object` proxy. A zero-slot Layout is valid. Update `pptx_masters` and the complete per-page `pptx_layouts` mapping in both artifacts immediately. A legacy prototype must run [`restore-pptx-structure`](./restore-pptx-structure.md); do not create a fallback mode inside refinement.
 
 ---
 
 ## Step 3: Hand back
 
-Once the user approves, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to SKILL.md and continue normally: Step 5 (Image Acquisition, if any `ai` / `web` rows) or Step 6 (Executor).
+Once the user approves and `validate_spec.py` reports 0 errors, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to SKILL.md and continue normally: Step 5 (Image Acquisition, if any `ai` / `web` rows — acquires the revised §VIII rows) or Step 6 (Executor).
+
+**Split mode**: when the confirmed `generation_mode` is `split`, follow SKILL.md's split-mode hand-off (complete Step 5 collection in full, output the planning-session handoff, stop this conversation) instead of continuing into Step 6.
 
 > Note: this workflow does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. `strategist.md` / SKILL.md remain authoritative for how the spec is written.

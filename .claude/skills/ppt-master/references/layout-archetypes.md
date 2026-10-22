@@ -18,8 +18,8 @@
 Token legend (pull HEX/stacks from `spec_lock.md`): `{{BG}}` bg · `{{PRIMARY}}`
 · `{{ACCENT}}` · `{{TEXT}}` body text · `{{TEXT_2}}` secondary · `{{TEXT_3}}`
 tertiary · `{{BORDER}}` hairline · `{{TITLE_STACK}}` title_family ·
-`{{BODY_STACK}}` font_family. Sizes: title 40, subtitle 30, lead 28, subheading
-26, body 24, annotation 18, kicker 15, footnote 14, cover_title 72, hero 46.
+`{{BODY_STACK}}` font_family. Sizes (the `balanced` lock, body 24): title 42, subtitle 32, lead 30, subheading
+26, body 24, annotation 18, kicker 15, footnote 16, cover_title 72, hero 46. Always copy the actual `spec_lock.typography` px.
 
 ---
 
@@ -27,18 +27,20 @@ tertiary · `{{BORDER}}` hairline · `{{TITLE_STACK}}` title_family ·
 
 ```xml
 <g id="header">
-  <text x="72" y="88" font-family="{{TITLE_STACK}}" font-size="15" font-weight="600" letter-spacing="2" fill="{{ACCENT}}">{{KICKER}}</text>
-  <text x="72" y="140" font-family="{{TITLE_STACK}}" font-size="40" font-weight="600" fill="{{PRIMARY}}">{{TITLE}}</text>
-  <line x1="72" y1="166" x2="1208" y2="166" stroke="{{BORDER}}" stroke-width="1.5"/>
+  <text x="72" y="68" font-family="{{TITLE_STACK}}" font-size="15" font-weight="600" letter-spacing="2" fill="{{ACCENT}}">{{KICKER}}</text>
+  <text x="72" y="112" font-family="{{TITLE_STACK}}" font-size="42" font-weight="600" fill="{{PRIMARY}}">{{TOPIC_TITLE}}</text>
+  <text x="72" y="154" font-family="{{BODY_STACK}}" font-size="30" font-weight="500" fill="{{TEXT}}">{{GOVERNING_MESSAGE}}</text>
+  <text x="1208" y="68" text-anchor="end" font-family="{{BODY_STACK}}" font-size="16" font-weight="600" fill="{{ACCENT}}">{{STICKER}}</text>
+  <line x1="72" y1="174" x2="1208" y2="174" stroke="{{BORDER}}" stroke-width="1.5"/>
 </g>
 <!-- ... content groups (y 196–660) ... -->
 <g id="footer">
   <line x1="72" y1="680" x2="1208" y2="680" stroke="{{BORDER}}" stroke-width="1"/>
-  <text x="72" y="702" font-family="{{BODY_STACK}}" font-size="14" fill="{{TEXT_3}}">{{DECK_LABEL}}</text>
-  <text x="1208" y="702" text-anchor="end" font-family="{{BODY_STACK}}" font-size="14" fill="{{TEXT_3}}">{{NN}} / {{TOTAL}}</text>
+  <text x="72" y="702" font-family="{{BODY_STACK}}" font-size="16" fill="{{TEXT_3}}">출처: {{SOURCE}}</text>
+  <text x="1208" y="702" text-anchor="end" font-family="{{BODY_STACK}}" font-size="16" fill="{{TEXT_3}}">{{DECK_SHORT_TITLE}} · {{NN}}/{{TOTAL}}</text>
 </g>
 ```
-Content zone: **x 72 → 1208 (width 1136), y ~196 → 660.** Safe margins 72 / 56.
+Content zone: **x 72 → 1208 (width 1136), y ~196 → 660.** Safe margins 72 / 56. Header = topic title + governing message (§IX `Title` / `Core message`, [`report-craft.md`](./report-craft.md) §1); delete `{{STICKER}}` unless §IX has a `Sticker` line and the source line when the page has no external data. Page numbers are zero-padded (`03/12`). If any §IX page is `two-line`, reserve the second governing-message line on every page: move the rule to y 214 and the content zone to y 236 → 660.
 
 ---
 
@@ -112,7 +114,7 @@ Parallel-exposition tip (instructional mode): reuse the same three `{{ROW_LABEL}
 
 ## D. Horizontal steps (`dense`) — 2–4 columns with arrows
 
-3 columns at x 72 / 490 / 908 (each ~330 wide → per-column `--zone 330`); arrows between at x 430 / 848. Optional `{{LEAD}}` line at y≈238.
+3 columns at x 72 / 490 / 908 (each ~330 wide → per-column `--zone 330`); arrows between at x 430 / 848. The governing message lives in the header (§0); do not add a second lead line in the body.
 
 ```xml
 <g id="step-1">

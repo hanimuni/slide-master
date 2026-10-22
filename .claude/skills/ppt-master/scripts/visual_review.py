@@ -144,9 +144,18 @@ async (pageName) => {
     const data = await res.json();
     document.documentElement.innerHTML =
         '<head><style>html,body{margin:0;padding:0;background:#0E1116;overflow:hidden}'
-        + ' svg{display:block;width:1280px;height:720px}</style></head>'
+        + ' svg{display:block}</style></head>'
         + '<body>' + data.content + '</body>';
-    return { len: data.content.length };
+    // Size the capture to the page root viewBox (project canvas), not a fixed 16:9.
+    const svg = document.querySelector('svg');
+    let w = 1280, h = 720;
+    const vb = svg && svg.getAttribute('viewBox');
+    if (vb) {
+        const n = vb.trim().split(/[\\s,]+/).map(Number);
+        if (n.length === 4 && n[2] > 0 && n[3] > 0) { w = Math.round(n[2]); h = Math.round(n[3]); }
+    }
+    if (svg) { svg.style.width = w + 'px'; svg.style.height = h + 'px'; }
+    return { len: data.content.length, width: w, height: h };
 }
 """
 
@@ -173,7 +182,8 @@ async (pageName) => {
                 try:
                     pg = context.new_page()
                     pg.goto(server_url, wait_until='domcontentloaded')
-                    pg.evaluate(inject_js, page_name)
+                    dims = pg.evaluate(inject_js, page_name)
+                    pg.set_viewport_size({'width': dims['width'], 'height': dims['height']})
                     # Wait one frame so font/text shaping settles before capture.
                     pg.wait_for_timeout(100)
                     png_bytes = pg.screenshot(type='png', full_page=False)

@@ -25,7 +25,7 @@ description: Customize default PPTX animations with per-slide and per-object tim
 **Default path — `list-groups`** (cheap, ~1KB of output even on a long deck):
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/animation_config.py list-groups <project_path>
+python3 ${SKILL_DIR}/scripts/animation_config.py list-groups <project_path>
 ```
 
 Output is one line per slide: `<slide_basename>: id1, id2, id3` — default
@@ -42,7 +42,7 @@ role/placeholder marker can never animate, even when it is named explicitly.
 If `animations.json` does not exist and you want a starting file to edit:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/animation_config.py scaffold <project_path>
+python3 ${SKILL_DIR}/scripts/animation_config.py scaffold <project_path>
 ```
 
 Scaffold output also excludes chrome and includes a `defaults` stub.
@@ -50,7 +50,7 @@ Scaffold output also excludes chrome and includes a `defaults` stub.
 If it already exists:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/animation_config.py validate <project_path>
+python3 ${SKILL_DIR}/scripts/animation_config.py validate <project_path>
 ```
 
 ---
@@ -255,11 +255,12 @@ Notes:
 Run sequentially:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/animation_config.py validate <project_path>
+python3 ${SKILL_DIR}/scripts/animation_config.py validate <project_path>
 ```
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>   # repeat the export flags previously selected for this project
+python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 ```
 
 **Validation**: the exported native PPTX must reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`. Unknown animation effects/modes/triggers; boolean, NaN, or Infinity numeric values; non-positive durations; negative delay/stagger; invalid order; missing slides/groups; and structural-layer targets fail validation. Transition validation remains strict as well. None of these failures substitutes a fallback effect or silently drops a requested target.

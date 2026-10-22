@@ -21,12 +21,16 @@
 - Start live preview (non-fatal if it fails — state the failure):
   `python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project> --live --daemon`
 - Re-read `spec_lock.md` before P01, P05, P09, and after any compaction. Use **only** its colors / fonts / sizes / icons / `page_rhythm`.
+- Read [`report-craft.md`](./report-craft.md) once before P01 (title / governing message, footer, list and chart rules).
 
 ## 1. Every page — root + chrome
 - Root: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 <W> <H>" data-pptx-page-role="cover|toc|section|content|ending">`. `viewBox` MUST equal the canvas. No root `transform`.
 - First child: full-canvas solid `<rect>` background (promotes to native slide bg).
 - **Flat route:** NO `data-pptx-master/layout/layer/placeholder` metadata anywhere. Every object stays Slide-local.
 - **Grouping (mandatory):** wrap every logical unit in a **top-level `<g id="descriptive">`**. Aim **3–8** content groups per page. No giant page-wrapping `<g>`, no ungrouped top-level `<text>/<rect>/<path>` atoms, no one-group-per-line.
+
+- **Deck frame (hard rule):** every content page draws the `design_spec.md §V` Deck Frame — header (chapter tag, **topic title** = §IX `Title`, **governing message** = §IX `Core message` verbatim at `lead` size, sticker slot), body, footer (bottom-left `출처:` / notes; bottom-right deck short title + `01/05`). Copy the first content page's header/footer coordinates, sizes, colors verbatim to every later content page. Only cover, contents, section divider, closing, and `breathing` pages may drop the chrome; verbatim routes (beautify) put only source text in the frame.
+- **Impact + repetition:** deliver a page's §IX `Impact` line when present; never four identical body compositions in a row — add one dominant element.
 
 ## 2. Text = well-formed XML
 - Typography glyphs (— – · © → NBSP full-width): **raw Unicode**, never HTML entities (`&mdash;` etc.).
@@ -37,7 +41,7 @@
 - Copy the locked px from `spec_lock.typography` **verbatim** (`body` 24 → write `24`; no pt, no "rounder" number, no long decimals).
 - **Structural roles hold ONE size deck-wide:** page title, body, subtitle, annotation/caption, footnote/page-number. Never re-pick per page.
 - Feature elements (hero number, cover/section display, one-off emphasis) may take an in-ramp intermediate size; if it recurs, it must be a declared slot.
-- Page **core message ≥ body** (map to `lead`/`subtitle`). Never below body.
+- Page **core message = governing message ≥ body** (map to `lead`, in the header zone). Never below body.
 - Last-resort body-only shrink: −2px steps, floor `body − 4`. Title/subtitle/caption/footnote never shrink.
 
 ## 4. Width + vertical budget — measure BEFORE you draw (kills the warn/error→edit loop)
@@ -45,7 +49,8 @@
   `est = Σ glyph  (CJK/full-width 1.0×fs · Latin/digit/ASCII 0.55×fs · space 0.25×fs) + letter_spacing×(n−1)`
 - `available = right_bound − x`, where `right_bound = canvasW − 5%` (1216 on 1280) unless a nearer right-side element.
 - `est ≤ available` → **one line** (wrapping a fitting sentence is a flagged defect).
-- `est > available` → wrap; a lead/core/subtitle wraps as a **balanced** 2-line at a phrase boundary (no orphan tail). Body prose may wrap freely.
+- `est > available` → first redistribute the zone; then wrap. Subtitle: **balanced** 2-line at a phrase boundary (no orphan tail). Governing message: 2 lines only when §IX marks it `two-line`, never 3. Body prose may wrap freely; Korean breaks at eojeol (space) boundaries.
+- Copy trim is a last resort: redundancy only, at most ~20% of the line (executor-base §2.1 ladder ③).
 - **Use the helper instead of guessing** — it returns the exact checker verdict + a balanced-break suggestion:
   `python3 ${SKILL_DIR}/scripts/text_fit.py "text" -s <fs> --x <x>` (or `--zone <w>` for a bounded column). Batch: `--batch blocks.json`.
 - **Batch ONCE, not per-line — and use the page object.** One `--batch` per page covering its risk lines (leads/core-messages, cover/section heroes, every column body) costs one round-trip; five ad-hoc calls cost five. Skip trivially-short lines. Preferred form is the **page object**, which also pre-clears the gate's A-class *errors* (vertical canvas overflow, cross-group intrusion, declared-bound overshoot) with the checker's exact conditions:
@@ -62,7 +67,7 @@
 `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`/`<set>`, `<script>`/event attrs, `<iframe>`. No `clip-path` except on `<image>` (single supported shape). No filter on `<image>` or on a multi-element `<g>`. Shadows/glow: one `feDropShadow`/`feGaussianBlur` on `<rect>/<circle>/<path>/<text>`, single light direction per page — reach for it only on genuinely floating elements (editorial: mostly flat).
 
 ## 7. Rhythm (breaks the "AI card-grid" look)
-- Read each page's `page_rhythm` tag. `anchor` = structural (cover/section/TOC/ending). `dense` = grids/columns/lists OK. `breathing` = **no multi-card grid** — naked text, dividers, whitespace, or full-bleed; single rounded elements are fine.
+- Read each page's `page_rhythm` tag. `anchor` = structural (cover/section/TOC/ending) or a planned full-frame Impact page. `dense` = grids/columns/lists OK. `breathing` = **no multi-card grid** — naked text, dividers, whitespace, or full-bleed; single rounded elements are fine.
 
 ## 8. Per-page + milestone gate
 - After P01 (full run): `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project>`

@@ -14,7 +14,7 @@ Visual-led impact. Let imagery, scale, and rhythm carry the message; minimize co
 
 **Reveal structure**: hold back, then reveal (the product, the result, the tagline) for maximum effect.
 
-Titles are short and evocative — a phrase, not a sentence.
+Topic titles stay plain labels (deck-wide structure, [`report-craft.md`](../report-craft.md) §1); the evocative voice goes into the governing message — one short sentence. Hero pages exempt from the header pair may carry the phrase as hero text.
 
 ---
 

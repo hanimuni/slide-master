@@ -243,12 +243,12 @@ def main(argv: list[str] | None = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
-    %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
+    %(prog)s projects/<YYYYMMDD>_<title>              # Default: native pptx -> exports/<title>_verN.pptx, svg_output -> backup/<ts>/
+    %(prog)s projects/<YYYYMMDD>_<title> -o out.pptx  # Explicit path (no backup/)
 
     # Disable transition / change transition effect
-    %(prog)s examples/ppt169_demo -t none
-    %(prog)s examples/ppt169_demo -t push --transition-duration 1.0
+    %(prog)s projects/<YYYYMMDD>_<title> -t none
+    %(prog)s projects/<YYYYMMDD>_<title> -t push --transition-duration 1.0
 
 SVG source directory (-s):
     output   - svg_output (hand-authored source; native default)
@@ -285,7 +285,7 @@ Speaker notes (enabled by default):
     - Use --no-notes to disable
 
 Recorded narration:
-    %(prog)s examples/ppt169_demo --recorded-narration audio
+    %(prog)s projects/<YYYYMMDD>_<title> --recorded-narration audio
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
     - Requires one m4a/mp3/wav file per slide
@@ -293,7 +293,7 @@ Recorded narration:
     - Sets slide auto-advance from audio duration so video export can use
       "recorded timings and narrations"
     - Rejects on-click object animations; use after-previous or with-previous
-    %(prog)s examples/ppt169_demo --narration-audio-dir audio
+    %(prog)s projects/<YYYYMMDD>_<title> --narration-audio-dir audio
     - Lower-level audio embedding: embeds matched files but allows partial matches
     - Use only when you do not need a complete recorded-timings export
 ''',
@@ -327,7 +327,7 @@ Recorded narration:
                              'replacement may normalize styling or omit unmodeled marker-local '
                              'visuals. Default off: marked groups export through their SVG '
                              'fallback children. When set, '
-                             'the default-flow export is named <project>_<ts>_native_charts.pptx '
+                             'the default-flow export is named <title>_verN_native_charts.pptx '
                              'to tell it apart from a plain shape export.')
     parser.add_argument(
         '--pptx-structure',
@@ -421,7 +421,7 @@ Recorded narration:
     parser.add_argument('--recorded-narration', type=str, default=None,
                         help='Prepare PowerPoint recorded timings and narrations from a complete audio '
                              'directory. Default-flow exports get the _narrated name suffix '
-                             '(<project>_<ts>_narrated.pptx) to tell them apart from silent exports.')
+                             '(<title>_verN_narrated.pptx) to tell them apart from silent exports.')
     parser.add_argument('--narration-padding', type=non_negative_float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
 

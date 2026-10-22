@@ -22,10 +22,12 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
 [Template / Brand / Layout (optional)] — default: skip, proceed with free design
-    Trigger only on an explicit Layout/Deck workspace root or direct Brand/legacy package path
+    Trigger on an explicit Brand/Layout/Deck workspace root or legacy package path; an explicit
+    "use a template" intent or a bare deck-id name gets one narrow disambiguation question;
+    otherwise free design (the Step 4 confirm page still offers a deck-template card)
     Raw PPTX template requests route to the ppt-template-fill skill; reusable SVG templates are created by create-template first
     ↓
-[Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md
+[Strategist] - Strategist confirmation stage (one single-pass page by default; staged three-stage flow only on explicit request) & Design Specifications → design_spec.md + spec_lock.md
     ↓
 [Image Acquisition] (when any resource row needs AI generation, web search, or slicing)
     ↓
@@ -33,7 +35,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── Live preview starts and stays available during generation
     ├── Visual construction: generate SVG pages sequentially → svg_output/
     ├── [Quality Check] svg_quality_checker.py (mandatory — must pass with 0 errors)
-    └── Notes generation: complete speaker notes → notes/total.md
+    └── Notes generation (opt-in — only when speaker notes / narration were requested): notes/total.md
     ↓
 [Chart calibration (conditional)] → verify-charts workflow (required for decks containing data charts)
     ↓
@@ -41,15 +43,17 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 [Post-processing] → [total_md_split.py when notes were requested] → [finalize_svg.py when SVG previews were requested] → svg_to_pptx.py
     ↓
+[Final verification (mandatory after every export)] → verify_deck.py (+ one-pass contact-sheet check; the full verify-pptx-export workflow runs only on explicit user approval)
+    ↓
 Output:
     svg_final/                                          ← On-demand; absent on a routine PPTX-only run
     └── *.svg                                           ← Self-contained visual previews; may be inserted as SVG pictures
 
     # Every PPTX variant below is produced through the svg_output → native DrawingML route
-    exports/
-    ├── presentation_<timestamp>.pptx                ← Native shapes (DrawingML) — canonical output, edit & deliver from here
-    ├── presentation_<timestamp>_native_charts.pptx  ← Native chart/table objects instead of flattened shapes (opt-in via --native-objects)
-    └── presentation_<timestamp>_narrated.pptx        ← Narrated version — embedded per-slide audio + auto-advance timings (via --recorded-narration audio)
+    projects/<YYYYMMDD>_<title>/exports/
+    ├── <title>_verN.pptx                  ← Native shapes (DrawingML) — canonical output, edit & deliver from here (N increments per export)
+    ├── <title>_verN_native_charts.pptx    ← Native chart/table objects instead of flattened shapes (opt-in via --native-objects)
+    └── <title>_verN_narrated.pptx         ← Narrated version — embedded per-slide audio + auto-advance timings (via --recorded-narration audio)
 
     # Always written in default-flow mode (no -o)
     backup/<timestamp>/
@@ -71,13 +75,18 @@ Minimal semantic markers do not weaken that closure. Free-design and brand-only 
 
 This is a page-design closure rule, not a claim that SVG describes the entire PPTX package. Rebuilding the visible slide from its completed SVG is the relevant invariant; reconstructing notes, audio, timing, relationships, or direct native edits from SVG alone is not.
 
-Direct PPTX workflows intentionally bypass the SVG authoring route and remain separate by design:
+Direct PPTX workflows intentionally bypass the SVG authoring route and remain separate by design. They keep the source deck's fonts (the Pretendard lock applies only to SVG-authored decks):
 
 | Workflow | Input role | Output mechanics | Why it is separate |
 |---|---|---|---|
-| `ppt-template-fill` (standalone skill) | a native PPTX template deck plus new material | clone selected slides and patch text / tables / charts in OOXML | preserves the user's PowerPoint slide shells instead of converting them into SVG |
-| `native-enhance-pptx` | a finished PPTX whose layout/content should remain stable | patch notes, narration, timings, and transitions directly in OOXML | appends native enhancements without regenerating design |
-| `beautify-pptx` | an existing PPTX whose page count/order/wording must stay 1:1 | extract source facts, regenerate a native deck through the SVG pipeline | changes layout and hierarchy only; it is not direct in-place editing |
+| `ppt-template-fill` (standalone skill) | a native PPTX template deck plus new material | clone selected slides and patch text / tables / charts in OOXML → `exports/<name>_YYYYMMDD_HHMMSS.pptx`; OfficeCLI verification loop is a mandatory gate | preserves the user's PowerPoint slide shells instead of converting them into SVG |
+| `native-enhance-pptx` | a finished PPTX whose layout/content should remain stable | patch notes, narration, timings, and transitions directly in OOXML → `<src>_enhanced.pptx` in its own project folder | appends native enhancements without regenerating design |
+
+`beautify-pptx` is the PPTX-input route that does **not** bypass SVG — it is listed here only because it also starts from an existing deck:
+
+| Workflow | Input role | Output mechanics | Why it is separate |
+|---|---|---|---|
+| `beautify-pptx` | an existing PPTX whose page count/order/wording must stay 1:1 | extract source facts, regenerate a native deck through the SVG pipeline (Pretendard-locked like the main pipeline) | changes layout and hierarchy only; it is not direct in-place editing |
 
 ---
 
@@ -136,14 +145,14 @@ spec_lock.md + images/ + icons/ + templates/
     └─> Executor -> svg_output/
               ├─> svg_quality_checker.py
               ├─> [on demand] finalize_svg.py -> svg_final/
-              └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx
+              └─> svg_to_pptx.py -> exports/<title>_verN.pptx
                                       backup/<ts>/svg_output/
 
 Direct OOXML routes:
 analysis/<stem>.slide_library.json + source PPTX + fill_plan.json
-    └─> template_fill_pptx.py -> exports/*.pptx
+    └─> template_fill_pptx.py -> exports/<name>_YYYYMMDD_HHMMSS.pptx
 source PPTX project copy + enhancement plan + notes/audio/timing assets
-    └─> native_enhance_pptx.py -> exports/*.pptx
+    └─> native_enhance_pptx.py -> exports/<src>_enhanced.pptx
 ```
 
 The critical split is that `svg_output/` is authored state, while `svg_final/`, `exports/`, and `backup/` are derived delivery or archival state. Deleting that distinction makes validation, re-export, and manual repair much harder to reason about.
@@ -218,8 +227,8 @@ Two converter design choices still shape the system:
 | `svg_output/` | the only hand-authored SVG source directory |
 | `svg_final/` | on-demand derived, self-contained SVGs for IDE/browser preview or manual insertion as SVG pictures; absent on a routine PPTX-only run and not a supported Convert-to-Shape path |
 | `live_preview/` | preview server state, edit history, and annotation logs |
-| `notes/` | `total.md` and split per-slide speaker notes |
-| `exports/` | timestamped native PPTX deliverables |
+| `notes/` | `total.md` and split per-slide speaker notes — only when notes/narration were requested (absent by default) |
+| `exports/` | native PPTX deliverables, `<title>_verN.pptx` (auto-incremented; `_native_charts` / `_narrated` suffix variants) |
 | `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
 
 The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The production workflow in `SKILL.md` deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
@@ -257,11 +266,11 @@ The architectural choice worth flagging: **viewBox is in pixels, not absolute un
 
 ## Template System & Optional Path
 
-Templates are **opt-in, not default**. The default Strategist flow is free design — AI invents the visual system from the source content alone. The template path activates only on an explicit directory path supplied by the user.
+Templates are **opt-in, not default**. The default Strategist flow is free design — AI invents the visual system from the source content alone. The template path activates on an explicit directory path supplied by the user; an explicit "use a template" intent or a bare deck-id name gets one narrow disambiguation question, and the Step 4 confirm page offers a deck-template card on free-design runs.
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat packages resolve direct `design_spec.md`. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+**Mechanical trigger, not semantic matching.** A bare layout/brand name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. A bare name that matches a deck id in `decks_index.json` triggers only the single disambiguation question, never a direct install. Step 3 consumes an explicit path the user gave or confirmed. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat packages resolve direct `design_spec.md`. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
 
 All current Brand/Layout/Deck packages use one workspace routing contract. Brand workspaces omit the SVG roster; empty optional directories are omitted:
 
@@ -414,9 +423,9 @@ The post-processing and export stages work with distinct artifacts. Each one ser
 | --- | --- | --- |
 | `svg_output/` | source of truth, manual editing, `update_spec.py`, `svg_quality_checker.py` | only directory whose contents are authored, not derived |
 | `svg_final/` | on-demand self-contained visual preview; IDE/browser inspection; manual insertion as an SVG picture | `.pptx` is not openable in IDEs; `svg_output/` won't render fully because of external icon / image refs. PowerPoint Convert to Shape is not supported |
-| `exports/<name>_<ts>.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
-| `exports/<name>_<ts>_native_charts.pptx` (opt-in via `--native-objects`) | when `data-pptx-native` chart/table markers should ship as real editable PowerPoint objects instead of flattened shapes | data-backed chart/table objects the user can edit in PowerPoint; name marks it apart from the plain shape export |
-| `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration audio`) | narrated deck for auto-play and PowerPoint video export | embedded per-slide audio plus auto-advance timings; name marks it apart from silent exports |
+| `exports/<title>_verN.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
+| `exports/<title>_verN_native_charts.pptx` (opt-in via `--native-objects`) | when `data-pptx-native` chart/table markers should ship as real editable PowerPoint objects instead of flattened shapes | data-backed chart/table objects the user can edit in PowerPoint; name marks it apart from the plain shape export |
+| `exports/<title>_verN_narrated.pptx` (via `--recorded-narration audio`) | narrated deck for auto-play and PowerPoint video export | embedded per-slide audio plus auto-advance timings; name marks it apart from silent exports |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
 
 ### SVG preprocessors have TWO consumers
@@ -550,6 +559,7 @@ Standalone workflows are route definitions, not optional decorations. They exist
 | `live-preview` | user asks to preview, click/select, apply annotations, or re-export browser edits | start/re-enter browser preview and apply submitted edits only at the defined point |
 | `visual-review` | user explicitly requests per-page visual self-check | rubric pass between Executor and post-processing |
 | `generate-audio` | user asks for narration/video export | produce narration audio and recorded timing export path |
+| `verify-pptx-export` | user explicitly approves deep verification of an exported `.pptx` (the mandatory `verify_deck.py` gate's one-pass check may recommend it, but never enters it) | OfficeCLI-based package/issue/render triage with fixes routed upstream; stops if OfficeCLI is missing |
 | `native-enhance-pptx` | finished PPTX should keep existing content/layout while adding native enhancements | direct OOXML patch route |
 
 Keeping these files separate is a dependency-control decision. The main path loads only the roles and references it actually needs; a narration backend, animation sidecar, chart calibration rubric, or template-import contract is pulled into context only when the trigger fires. That keeps the default deck-generation path tight while making the rarer capabilities deterministic rather than improvised.

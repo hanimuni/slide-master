@@ -36,20 +36,20 @@ This workflow edits the global brand library, not any specific `projects/<x>/`. 
 
 ## Step 2A: Asset extraction
 
-Read assets directly using existing converters — no dedicated extraction script.
+Read assets directly using existing converters — no dedicated brand-extraction script. Write converter output to a temporary directory (`/tmp/brand_extract/<brand_id>/`), never beside the user's source file or into the repository.
 
 | Asset format | Read method | Extractable fields |
 |---|---|---|
 | SVG logo | `Read` the SVG; grep `fill=` / `stroke=` for HEX | colors (literal), logo file |
 | PNG/JPG logo | `Read` (multimodal); AI vision identifies dominant colors | colors (approximate HEX, label `[approx]`), logo file |
-| Brand site URL | `python3 .claude/skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>`, then `Read` the result | color references, font references, voice/tone |
-| Branded PPTX | `python3 .claude/skills/ppt-master/scripts/source_to_md/ppt_to_md.py <file>`, then read theme XML | colors, typography (literal) |
-| Brand PDF | `python3 .claude/skills/ppt-master/scripts/source_to_md/pdf_to_md.py <file>` | voice/tone; sometimes color/font references |
+| Brand site URL | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL> -o /tmp/brand_extract/<brand_id>/site.md` (several URLs: `-d /tmp/brand_extract/<brand_id>/`), then `Read` the result | color references, font references, voice/tone |
+| Branded PPTX | `python3 ${SKILL_DIR}/scripts/beautify_identity.py <file>` (theme palette + fonts + sizes as JSON on stdout); add `ppt_to_md.py <file> -o /tmp/brand_extract/<brand_id>/deck.md` only when voice/tone text is needed | colors, typography (literal) |
+| Brand PDF | `python3 ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file> -o /tmp/brand_extract/<brand_id>/brand.md` | voice/tone; sometimes color/font references |
 
 Identify which of (colors / typography / logo / voice / icon style) the asset did NOT cover, then proceed to Step 3 for the rest. Most single assets cover 1–2 categories well.
 
 **Provenance labels** for each field in the draft `design_spec.md`:
-- `[fact]` — extracted directly (SVG fill HEX, PPTX theme XML)
+- `[fact]` — extracted directly (SVG fill HEX, `beautify_identity.py` theme JSON)
 - `[approx]` — visual estimate (PNG/JPG color picking)
 - `[user]` — supplied via chat fill-in in Step 3
 
@@ -177,17 +177,16 @@ No SVG page roster, canvas spec, signature design elements, or preview PPTX. Do 
 
 ## Step 5: Register and hand off
 
-Update `templates/brands/brands_index.json` with the new entry (create the file if missing):
+**Validation**: before registering, confirm `templates/design_spec.md` frontmatter has `brand_id` (= directory name), `kind: brand`, `summary`, and `primary_color`; every HEX in §II is `#RRGGBB`; and every file or directory named in §IV / §VII exists. Fix any gap first.
 
-```json
-{
-  "<brand_id>": {
-    "summary": "<from design_spec.md frontmatter>",
-    "keywords": [...],
-    "primary_color": "#XXXXXX"
-  }
-}
+Register the brand — do not hand-edit `brands_index.json`:
+
+```bash
+python3 ${SKILL_DIR}/scripts/register_template.py <brand_id> --kind brand --dry-run   # parse check; fix any reported error
+python3 ${SKILL_DIR}/scripts/register_template.py <brand_id> --kind brand
 ```
+
+The script reads the frontmatter and writes the `templates/brands/brands_index.json` entry (creating the file if missing).
 
 Emit the confirmation card:
 
@@ -203,7 +202,7 @@ How to use in a project:
 - Same explicit-path rule as layout templates: bare brand names never trigger
 - May be supplied together with a layout template path; Step 3 fuses both into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3
 - To list available brands: open `templates/brands/brands_index.json`
-- To edit: modify `templates/brands/<brand_id>/templates/design_spec.md`, then re-run `python3 .claude/skills/ppt-master/scripts/register_template.py --kind brand <brand_id>`
+- To edit: modify `templates/brands/<brand_id>/templates/design_spec.md`, then re-run `python3 ${SKILL_DIR}/scripts/register_template.py <brand_id> --kind brand`
 ```
 
 ---
@@ -226,6 +225,6 @@ Brand application happens in [`SKILL.md` Step 3](../SKILL.md) under the **same e
 
 1. **Brand is identity, not layout** — colors / typography / logo / voice / icon style only. Page roster, canvas spec, and signature design elements belong to layout templates; do not duplicate them here.
 2. **Common workspace routing** — brand assets use the same `templates/`, `images/`, `icons/`, and `exports/` routes as other template kinds; empty optional directories are omitted.
-3. **No script dependency** — Step 2A reuses existing converters plus AI inline reading. A dedicated `brand_extract.py` is not introduced unless future user feedback demands batch processing or precise color picking from raster logos.
+3. **No dedicated extraction script** — Step 2A reuses existing converters (`beautify_identity.py`, `web_to_md.py`, `pdf_to_md.py`) plus AI inline reading. A dedicated `brand_extract.py` is not introduced unless future user feedback demands batch processing or precise color picking from raster logos.
 4. **Multi-brand support** — `templates/brands/` accepts any number of brands; agency / freelancer / multi-client workflows are natural.
 5. **Precedence rule** — when a brand and a layout template both apply, Step 3 fuses them into one `design_spec.md`: brand wins on color / typography / logo / voice / icon style; layout wins on canvas / page roster / spacing / font-size hierarchy / signature visual elements. See `SKILL.md` Step 3 for the full precedence table.

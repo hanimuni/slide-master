@@ -332,7 +332,7 @@ Wrap logically related Slide-local elements in top-level `<g id="...">` groups. 
 | List item | Bullet / number + icon + title + description |
 | Icon-text combo | Icon element + adjacent label |
 | Page header | Title + subtitle + accent decoration |
-| Page footer | Page number + branding |
+| Page footer | Notes / `출처:` line (left) + deck short title and page number `01/05` (right) — [`report-craft.md`](report-craft.md) §7 |
 | Decorative cluster | Related decorative shapes (rings, dots, orbs) |
 
 An authored native preset fragment (§1.5) is already an atomic `<g id>` and counts as one content group; keep its labels / decorations in a sibling parent `<g>`, never inside the preset group.

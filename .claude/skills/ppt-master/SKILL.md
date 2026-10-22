@@ -9,7 +9,8 @@ description: >
   workflows/routing.md first. Do not use for ambiguous existing-PPTX
   optimization, reusable-template creation, raw-PPTX native filling, or
   finished-PPTX native enhancement; those are pre-route or standalone
-  workflow requests.
+  workflow requests. This skill directory also hosts the router
+  (workflows/routing.md) and every standalone workflow.
 ---
 
 # PPT Master Skill
@@ -18,12 +19,13 @@ description: >
 [`workflows/routing.md`](workflows/routing.md) has selected the main SVG family,
 or another workflow has explicitly handed off to shared SVG steps. Strict 1:1
 selection loads `beautify-pptx.md` first and loads this file only at that
-workflow's explicit handoff. Raw template fill and finished-PPTX native
+workflow's explicit handoff: beautify's own confirmation replaces the Step 4
+gate, and it enters at Step 4 spec writing + `validate_spec.py`, then Steps 5–7. Raw template fill and finished-PPTX native
 enhancement do not load or inherit this file.
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
-**Main SVG Pipeline**: `Source Document → Create Project → [Template] → Strategist Structured Plan → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
+**Main SVG Pipeline**: `Source Document → Create Project → [Template] → Strategist confirmation + spec (headline track) → [Image_Generator] → Executor Live Preview → Quality Check → Export → verify_deck + final read-through`
 
 ### SVG Page-Design Boundary
 
@@ -45,10 +47,10 @@ enhancement do not load or inherit this file.
 >
 > 1. **SERIAL EXECUTION** — Steps MUST be executed in order; the output of each step is the input for the next. Non-BLOCKING adjacent steps may proceed continuously once prerequisites are met, without waiting for the user to say "continue"
 > 2. **BLOCKING = HARD STOP** — Steps marked ⛔ BLOCKING require a full stop; the AI MUST wait for an explicit user response before proceeding and MUST NOT make any decisions on behalf of the user
-> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: the Strategist confirmation stage in Step 4 is ⛔ BLOCKING — the AI MUST present recommendations and wait for explicit user confirmation before proceeding. Once the user confirms, all subsequent non-BLOCKING steps — design spec output, SVG generation, speaker notes, and post-processing — may proceed automatically without further user confirmation)
+> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: the Strategist confirmation stage in Step 4 is ⛔ BLOCKING — the AI MUST present recommendations and wait for explicit user confirmation before proceeding. Once the user confirms, all subsequent non-BLOCKING steps — design spec output, SVG generation, speaker notes, and post-processing — may proceed automatically without further user confirmation. The only later stops are conditional and listed here: the opt-in [refine-spec](workflows/refine-spec.md) review (explicit request or `refine_spec: true`), the split-mode window switch (explicit opt-in), the Step 7 image-readiness user-drop pause (rows left `Needs-Manual`, or the `manual` image path), and approvals that standalone workflows define for themselves (e.g. verify-pptx-export repairs). The Step 4 headline-track print is information, not a stop.)
 > 4. **GATE BEFORE ENTRY** — Each Step has prerequisites (🚧 GATE) listed at the top; these MUST be verified before starting that Step
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
-> 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
+> 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN. Sole exception: the opt-in [`visual-review`](workflows/visual-review.md) workflow, run only on explicit user request, may use its parallel fix sub-agents on already-authored pages
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
 > 8. **SPEC_LOCK MILESTONE RE-READ** — Executor MUST `read_file <project_path>/spec_lock.md` before the first page of each 4-page block (P01, P05, P09, …) and immediately after any context compaction. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly; between re-reads the in-context copy from the last read is the working reference. Executor MUST also read `pptx_structure.mode`, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), and `page_charts`. Only a deck/layout template route (`mode: structured`) looks up `page_layouts` (the input template SVG), `pptx_masters`, `pptx_layouts`, and `template_adherence`; free-design and brand-only routes use `mode: flat` and omit those sections. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
 > 9. **SVG MUST BE HAND-WRITTEN, NOT SCRIPT-GENERATED** — Every SVG page is written by the main agent directly, one page at a time (see rules 6 and 7). Writing or running a Python / Node / shell script that produces the SVG files in batch — looping over pages, templating from data, or emitting them via a generator — is FORBIDDEN, including under "save tokens", "quick draft", or "user is in a hurry" pretexts. The script-generation path was tried on a feature branch and abandoned: cross-page visual consistency depends on per-page authoring with full upstream context, which a generator script cannot reproduce. **Narrow exception**: `preset_shape_svg.py` may print one deterministic stock-shape fragment to stdout after the main agent has selected its semantic role, frame, and paint. It cannot write `svg_output/`, choose layout, batch shapes, or generate a page; the main agent reads the fragment and inserts it through the normal hand-authored page edit
@@ -116,8 +118,8 @@ enhancement do not load or inherit this file.
 | `${SKILL_DIR}/scripts/run_telemetry.py` | Opt-in explicit-run lifecycle + fixed low-variance metric telemetry for pre-registered benchmarks |
 | `${SKILL_DIR}/scripts/measure_run.py` | Explicit telemetry-run report; legacy artifact timestamps remain non-comparable diagnostics only |
 | `${SKILL_DIR}/scripts/benchmark_pipeline_ab.py` | Clean-worktree paired A/B harness with fixture/source integrity, quality guards, and pre-registered CI/MCID decisions |
-| `${SKILL_DIR}/scripts/native_enhance_pptx.py` | Existing PPTX enhancement project init / validation / direct OOXML patch export |
-| `${SKILL_DIR}/scripts/native_narration_pptx.py` | Backward-compatible entrypoint for existing PPTX notes / narration enhancement |
+| `${SKILL_DIR}/scripts/native_enhance_pptx.py` | Direct-PPTX route only (not main pipeline): existing PPTX enhancement project init / validation / direct OOXML patch export |
+| `${SKILL_DIR}/scripts/native_narration_pptx.py` | Direct-PPTX route only: backward-compatible entrypoint for existing PPTX notes / narration enhancement |
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
@@ -137,6 +139,7 @@ fixture, quality-equivalence, cache-scope, metric, CI/MCID, and drift rules.
 | Index | Path | Purpose |
 |-------|------|---------|
 | Layout templates | `${SKILL_DIR}/templates/layouts/layouts_index.json` | Query available page layout templates |
+| Deck templates | `${SKILL_DIR}/templates/decks/decks_index.json` | Query bundled whole-deck templates (Step 3 disambiguation + Step 4 template card) |
 | Brand presets | `${SKILL_DIR}/templates/brands/brands_index.json` | Query available brand identity presets (color / typography / logo / voice) |
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
@@ -181,7 +184,7 @@ when every source Layout is used by a source Slide and every source Master is
 reachable through those Layouts. Otherwise stop and report the exact
 unreachable identities; never drop them or invent a carrier page.
 
-**FALLBACK**: Ambiguous requests such as "make this PPT more professional" require exactly one discriminator question: preserve original page count/order and slide wording, or treat the deck as source material and restructure it?
+**FALLBACK**: Ambiguous requests such as "make this PPT more professional" require exactly one discriminator question: preserve original page count/order and slide wording, or treat the deck as source material and restructure it? A PPTX plus new material with no stated use requires the second discriminator in `workflows/routing.md` §1: reuse its slide design (`ppt-template-fill`) or use it only as content (main pipeline)?
 
 ---
 
@@ -274,9 +277,9 @@ python3 ${SKILL_DIR}/scripts/preflight.py            # add --needs-images when t
 
 **Default — free design.** Proceed directly to Step 4. Do NOT query any `*_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
 
-**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: brand` / `kind: layout` / `kind: deck`, or a compatible legacy-flat package whose root `design_spec.md` declares one of those kinds.
+**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to the `ppt-template-fill` skill. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: brand` / `kind: layout` / `kind: deck`, or a compatible legacy-flat package whose root `design_spec.md` declares one of those kinds.
 
-Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
+Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use the `ppt-template-fill` skill for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
 
 **Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message, plus one narrow workflow handoff: a project-scoped `create-template` run in the current conversation may pass its exact validated project workspace root directly into this Step. The trigger rule is mechanical, not interpretive:
 
@@ -449,7 +452,7 @@ Read references/strategist.md
 
 | Group | Fields | Anchored by |
 |---|---|---|
-| **direction anchors** | `template` *(decks-only card; free-design default — leads the page, a deck pick re-defaults the anchors below it; locked informational when Step 3 already installed a template)* · `template_adherence` *(only when Step 3 loaded a deck/layout template, or a deck card is selected)* · canvas · audience + core message + `content_divergence` + `delivery_purpose` *(PPT only — omitted on non-PPT canvases)* · `time_budget_minutes` · `audience_profile` *(knowledge + stance)* · `desired_outcome` *(type + detail)* · `evidence_rigor` · optional `content_priority` (all §c key info) · `mode` + `visual_style` | the source + user intent |
+| **direction anchors** | `template` *(decks-only card; free-design default — leads the page, a deck pick re-defaults the anchors below it; locked informational when Step 3 already installed a template)* · `template_adherence` *(only when Step 3 loaded a deck/layout template, or a deck card is selected)* · canvas · audience + deck core message (written into the `audience` value / chat summary — no separate field) + `content_divergence` + `delivery_purpose` *(PPT only — omitted on non-PPT canvases)* · `time_budget_minutes` · `audience_profile` *(knowledge + stance)* · `desired_outcome` *(type + detail)* · `evidence_rigor` · optional `content_priority` (all §c key info) · `mode` + `visual_style` | the source + user intent |
 | **design system** | page count · color · typography (font + size) · icons · formula policy | the direction anchors |
 | **images / execution** | image usage · generated-image style · AI-image generation path · generation mode · refine-spec toggle | direction + design system |
 
@@ -499,7 +502,7 @@ For the explicit staged flow, `result.json.user_fixed_fields` records interactio
 | `delivery_purpose` (§g) | body baseline + per-page density / rhythm (§6.1) |
 | `time_budget_minutes` | page-count recommendation + speaking depth + dense / breathing rhythm |
 | `audience_profile` | terminology support + example choice + objection handling + diagram complexity |
-| `desired_outcome` | narrative emphasis + title posture + the actual closing treatment |
+| `desired_outcome` | narrative emphasis + governing-message posture + the actual closing treatment |
 | `evidence_rigor` | source / unit / uncertainty treatment + claim strength |
 | `audience` / core message (§c) | tone across e–h, outline emphasis (§IX) |
 | `color` HEX (§e) | h.5 palette (re-filter for the new HEX) |
@@ -514,14 +517,14 @@ The page is a **confirmation surface only** — Strategist still authors every r
 
 | Signal read | Line content |
 |---|---|
-| Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
-| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](workflows/resume-execute.md). |
+| Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `이어서 생성 projects/<YYYYMMDD>_<title>` (or `继续生成 …` / `resume execution …`) — to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
+| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `이어서 생성 projects/<YYYYMMDD>_<title>` (or `继续生成 …` / `resume execution …`) after Step 5 to switch to [split mode](workflows/resume-execute.md). |
 
 This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page generation-mode toggle and is captured in `result.json` (`generation_mode`); the chat-summary fallback still prints this line.
 
 **Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/refine-spec.md) workflow. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](workflows/refine-spec.md) workflow take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
 
-**Formula rendering policy lives inside item 7 (Typography plan)**:
+**Formula rendering policy lives inside item 9 (Typography plan — strategist §g)**:
 
 | Policy | Behavior |
 |---|---|
@@ -543,14 +546,14 @@ The formula renderer uses a provider fallback chain by default: `codecogs,quickl
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
-python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
+python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images --canvas <canvas_format>
 ```
 
 > 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the §h image-usage recommendation (see [strategist.md](references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
-**Early background image launch (Mandatory when the confirmed `image_usage` includes `ai` and/or `web`)**: acquisition wall-clock must overlap spec writing, not block Step 6. Fix the §VIII image resource plan first — rows, filenames, per-row intent — then launch acquisition as background processes and keep authoring while they run:
+**Early background image launch (Mandatory when the confirmed `image_usage` includes `ai` and/or `web`, and `refine_spec` is not `true` — with refine-spec on, acquisition waits for the revised §VIII and runs in Step 5)**: acquisition wall-clock must overlap spec writing, not block Step 6. Fix the §VIII image resource plan first — rows, filenames, per-row intent — then launch acquisition as background processes and keep authoring while they run:
 
 1. Read `references/image-base.md` plus the path-specific reference(s) for the confirmed sources (`references/image-generator.md` for `ai`, `references/image-searcher.md` for `web`) — the same files Step 5 loads; Step 5's re-read is then a no-op.
 2. Write `<project_path>/images/image_prompts.json` (ai rows — the §VIII manifest contract is unchanged) and/or `<project_path>/images/image_queries.json` (≥2 web rows), then launch **in the background** (do NOT wait for completion):
@@ -572,6 +575,8 @@ The confirmed image path still wins **before any launch** (`codex` / `api` / `au
 python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>
 ```
 
+**Headline-track print (Mandatory — non-blocking)**: after `validate_spec.py` passes, run [`references/storyline-patterns.md`](references/storyline-patterns.md) §3 on §IX, fix §IX, and print in chat the exact page count plus one line per page — `P<NN> [topic title] — governing message`. Show it and continue; the user may interrupt to revise, or ask for [refine-spec](workflows/refine-spec.md) next time. This is not a second confirmation gate.
+
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
 ## ✅ Strategist Phase Complete
@@ -579,10 +584,11 @@ python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>
 - [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
-- [x] Background image acquisition launched before spec writing (only when confirmed `image_usage` includes `ai`/`web`; skipped for `manual` / `none` / hosts without background processes)
+- [x] Background image acquisition launched before spec writing (only when confirmed `image_usage` includes `ai`/`web`; skipped for `manual` / `none` / `refine_spec: true` / hosts without background processes)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [x] validate_spec.py passed (0 errors) on design_spec.md + spec_lock.md
+- [x] Headline track checked (storyline-patterns.md §3) and printed in chat: exact page count + `P<NN> [topic title] — governing message` per page
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
 ```
 
@@ -590,7 +596,7 @@ python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>
 
 ### Step 5: Image Acquisition Phase (Conditional)
 
-🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed. Any formula rows already have `Acquire Via: formula` and `Status: Rendered`.
+🚧 **GATE**: Step 4 complete; Strategist confirmation received, Design Specification & Content Outline generated and validated, headline track printed (main pipeline; the beautify hand-off skips the headline track). Any formula rows already have `Acquire Via: formula` and `Status: Rendered`.
 
 > **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6.
 
@@ -629,7 +635,7 @@ Workflow:
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](references/image-base.md) §3 dispatch table
 2.5. **Slice any spot-illustration sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](references/image-generator.md) §4.3.
 3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. The agent must resolve every residual `Failed` item by rerunning the confirmed path or marking it `Needs-Manual` before Executor starts
-4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
+4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images --canvas <canvas_format>` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
 **✅ Checkpoint — Confirm acquisition attempted for every row**:
 ```markdown
@@ -648,7 +654,7 @@ Workflow:
   ## ✅ Planning Session Complete
   - [x] Spec: `design_spec.md`, `spec_lock.md`
   - [x] Resources: `sources/`, `images/`, `templates/`
-  - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](workflows/resume-execute.md) workflow.
+  - [ ] **Next**: open a fresh chat window and input `이어서 생성 projects/<YYYYMMDD>_<title>` (or `继续生成 …` / `resume execution …`) to enter the execution session via the [`resume-execute`](workflows/resume-execute.md) workflow.
   ```
 
 > On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to the checkpoint above.
@@ -664,14 +670,15 @@ Workflow:
 > **⚡ Speed accelerators (free-design flat decks only — no template, no charts, no images).** For the `pptx_structure.mode: flat` route you MAY:
 > 1. read the one-screen [`references/executor-cheatcard.md`](references/executor-cheatcard.md) **in place of** re-reading `executor-base.md` + `shared-standards.md` end-to-end (still read the short mode + visual-style files);
 > 2. instantiate page skeletons from [`references/layout-archetypes.md`](references/layout-archetypes.md) instead of re-deriving geometry per pattern;
-> 3. pre-check each page's text with one `python3 ${SKILL_DIR}/scripts/text_fit.py --batch <page.json>` page object (width + vertical + collision; single-line form `"text" -s <fs> --x <x>` stays valid) before drawing, to skip the write→quality-warning/error→edit loop.
-> These are optional aids, not a new route: the `spec_lock` values, gates, grouping, and Step 7 export are unchanged. For structured/template, chart, image, mirror/beautify, or notes decks, read the full references below instead — the card omits their contracts.
+> 3. use the layout-archetype coordinates when building the `text_fit.py --batch <page.json>` page object that executor-base.md §2 makes mandatory on every route (width + vertical + collision).
+> Items 1–2 are optional aids, not a new route: the `spec_lock` values, gates, grouping, and Step 7 export are unchanged. For structured/template, chart, image, mirror/beautify, or notes decks, read the full references below instead — the card omits their contracts.
 
 Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
 ```
 Read references/executor-base.md                  # REQUIRED: common guidelines
 Read references/shared-standards.md               # REQUIRED: SVG/PPT technical constraints
 Read references/native-shape-authoring.md         # REQUIRED: stock-shape selection and fragment helper contract
+Read references/report-craft.md                   # REQUIRED: title / governing message, footer, list, chart, table rules
 Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
 Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
 Read references/native-objects.md                 # CONDITIONAL: deck plans data-chart or text-grid table pages (spec_lock.md `page_charts` / design_spec.md §VII) — marker schemas for executor-base.md §3.2 transcription
@@ -680,7 +687,7 @@ Read references/speaker-notes.md                  # CONDITIONAL: design_spec.md 
 Read .claude/skills/diagram-design/SKILL.md       # CONDITIONAL: deck has structural/conceptual diagram pages (routing: executor-base.md)
 ```
 
-> Read executor-base + shared-standards + native-shape-authoring + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`. Load each CONDITIONAL file only when its trigger holds for this deck — never proactively "just in case"; a mid-deck trigger change (e.g. the user adds a chart page) loads the file once at that point.
+> Read executor-base + shared-standards + native-shape-authoring + report-craft + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`. Load each CONDITIONAL file only when its trigger holds for this deck — never proactively "just in case"; a mid-deck trigger change (e.g. the user adds a chart page) loads the file once at that point.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
@@ -697,7 +704,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 **Pre-generation Batch Read (Mandatory)**: before the first SVG, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` and every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts). One read per file, up front — do not re-read these during page generation. See executor-base.md §1.0.
 
-> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
+> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images --canvas <canvas_format>` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
 **Deferred image pages (only while a Step-4 background acquisition is still running)**: author the pages that place no §VIII image first. Before the FIRST page that places one, complete Step 5's collection: every `ai`/`web`/`slice` row terminal (recovery ladder for `Failed` rows), sheets sliced, `analyze_images.py` re-run for measured sizes. If only image-placing pages remain and rows are still generating, wait for the background run (or resolve per [`workflows/failure-recovery.md`](workflows/failure-recovery.md)) — never lay out an image without its measured facts. Page order is otherwise the author's choice; rules 6/7 (main-agent, sequential one-continuous-pass) are unchanged — this defers *which* page comes next, not how pages are authored.
 
@@ -729,7 +736,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, text-geometry overflow / cross-group collision, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
-- **Text-geometry warnings are never acknowledge-and-release.** For each `text geometry:` warning (unnecessary wrap / over-width copy), output one disposition line: the fix applied (unwrap to one line, redistribute the zone, re-break at a balanced word boundary, or apply a bounded copy trim per the executor-base.md repair ladder — trims are the last resort and capped; never gut the copy to force a fit) or why the flagged break is intended (e.g. a deliberate balanced two-line lead, quoted verse keeping its authored breaks). Default is fix.
+- **Text-geometry warnings are never acknowledge-and-release.** For each `text geometry:` warning (unnecessary wrap / over-width copy), output one disposition line: the fix applied (unwrap to one line, redistribute the zone, re-break at a balanced word boundary, or apply a bounded copy trim per the executor-base.md repair ladder — trims are the last resort and capped; never gut the copy to force a fit) or why the flagged break is intended (e.g. a governing message §IX marks `two-line`, a balanced subtitle, quoted verse keeping its authored breaks). Default is fix.
 - **Structured template routes only — PPTX-structure warnings are the exception.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). Flat free-design and brand-only routes have no positive Master/Layout checkpoint; the checker instead enforces a complete flat lock and the absence of Master/Layout/layer/placeholder metadata. "0 errors" alone does not pass a structured template gate when such warnings remain undispositioned.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
@@ -747,6 +754,8 @@ The Step 6 live-preview server is already running — pass its actual URL from t
 ```markdown
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
+- [x] Design parameters output and pre-generation batch read done (executor-base.md §1.0 / §2)
+- [x] Deck frame from design_spec.md §V drawn identically on every content page (main pipeline: topic title + governing message header, `출처:` / `01/05` footer; verbatim routes such as beautify draw only source text in the frame)
 - [x] text_fit.py page-object batch run before drawing each non-trivial page (pre-clears width + vertical + collision; hand-eyeballing the geometry is the documented miss)
 - [x] Milestone gate run (page 1 + every 4 pages via --pages block; errors fixed and text-geometry warnings dispositioned per block)
 - [x] All SVGs generated to svg_output/
@@ -985,7 +994,7 @@ python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 
 > Exit 0 is required before completion is reported. The contact-sheet render is the only part `--no-render` turns off; every other check runs either way.
 >
-> **Iteration speed path**: while re-exporting repeatedly (fixing pages, re-running Step 7.2–7.3), add `--no-render` to skip the render — it costs roughly 7–13s per deck. Drop the flag for the final run before hand-off, so the deck is never delivered without one look at the converted pixels.
+> **Iteration speed path**: while re-exporting repeatedly (fixing pages, re-running Step 7.3), add `--no-render` to skip the render — it costs roughly 7–13s per deck. Drop the flag for the final run before hand-off, so the deck is never delivered without one look at the converted pixels.
 
 **Lightweight exported-PPTX visual sanity check (DEFAULT — one pass, not deep verification)**: Read the `_pptx_render/<stem>-grid.png` the command above prints, once, for obvious text overflow/collision, missing assets, or font substitution. Open only visibly suspect pages at full resolution; do not render and compare every page individually by default. When OfficeCLI is available, its `issues --json` scan MAY run alongside as a non-blocking suspicion signal.
 
@@ -993,9 +1002,11 @@ python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 - Visible or reported suspicion, or no usable exported-PPTX render: identify the page/finding and recommend [`verify-pptx-export`](workflows/verify-pptx-export.md) to the user. **Do not auto-enter that workflow or start its iterative repair loop.** Run it only after explicit user approval.
 - This one-pass check does not change the standalone workflow's explicit-request-only boundary.
 
+**Final read-through (Mandatory on the main pipeline — after `verify_deck.py` exits 0, before handoff; on the beautify hand-off run only the form stage)**: run [`references/report-craft.md`](references/report-craft.md) §10 in order — logic (governing messages alone, decision request placement) → facts (summary vs detail numbers, units, sources) → form (placeholder residue, stickers, grayscale, footers). Report one line per stage in the handoff, list anything unverified, and add the PDF-companion note (report-craft §9: save a PDF from PowerPoint with fonts embedded; PPTX does not embed Pretendard).
+
 > **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
 
-> **Direct edits in the browser**: the user may also stage text / SVG attribute edits in the preview. These land in `svg_output/` only after the user clicks **Apply changes**. If they ask to "re-export" / "重新导出" after applying such edits, just re-run Step 7.2–7.3 (finalize + export); no annotation-application step is needed unless they also saved AI-needed annotations.
+> **Direct edits in the browser**: the user may also stage text / SVG attribute edits in the preview. These land in `svg_output/` only after the user clicks **Apply changes**. If they ask to "re-export" / "重新导出" after applying such edits, just re-run Step 7.3 (export, with the same flags as before — Step 7.2 finalize only if `svg_final/` previews are wanted), then `verify_deck.py`; no annotation-application step is needed unless they also saved AI-needed annotations.
 
 > **Preview not running?** Any time the user mentions "live preview", "preview", "看效果", or wants to select/click a slide element and the service is not running, run [`live-preview`](workflows/live-preview.md) Step 1 to start it. If the service is already running, just point them at the URL — do not restart.
 
@@ -1018,6 +1029,8 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Resource | Path |
 |----------|------|
 | Shared technical constraints | `references/shared-standards.md` |
+| Report page craft (title / governing message, wording, evidence, lists, charts, footer, final read-through) | `references/report-craft.md` |
+| Storyline skeletons by report type + headline-track check | `references/storyline-patterns.md` |
 | Strategist image system (conditional load) | `references/strategist-images.md` |
 | Native object conversion contracts (conditional load) | `references/native-objects.md` |
 | Structured template route standards (conditional load) | `references/structured-templates.md` |

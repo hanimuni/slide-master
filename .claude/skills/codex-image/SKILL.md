@@ -3,6 +3,7 @@ name: codex-image
 description: |
   Generate images via Codex CLI's built-in image_gen tool (gpt-image-2). OAuth auth — no API key needed.
   Codex CLI의 내장 image_gen 도구로 이미지 생성. OAuth 인증으로 API 키 불필요.
+  Standalone one-off images only. Inside a ppt-master project, AI image rows use `image_gen.py --manifest` (Step 5); do not use this skill there.
   Usage: /codex-image cherry blossom hanok, /codex-image --size 1024x1536 space cat, /codex-image --quality high seoul night
 argument-hint: "[--size <WxH>] [--quality low|medium|high] [--out <path>] [--filename <name>] [-n <count>] <image prompt>"
 allowed-tools:

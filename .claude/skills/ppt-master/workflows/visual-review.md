@@ -16,6 +16,8 @@ The main pipeline now runs a **default lightweight geometry loop** of its own: `
 
 This workflow remains the **optional full visual re-pass**, opt-in only: per-page rubric coverage (rhythm, alignment, centroid, readability, emphasis) via parallel subagents over every rendered page. The main pipeline does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
 
+**Hard rule — user-requested sub-agent exception**: the parallel sub-agents in Step 2 edit existing pages in `svg_output/`. This is an explicit exception to SKILL.md's no-sub-agent rule, valid only because the user requested this workflow; it covers atomic position/spacing fixes to already-generated pages, never generation of new pages. Without the user's request, do not dispatch sub-agents against `svg_output/`.
+
 **Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
 
 ## When to Run
@@ -44,8 +46,8 @@ pip install playwright
 python3 -m playwright install chromium
 
 # 2. live-preview server running for this project (provides inlined SVG fetch)
-python3 .claude/skills/ppt-master/scripts/svg_editor/server.py <project_path> --no-browser
-# (single instance per project — if it's already running, skip)
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon --no-browser
+# (single instance per project — the Step 6 live preview usually still runs; if so, skip)
 ```
 
 The renderer (`visual_review.py`) does **not** auto-start the live-preview server. It expects the server to be reachable at `http://localhost:5050` (override with `--server-url`).
@@ -57,7 +59,7 @@ The renderer (`visual_review.py`) does **not** auto-start the live-preview serve
 ## Step 1 — Pre-render all PNGs
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/visual_review.py <project_path>
+python3 ${SKILL_DIR}/scripts/visual_review.py <project_path>
 ```
 
 This writes one PNG per page to `<project_path>/.preview/<page>.png` at 1280×720, with `<use data-icon>` inlined and `<image href>` resolved exactly as the live-preview browser sees them. Renders are serialized via a project-local file lock — safe to invoke concurrently.
@@ -93,7 +95,7 @@ The orchestrator prompt must be self-contained and is the **single** place where
 - Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; if §IX is absent, default every page to `content` and flag this in the final report)
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
-- Path to the rubric: `.claude/skills/ppt-master/references/visual-review.md`
+- Path to the rubric: `${SKILL_DIR}/references/visual-review.md` (resolved to an absolute path)
 - Dispatch contract reference: rubric [§6](../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
 - Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `animations.json`, `image_prompts.json`, or `images/`
 
@@ -136,9 +138,10 @@ If `brand_review.json` is non-empty, that's a single decision applied across the
 After the table is clean, continue to post-processing per [`SKILL.md`](../SKILL.md) Step 7:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/total_md_split.py <project_path>  # only when notes were requested
-python3 .claude/skills/ppt-master/scripts/finalize_svg.py <project_path>  # only when svg_final/ is requested or already exists
-python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>  # only when notes were requested
+python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>  # only when the user asks for svg_final/ previews or svg_final/ already contains SVGs
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>   # repeat the export flags previously selected for this project
+python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 ```
 
 ---

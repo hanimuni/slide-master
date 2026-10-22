@@ -465,7 +465,9 @@ Write `project/images/image_prompts.json` with this shape:
 
 > Prerequisite: §3 Steps 1-3 complete; `images/image_prompts.json` exists and validates. The manifest is the machine execution/audit contract for the automated paths. It is never handed to the user as a prompt sheet, and no Markdown prompt sidecar is rendered.
 >
-> In-pipeline launch point: SKILL.md Step 4 "Early background image launch" — the manifest run starts as a background process overlapping spec writing, and Step 5 is the collection/recovery point (this §7 ladder runs there for rows the background run left `Failed`). SKILL.md owns the sequencing; this section owns path selection and recovery.
+> In-pipeline launch point: SKILL.md Step 4 "Early background image launch" (skipped when `refine_spec: true` — then the run starts in Step 5 on the approved §VIII) — the manifest run starts as a background process overlapping spec writing, and Step 5 is the collection/recovery point (this §7 ladder runs there for rows the background run left `Failed`). SKILL.md owns the sequencing; this section owns path selection and recovery.
+
+> **Codex host**: Path A is unchanged — run `image_gen.py --manifest` (the codex backend shells out to `codex exec`). Do not replace manifest rows with direct built-in `image_gen` tool calls: status write-back and idempotency come from the manifest run. The direct-call note generated into the `codex-image` stub applies only to that standalone skill.
 
 ### Path Selection (Deterministic)
 

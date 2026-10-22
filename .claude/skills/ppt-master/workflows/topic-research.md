@@ -1,10 +1,10 @@
 ---
-description: Gather source materials via web search when the user supplies only a topic or requirements without source files. Produces a Markdown document and an image folder that feed SKILL.md Step 2's import-sources.
+description: Gather source materials via web search when the user supplies only a topic or requirements without source files. Runs before SKILL.md Step 1; produces a Markdown document and an image folder that are imported at SKILL.md Step 2's import-sources.
 ---
 
 # Topic Research Workflow
 
-> Standalone pre-processing step. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document + image folder, both shaped to feed `project_manager.py import-sources` directly.
+> Standalone pre-processing step. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document + image folder; the document is already Markdown, so Step 1 needs no conversion, and both are imported at Step 2 via `project_manager.py import-sources`.
 
 This workflow is **independent**: it owns the source-acquisition step when no file exists; subsequent SKILL.md steps proceed normally with the produced materials as input.
 
@@ -111,19 +111,21 @@ curl -L -o "projects/<topic_slug>/<descriptive_name>.<ext>" "<image_url>"
 
 ## Hand-off
 
-Output a checkpoint, then continue with the main pipeline. The artifacts feed directly into Step 2's `import-sources`:
+Output a checkpoint, then continue with the main pipeline. The research document already satisfies SKILL.md Step 1 (Markdown, no conversion); the artifacts are imported at Step 2's `import-sources`:
 
 ```markdown
 ## ✅ Topic Research Complete
 - [x] Document: `projects/<topic_slug>.md` (N sections)
 - [x] Images: `projects/<topic_slug>/` (N files)
 - [ ] **Next**: SKILL.md Step 2 →
-  `project_manager.py init <project_name> --format <format>`
-  `project_manager.py import-sources projects/<project_name> projects/<topic_slug>.md projects/<topic_slug>/*.* --move`
+  `project_manager.py init <title> --format <format>`
+  `project_manager.py import-sources projects/<YYYYMMDD>_<title> projects/<topic_slug>.md projects/<topic_slug>/*.* --move`
 ```
 
 When no image was retained, the image folder does not exist: drop the `Images:`
 line and the `projects/<topic_slug>/*.*` argument. Emit the checkpoint itself
 verbatim — these conditions are instructions to you, not text to print.
 
-`<project_name>` is the user's chosen project identifier (typically `<format>_<topic_slug>`, e.g. `ppt169_joe_hisaishi`); `--move` removes the research artifacts from `projects/<topic_slug>` after they are imported.
+`<title>` is the user's chosen project title (e.g. `joe_hisaishi`); `projects/<YYYYMMDD>_<title>` is the project path `init` prints (e.g. `projects/20260315_joe_hisaishi`) — copy it from the init output, do not reconstruct it. `--move` removes the research artifacts from `projects/<topic_slug>` after they are imported.
+
+**Hand-off — `ppt-template-fill` route**: when the router selected [`ppt-template-fill`](../../ppt-template-fill/SKILL.md) and the user supplied only a topic, return to `ppt-template-fill` Step 1 with `projects/<topic_slug>.md` (and any retained images) as the content material instead of continuing to SKILL.md Step 2. Emit the same checkpoint with **Next** pointing at `ppt-template-fill` Step 1.

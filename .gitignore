@@ -15,8 +15,13 @@ projects/*
 # Template library review artifacts (see templates/README.md — never copied by Step 3)
 .claude/skills/ppt-master/templates/*/*/exports/
 
-# Generated picture catalogue (22 MB, thumbnails inlined) - rebuild with scripts/build_catalog.py
-.claude/skills/pptx-com-effects/catalog/catalog.html
+# Sibling effect skills — maintained in github.com/hanimuni/slide-effects-skills,
+# installed separately into .claude/skills/ (see README). Their Codex stubs are
+# generated locally by sync_codex_stubs.py.
+.claude/skills/pptx-com-effects/
+.claude/skills/html-slide-effects/
+.codex/skills/pptx-com-effects/
+.codex/skills/html-slide-effects/
 
 # Tool scratch
 .superpowers/

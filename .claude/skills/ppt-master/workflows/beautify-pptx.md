@@ -1,12 +1,12 @@
 ---
-description: Content-faithful PPT beautification — re-layout an existing deck while preserving its text verbatim and inheriting its visual identity, so regenerated elements share the original's palette/fonts and blend with it when pasted back.
+description: Content-faithful PPT beautification — re-layout an existing deck while preserving its text verbatim and inheriting its palette and body size (typography is locked to Pretendard), so regenerated elements blend with it when pasted back.
 ---
 
 # Beautify PPTX (Re-layout) Workflow
 
 > Mirror of the [`ppt-template-fill` skill](../../ppt-template-fill/SKILL.md): template-fill reuses a deck's design and swaps in new content; beautify keeps a deck's content and redoes its layout.
 
-Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source deck's visual identity (palette / fonts) is **inherited as truth**, and only layout, hierarchy, and whitespace are redesigned. Output is a brand-new native deck generated through the standard SVG pipeline — not a patch over the original.
+Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source deck's palette and body size are **inherited as truth** (fonts are locked to Pretendard like every SVG-authored deck), and only layout, hierarchy, and whitespace are redesigned. Output is a brand-new native deck generated through the standard SVG pipeline — not a patch over the original.
 
 **Trigger**: the user supplies a `.pptx` and asks to beautify / re-layout / 重新排版 / 美化 while keeping the content. Explicit intent + a provided file only; never auto-infer.
 
@@ -26,7 +26,7 @@ Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source 
 
 **Distinct from mirror templates**: `replication_mode: mirror` (executor §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
 
-**When this is the wrong route — re-architecture belongs to the main pipeline**: beautify preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — that is not beautify. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count, so it is the main pipeline, not beautify. Convert the deck with [`ppt_to_md`](../scripts/source_to_md/ppt_to_md.py) and run the main SKILL.md pipeline, where the Strategist re-architects the outline freely from the extracted content. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → beautify (here); improve → `ppt_to_md` + main pipeline.
+**When this is the wrong route — re-architecture belongs to the main pipeline**: beautify preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — that is not beautify. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count, so it is the main pipeline, not beautify. Run the main SKILL.md pipeline from Step 1 (`source_to_md.py` converts the deck; Step 2 `import-sources` imports it), where the Strategist re-architects the outline freely from the extracted content. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → beautify (here); improve → main pipeline Step 1.
 
 ---
 
@@ -52,9 +52,11 @@ Match the canvas to the source so 1:1 pages and paste-back align. Determine the 
 | other | nearest format in [`canvas-formats.md`](../references/canvas-formats.md); record the source pixel size in the spec |
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+python3 ${SKILL_DIR}/scripts/project_manager.py init <title> --format <format>
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source.pptx> --move
 ```
+
+`<project_path>` is the `projects/<YYYYMMDD>_<title>` path `init` prints — copy it from the output.
 
 ---
 
@@ -73,7 +75,7 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 | Field | Use |
 |---|---|
 | `theme.palette.background` / `text` / `primary` / `accent1..6` | the deck's *declared* colors |
-| `theme.fonts.title` / `body` (`ea` = CJK, `latin`) | the deck's *declared* fonts |
+| `theme.fonts.title` / `body` (`ea` = CJK, `latin`) | the deck's *declared* fonts — reference only; output typography is the locked Pretendard plan |
 | `theme.sizes.title` / `body` (pt) | the deck's *declared* placeholder sizes (master `txStyles`) — the size a run inherits when it sets no explicit `sz`; `body` is the **level-1** default (coarsest, commonly over-reads) |
 | `theme.sizes.body_levels` (pt list) | the full master `bodyStyle` ramp (lvl1..lvl9, e.g. `[32, 28, 24, 20, …]`) — **reference context** so you can read a deeper level than the over-reading level-1, not an auto-seed |
 | `observed.colors` / `observed.fonts` (`latin` / `ea`, frequency-ranked) | a usage **sample / frequency hint** — run-level fonts + explicit `srgbClr` fills across slides |
@@ -141,12 +143,12 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 ⛔ **BLOCKING**: the scope is not hard-coded — same spirit as the Strategist confirmation stage. Recommend each item below from what the deck actually contains (the Step 4 inventory), present the plan, and **wait for the user to confirm or adjust** before writing any spec. Chat is the canonical channel; the confirm UI below is the visual convenience surface over it for the palette + typography review (its result is honored identically to a chat reply).
 
 This step has two halves:
-- **Visual re-confirm via the confirm UI** — the **full** Step 4 confirm page (below), seeded from the source so every targeted-confirmation field (canvas, mode, visual style, palette, icons, typography incl. body baseline, image strategy, generation mode) is **pre-filled with the inherited / source-derived default and left editable**. Beautify *recommends* keeping the source's identity, but never removes the user's place to override any field — you may choose not to change a value, but you must not deny the place to change it. This is also where the deck's text size is confirmed: `<stem>.identity.json` now carries size hints — `observed.sizes_pt` (the point sizes the deck actually renders at) and `theme.sizes` (the declared placeholder defaults) — so the `body_size` recommendation **follows the source's own font size** rather than a blind canvas default; the user still confirms or overrides it here.
+- **Visual re-confirm via the confirm UI** — the **full** Step 4 confirm page (below), seeded from the source so every targeted-confirmation field (canvas, mode, visual style, palette, icons, the locked Pretendard typography plan incl. body size, image strategy, generation mode) is **pre-filled with the inherited / source-derived default and left editable**. Beautify *recommends* keeping the source's identity, but never removes the user's place to override any field — you may choose not to change a value, but you must not deny the place to change it. This is also where the deck's text size is confirmed: `<stem>.identity.json` now carries size hints — `observed.sizes_pt` (the point sizes the deck actually renders at) and `theme.sizes` (the declared placeholder defaults) — so the locked Pretendard plan's `body_size` **follows the source's own font size** rather than a blind canvas default; the user still confirms or overrides it here.
 - **Structural scope** — the inventory-driven list decisions below (ignored, reuse, needs-confirmation, verification level) stay in **chat**; they have no confirm-UI widget.
 
 | Plan item | Recommend from | Default lean |
 |---|---|---|
-| Identity source | `<stem>.identity.json` `theme` vs `observed` | present **both as color / typography candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why |
+| Identity source | `<stem>.identity.json` `theme` vs `observed` | present **both as color candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why. Typography is not a choice here: one locked Pretendard plan carrying the source body size |
 | Preserve scope | inventory `text_blocks` / `images` / `charts` / `tables` / `diagrams` | all text verbatim; data values and SmartArt relationships frozen; pictures reused |
 | Ignored | inventory `ignored` | name them so the user sees what drops (hidden / master-only text / image crop / rotation) |
 | Needs confirmation | inventory `needs_confirmation` | flag complex charts + overcrowded pages explicitly; ask how to handle |
@@ -159,7 +161,7 @@ This step has two halves:
 | Item | What v1 delivers |
 |---|---|
 | Overcrowded source page | layout / hierarchy / whitespace improve **within the page as-is** — v1 does **not** relieve information overload (that needs re-pagination / rewrite, deferred). Flag such pages; the user may accept or note them for manual split |
-| Paste-back into the original | regenerated elements share the inherited palette + fonts, so they **blend visually** when pasted. v1 does **not** guarantee a seamless coordinate-level drop-in (slide coordinates, master placeholders, font availability are the original deck's, not ours) |
+| Paste-back into the original | regenerated elements share the inherited palette and body size, so they **blend visually** when pasted (text is set in Pretendard, not the source fonts). v1 does **not** guarantee a seamless coordinate-level drop-in (slide coordinates, master placeholders, font availability are the original deck's, not ours) |
 | Complex charts / merged-cell tables | best-effort from the captured data; combo / dual-axis / waterfall lose the un-captured plots — flagged for the user |
 
 **Visual re-confirm — full confirm UI seeded from the source**:
@@ -168,32 +170,32 @@ Write `<project_path>/confirm_ui/recommendations.json` and launch the same confi
 
 ```json
 {
+  "lang": "ko",
   "recommend": {
     "canvas": "<step3-canvas-id>",
     "mode": "briefing",
     "visual_style": "<closest visual-style id to the source look>",
     "icons": "<sensible default icon library>",
-    "image_usage": "provided"
+    "image_usage": ["provided"]
   },
-  "page_count": <source-slide-count>,
-  "audience": "<carry over from the deck's apparent audience, or leave blank>",
+  "page_count": { "value": "<source-slide-count>" },
+  "audience": { "value": "<carry over from the deck's apparent audience, or leave blank>" },
   "color": { "selected": 0, "candidates": [
-    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "name_ja": "元PPTを再現（推奨）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
-    { "name_zh": "实际用色（observed）", "name_en": "Observed palette", "name_ja": "実際の使用色（observed）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
-    { "name_zh": "备选配色 A", "name_en": "Alternative palette A", "name_ja": "代替配色A", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } }
+    { "name_ko": "원본 PPT 재현(추천)", "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "name_ja": "元PPTを再現（推奨）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_ko": "실제 사용 색상(observed)", "name_zh": "实际用色（observed）", "name_en": "Observed palette", "name_ja": "実際の使用色（observed）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_ko": "대안 배색 A", "name_zh": "备选配色 A", "name_en": "Alternative palette A", "name_ja": "代替配色A", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } }
   ] },
   "typography": { "selected": 0, "candidates": [
-    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "name_ja": "元PPTを再現（推奨）", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
-    { "name_zh": "实际字体（observed）", "name_en": "Observed fonts", "name_ja": "実際のフォント（observed）", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
-    { "name_zh": "备选字体 A", "name_en": "Alternative pairing A", "name_ja": "代替ペアリングA", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> }
+    { "name_ko": "Pretendard 고정(원본 본문 크기 유지)", "name_zh": "Pretendard 锁定（保留源正文字号）", "name_en": "Pretendard lock (source body size kept)", "name_ja": "Pretendard固定（元の本文サイズを維持）", "heading": { "cjk": "Pretendard", "latin": "Pretendard", "css": "Pretendard, \"Malgun Gothic\", sans-serif" }, "body": { "cjk": "Pretendard", "latin": "Pretendard", "css": "Pretendard, \"Malgun Gothic\", sans-serif" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> }
   ] }
 }
 ```
 
 - **Recommend keep, allow override**: pre-fill canvas / mode / visual style / icons / image strategy with the source-faithful default (canvas = Step 3 format, mode = `briefing`, image_usage = `provided` since pictures are reused). Enumerable fields already list every catalog option with the source-faithful one badged, so the user can switch. Beautify's only true non-choices are the frozen text and the strict 1:1 page count (changing those means routing to the main pipeline instead — see CLAUDE.md). The §c material-divergence field is therefore not surfaced here — beautify never reshapes content (text is verbatim).
-- **Our recommendation is the pre-selected default = the source replica**: for color and typography, author **several candidates** like the from-scratch flow. The pre-selected default (`selected: 0`, the first card) is what beautify recommends — the candidate that **best replicates the source deck's style** (the truest reading of `theme` / `observed`). Replicate-by-default.
-- **Judge the other alternatives exactly as the from-scratch flow does — fonts as much as colors**: don't invent a beautify-specific rule. Author each non-replica candidate with the **same content-driven judgment the Strategist uses when generating from scratch** (color §e, typography §g), applied to the material this project provides — the source document's content and subject, the company's own theme colors, and any brand signal. Pick the palette **and** the font pairing by what fits *this* deck's content; fonts are chosen by content fit, not just defaulted to a safe face. Reach **≥3 candidates total** (PPT-safe stacks; the same creative-choice rule used elsewhere) so a user who departs from the replica still lands on a considered, content-fitting direction — depart-by-choice.
-- **`body_size` is the load-bearing field, and the replica follows the source's own size**: seed the replica candidate's `body_size` from the source's actual body size — take the dominant `observed.sizes_pt` value (the most frequent run-level size, the **body proxy**) and **convert it to px (`× 4/3`)** before seeding, since the system is px-only and the source measures in pt: a source 20pt body becomes `26.67`px, so the replica renders at the source's true size (seeding the bare `20` as px would shrink it ~25% — the pt-as-px trap). Whichever source value you land on below (observed mode, or `theme.sizes.body`) gets the same `× 4/3` conversion. The confirm page (and chat fallback) then writes that px to `result.json` (`body_size`) **directly — no further conversion, no `body_size_pt` provenance** (pt never enters the contract). The "most frequent = body" read is a proxy, not a guarantee — `observed.sizes_pt` counts every explicit run size (titles, captions, footnotes, chart/label text included, no placeholder-type resolution), so a deck dense with small labels can let a caption size outrank true body; cross-check the proxy against the page's actual body blocks and the sanity range below before trusting it, and prefer the size the body paragraphs visibly render at over the raw mode when the two disagree. Fall back to `theme.sizes.body` (the declared placeholder size) when `observed.sizes_pt` is empty, and to a PPT delivery-purpose baseline (`text` 20 / `balanced` 24 / `presentation` 32 px — one fixed value per purpose) only when neither is present. Note `theme.sizes.body` is the master `bodyStyle` **level-1 declared default** — a coarse value that commonly **over-reads** the real body density (decks often render body at a deeper outline level or override it smaller), so when you land on this fallback treat it as an upper-ish guess and run it through the sanity check below, never as a precise body size. `theme.sizes.body_levels` and `layout_sizes_pt` are **reference context, not extra fallback tiers**: consult them to judge a saner body value when the deck is theme-driven (`observed` empty) — e.g. a deeper `body_levels` entry or a `layout_sizes_pt` hint may read truer than level-1 — but do not auto-seed from them; the seed chain stays `observed → theme.sizes.body → delivery-purpose baseline`, and a theme-driven deck whose body size genuinely can't be pinned cleanly is exactly the case the sanity check is for. The canvas hint stays a **sanity range**, not the seed: if the source's own size lands far outside it (a dense source doc reads tiny on a projection canvas), surface that to the user rather than silently snapping — the replica recommendation is the source's size, the user confirms or overrides. Non-replica alternatives may use the delivery-purpose baseline. This is what prevents the deck from exporting at an unintentionally small size while still honoring the source.
+- **Color — our recommendation is the pre-selected default = the source replica**: author **several color candidates** like the from-scratch flow. The pre-selected default (`selected: 0`, the first card) is what beautify recommends — the palette that **best replicates the source deck's colors** (the truest reading of `theme` / `observed`). Replicate-by-default.
+- **Color — judge the other alternatives exactly as the from-scratch flow does**: author each non-replica palette with the **same content-driven judgment the Strategist uses when generating from scratch** (color §e), applied to the material this project provides — the source document's content and subject, the company's own theme colors, and any brand signal. Reach **≥3 color candidates total** so a user who departs from the replica still lands on a considered, content-fitting direction — depart-by-choice.
+- **Hard rule — typography is the single locked Pretendard plan**: the typography card carries exactly **one** candidate — `Pretendard, "Malgun Gothic", sans-serif` for heading and body (the install-local font lock, [`strategist.md`](../references/strategist.md) §g) — with the source deck's body **size**. Forbidden — ≥3 font candidates, a "source replica" font set, or inheriting `theme.fonts` / `observed.fonts`. Deviate only when the user explicitly names another font in the current conversation.
+- **`body_size` is the load-bearing field, and the locked plan follows the source's own size**: seed the Pretendard plan's `body_size` from the source's actual body size — take the dominant `observed.sizes_pt` value (the most frequent run-level size, the **body proxy**) and **convert it to px (`× 4/3`)** before seeding, since the system is px-only and the source measures in pt: a source 20pt body becomes `26.67`px, so the locked plan renders at the source's true size (seeding the bare `20` as px would shrink it ~25% — the pt-as-px trap). Whichever source value you land on below (observed mode, or `theme.sizes.body`) gets the same `× 4/3` conversion. The confirm page (and chat fallback) then writes that px to `result.json` (`body_size`) **directly — no further conversion, no `body_size_pt` provenance** (pt never enters the contract). The "most frequent = body" read is a proxy, not a guarantee — `observed.sizes_pt` counts every explicit run size (titles, captions, footnotes, chart/label text included, no placeholder-type resolution), so a deck dense with small labels can let a caption size outrank true body; cross-check the proxy against the page's actual body blocks and the sanity range below before trusting it, and prefer the size the body paragraphs visibly render at over the raw mode when the two disagree. Fall back to `theme.sizes.body` (the declared placeholder size) when `observed.sizes_pt` is empty, and to a PPT delivery-purpose baseline (`text` 20 / `balanced` 24 / `presentation` 32 px — one fixed value per purpose) only when neither is present. Note `theme.sizes.body` is the master `bodyStyle` **level-1 declared default** — a coarse value that commonly **over-reads** the real body density (decks often render body at a deeper outline level or override it smaller), so when you land on this fallback treat it as an upper-ish guess and run it through the sanity check below, never as a precise body size. `theme.sizes.body_levels` and `layout_sizes_pt` are **reference context, not extra fallback tiers**: consult them to judge a saner body value when the deck is theme-driven (`observed` empty) — e.g. a deeper `body_levels` entry or a `layout_sizes_pt` hint may read truer than level-1 — but do not auto-seed from them; the seed chain stays `observed → theme.sizes.body → delivery-purpose baseline`, and a theme-driven deck whose body size genuinely can't be pinned cleanly is exactly the case the sanity check is for. The canvas hint stays a **sanity range**, not the seed: if the source's own size lands far outside it (a dense source doc reads tiny on a projection canvas), surface that to the user rather than silently snapping — the recommendation is the source's size, the user confirms or overrides. This is what prevents the deck from exporting at an unintentionally small size while still honoring the source.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
@@ -201,19 +203,20 @@ python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
 
 Read the confirmed canvas + palette + typography (incl. `body_size`) and any other overrides from `<project_path>/confirm_ui/result.json`. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and honor the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
 
-On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
+**Hard rule — this §5 confirmation replaces the SKILL.md Step 4 confirmation gate**: do not launch a second Step 4 confirm page or chat bundle. On confirmation, hand off to SKILL.md Step 4 **spec writing** as Strategist (gate already satisfied) → `validate_spec.py` → Step 5 (only if `image_usage` includes `ai` / `web`) → Step 6 → Step 7. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + the locked Pretendard typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
 
-**Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Write `design_spec.md` + `spec_lock.md` per `strategist.md` §6, then hand off to the Executor.
+**Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Write `design_spec.md` + `spec_lock.md` per `strategist.md` §6 and run `python3 ${SKILL_DIR}/scripts/validate_spec.py <project_path>`, then continue at Step 5 / Step 6.
 
 ---
 
 ## 6. Executor + Export
 
-Run the standard pipeline (SKILL.md Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using **only** the inherited palette + fonts from `spec_lock.md`, regenerates charts / tables as native SVG from the extracted data, and re-lays-out the source pictures.
+Run the standard pipeline (SKILL.md Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using **only** the inherited palette + locked Pretendard typography from `spec_lock.md`, regenerates charts / tables as native SVG from the extracted data, and re-lays-out the source pictures.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>  # only when svg_final/ is requested or already exists
+python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>  # only when the user asks for svg_final/ previews or svg_final/ already contains SVGs
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
+python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 ```
 
 ---
@@ -221,7 +224,7 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 ## 7. Validate Output
 
 ```bash
-python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<output.pptx>
+python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<title>_verN.pptx -o <project_path>/validation/readback.md
 ```
 
 | Check | Expected |
@@ -230,7 +233,7 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 | Data fidelity | chart categories / series / table cells match the source exactly |
 | Page count | output slide count equals the source slide count |
 | Regenerated visuals | charts / tables are native SVG re-themed to the inherited palette |
-| Identity | generated text / shapes use only `<stem>.identity.json` colors + fonts |
+| Identity | generated text / shapes use only the confirmed palette + locked Pretendard typography at the confirmed body size |
 | Paste-back | copying a beautified element into the original deck looks native |
 
 ```markdown
@@ -238,7 +241,7 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 
 - [x] Content + data values verbatim (read-back Markdown matches the source)
 - [x] 1:1 page count preserved
-- [x] Source colors + fonts inherited as locked truth
+- [x] Source colors + body size inherited as locked truth; text set in Pretendard
 - [x] Charts / tables regenerated as native SVG in the inherited style
 - [x] Native PPTX exported to `exports/`
 ```
@@ -250,7 +253,7 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 | Capability | Status |
 |---|---|
 | Re-layout with verbatim text | Supported |
-| Inherit source palette / fonts as truth | Supported |
+| Inherit source palette / body size as truth (fonts locked to Pretendard) | Supported |
 | Strict 1:1 page mapping | Supported |
 | Regenerate charts / tables as native SVG from extracted data | Supported |
 | Re-lay-out source pictures | Supported |

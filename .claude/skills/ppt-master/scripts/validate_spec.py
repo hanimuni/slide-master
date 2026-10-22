@@ -9,7 +9,9 @@ reported error before generation starts — a planning defect discovered after
 
 Checks:
     - design_spec.md §IX parses; every content page carries a Core message
-      (cover / chapter / closing pages exempt); P01 carries a Cover impact
+      (cover / chapter / closing pages exempt, Korean page names included);
+      P01 carries a Cover impact; Core messages do not defer ("다음과 같음");
+      §V carries a Deck Frame table (warning)
     - design_spec.md §VII template names exist in charts_index.json and each
       Summary-quote is verbatim (the anti-fabrication audit from
       templates/design_spec_reference.md §VII)
@@ -56,11 +58,25 @@ SLIDE_HEADING_RE = re.compile(r"^####\s+Slide\s+(\d+)", re.MULTILINE)
 SECTION_RE = re.compile(r"^##\s+([A-Za-z_]+)\s*$", re.MULTILINE)
 HEX_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
 # Pages that legitimately carry no Core message line
+# Matched against the page-name part of the heading ("#### Slide NN - <name>"),
+# so a content page such as "Cross-section analysis" is not exempted by accident.
 EXEMPT_TITLE_RE = re.compile(
-    r"chapter|章|agenda|目录|목차|divider|section|part\b|cover|closing|ending"
-    r"|q\s*&\s*a|qna|thanks",
+    # whole-name page roles (Korean + English)
+    r"^(?:표지|간지|장\s*표지|목차|차례|마무리|맺음말?|감사(?:합니다)?|질의\s*응답|참고"
+    r"|cover|closing|ending|agenda|contents|thanks|thank\s+you|q\s*&\s*a|qna)\s*$"
+    # numbered chapter / part / section openers ("Chapter 2", "Part Ⅱ", "Section 3: …")
+    r"|^(?:chapter|part|section)\s*[\dⅠ-Ⅻ]+\b"
+    # Korean divider with a label ("간지: 추진 배경", "표지 — 2026 업무계획")
+    r"|^(?:간지|장\s*표지|표지)\s*[:：\-–—]"
+    # trailing role words ("Mid-deck section divider", "Chapter opener")
+    r"|\b(?:divider|section\s+divider|chapter\s+opener|cover|closing|ending)\s*\)?\s*$"
+    r"|^(?:章|目录)",
     re.IGNORECASE,
 )
+SLIDE_NAME_RE = re.compile(r"^####\s+Slide\s+\d+\s*[-–—:]?\s*(.*)$")
+DEFERRAL_RE = re.compile(r"다음과\s*같음|아래와\s*같음|다음과\s*같다|아래와\s*같다")
+CORE_LINE_RE = re.compile(r"^-\s*\*\*Core message\*\*:\s*(.+)$", re.MULTILINE)
+IMAGE_COLOR_KEYS = {"image_rendering", "image_palette"}
 
 
 def _norm_ws(text: str) -> str:
@@ -86,6 +102,8 @@ def parse_slides(design_spec: str) -> list[dict]:
             "number": int(sm.group(1)),
             "heading": heading,
             "core": "**Core message**" in block,
+            "core_text": (CORE_LINE_RE.search(block).group(1).strip()
+                          if CORE_LINE_RE.search(block) else ""),
             "cover_impact": "**Cover impact**" in block,
             "closing_impact": "**Closing impact**" in block,
         })
@@ -159,12 +177,20 @@ def check_slides(slides: list[dict]) -> tuple[list[str], list[str]]:
     for s in slides[1:]:
         if s["core"] or s["closing_impact"]:
             continue
-        if EXEMPT_TITLE_RE.search(s["heading"]):
+        name_m = SLIDE_NAME_RE.match(s["heading"].strip())
+        page_name = (name_m.group(1) if name_m else s["heading"]).strip()
+        if EXEMPT_TITLE_RE.search(page_name):
             continue
         errors.append(
             f"Slide {s['number']:02d} has no `Core message` line "
             f"(heading: {_norm_ws(s['heading'])[:60]}) — every content page "
-            f"needs its one assertion sentence, or merge/cut the page")
+            f"needs its one governing message, or merge/cut the page")
+    for s in slides:
+        if s.get("core_text") and DEFERRAL_RE.search(s["core_text"]):
+            warnings.append(
+                f"Slide {s['number']:02d} Core message defers its point "
+                f"(\"다음과 같음\" style) — state the message itself "
+                f"(references/report-craft.md §2)")
     return errors, warnings
 
 
@@ -216,7 +242,8 @@ def check_spec_lock(sections: dict[str, dict[str, str]], page_count: int,
     if not sections["visual_style"].get("visual_style"):
         errors.append("spec_lock.md visual_style has no `visual_style` value")
 
-    colors = sections["colors"]
+    colors = {k: v for k, v in sections["colors"].items()
+              if k not in IMAGE_COLOR_KEYS}
     if len(colors) < 6:
         errors.append(f"spec_lock.md colors has only {len(colors)} entries — "
                       f"the full neutral set must be locked before generation")
@@ -292,7 +319,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Validate design_spec.md + spec_lock.md before generation.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("project", help="path to projects/<project_name>")
+    parser.add_argument("project", help="path to projects/<YYYYMMDD>_<title>")
     parser.add_argument("--strict", action="store_true",
                         help="treat warnings as failures")
     return parser
@@ -319,6 +346,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     sections = parse_spec_lock(spec_lock)
 
     errors, warnings = check_slides(slides)
+    v_m = re.search(r"^##\s+V\.(.*?)(?=^##\s+VI\.)", design_spec,
+                    re.MULTILINE | re.DOTALL)
+    if v_m and "Deck Frame" not in v_m.group(1):
+        warnings.append("design_spec.md §V has no Deck Frame table — record "
+                        "header / content / footer bounds and contents "
+                        "(strategist.md §6.2 deck frame lock)")
     e2, w2 = check_vii(vii_rows, charts)
     e3, w3 = check_spec_lock(sections, len(slides), charts, vii_rows)
     errors += e2 + e3
