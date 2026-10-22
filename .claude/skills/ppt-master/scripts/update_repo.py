@@ -51,7 +51,7 @@ If you installed with Download ZIP:
   4. Run: pip install -r requirements.txt
 
 If you want one-command updates next time, install with Git clone:
-  git clone https://github.com/hugohe3/ppt-master.git
+  git clone https://github.com/hanimuni/slide-master.git
 
 If you installed through a skill marketplace, update or reinstall through the
 same marketplace / skills tool."""

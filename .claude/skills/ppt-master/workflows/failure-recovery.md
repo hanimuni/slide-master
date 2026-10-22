@@ -16,7 +16,7 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 |---|---:|---|---|---|
 | Confirm UI launch failure | No | Re-check `confirm_ui/result.json` once, then use chat fallback | No | `SKILL.md` Step 4 chat confirmation |
 | Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same stage or chat fallback |
-| Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
+| Confirm UI Stage 1 completed then interrupted (staged flow only) | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
 | Formula rendering provider failure | No if fallback succeeds; yes if selected formulas remain missing | Provider fallback chain; otherwise mark affected rows manual only if acceptable | Only if rendered formula files are required and unavailable | Step 4 formula rendering / Step 7 image readiness gate |
 | AI image generation failure | No | Diagnose Path A (codex): CLI missing / not logged in → print install (`npm install -g @openai/codex`) / `codex login` guidance and rerun after the user confirms; then Path B API backend only if a key is already configured; then offer the web-sourcing switch; finally mark row `Needs-Manual` (user-drop) | Codex install/login fix, web-switch consent, or supplying files before export | Step 5 / Step 7 image readiness gate |
@@ -37,7 +37,7 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 | `total_md_split.py` failure | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |
 | `finalize_svg.py` failure | Yes | Fix SVG/assets, rerun Step 7.2 | Only if source asset is missing | Step 7.2 |
 | `svg_to_pptx.py` failure | Yes | Fix conversion issue, rerun Step 7.3 | Only if required artifact is missing | Step 7.3 |
-| Export succeeds but user wants direct browser edits re-exported | No | Rerun Step 7.2 and Step 7.3 after applied edits | No | Post-export live-preview handling |
+| Export succeeds but user wants direct browser edits re-exported | No | Rerun Step 7.3 with the previously selected export flags (Step 7.2 only on demand), then `verify_deck.py` | No | Post-export live-preview handling |
 
 ---
 
@@ -60,14 +60,15 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 
 | Last good state | Resume from |
 |---|---|
-| Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
+| Stage 1 confirmation exists, Stage 2 missing (staged flow only) | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](./resume-execute.md) |
 | Images acquired but SVGs not started | `SKILL.md` Step 6 |
 | Background acquisition launched, spec complete, statuses unread | `SKILL.md` Step 5 collection point |
 | SVGs complete and checker passed, requested notes missing | Step 6 Logic Construction |
 | SVGs complete (and notes complete when requested) | Step 7.1 (skip when no notes) |
-| Step 7.1 complete, export not complete | Step 7.2 |
+| Step 7.1 complete, export not complete | Step 7.3 (run Step 7.2 first only when the user asks for `svg_final/` previews or `svg_final/` already contains SVGs) |
 | Step 7.2 complete, PPTX not complete | Step 7.3 |
+| PPTX exported, `verify_deck.py` not run or failed | `python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>` |
 | Browser annotations saved after export | [`live-preview`](./live-preview.md) Step 2 |
 | Visual defect suspected after export | Report it and recommend `verify-pptx-export`; after explicit approval, verify and fix the owning source, then re-export |
 

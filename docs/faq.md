@@ -32,32 +32,19 @@ PPT Master works with any AI coding agent that can read files and run shell comm
 
 ## Q: I downloaded an old version. How do I update to the latest?
 
-It depends on how you installed PPT Master:
+This repository (Slide Master, maintained at [hanimuni/slide-master](https://github.com/hanimuni/slide-master); upstream is [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)) follows the procedure in the README's FAQ ("이 저장소는 어떻게 업데이트하나요?"): a working copy usually carries personal customizations, so it is not treated as a plain `git pull` target. Get a fresh copy, then carry your work over:
 
-| Install method | Update method |
-|---|---|
-| Git clone | Run `python3 .claude/skills/ppt-master/scripts/update_repo.py` inside the `ppt-master` folder |
-| Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run `pip install -r requirements.txt` |
-| Skill marketplace | Reinstall or update through the matching marketplace / skills tool |
+1. `git clone https://github.com/hanimuni/slide-master.git` into a new folder (or download the latest ZIP and unzip it there).
+2. Copy your old `.env`, `projects/` folder, and any local customizations into the new `slide-master` folder.
+3. Run `pip install -r requirements.txt` in the new folder.
 
-For long-term use, Git clone is recommended. ZIP is fine for a quick trial, but it has no Git history and cannot run `git pull`.
+If your clone has **no local modifications to tracked files**, `python3 .claude/skills/ppt-master/scripts/update_repo.py` is a shortcut: it runs `git pull --ff-only` against your clone's configured remote and re-runs `pip install -r requirements.txt` only when `requirements.txt` changed. It stops if tracked files are modified, and on a non-Git (ZIP) copy it prints migration steps.
 
-If you are not sure which install method you used, ask the AI to run this from the project folder:
+## Q: The repo is large and my download fails — can I get just the skill?
 
-```bash
-python3 .claude/skills/ppt-master/scripts/update_repo.py
-```
+For this fork, install by cloning `https://github.com/hanimuni/slide-master.git` (see the README's 설치 section); if the full history is the problem, a shallow clone (`git clone --depth 1 https://github.com/hanimuni/slide-master.git`) skips it. Then run `pip install -r requirements.txt` in the `slide-master` folder.
 
-If the folder is not a Git clone, the script will tell you how to migrate a ZIP install.
-
-## Q: The repo is over 1 GB and my skills tool fails to download it — can I get just the skill?
-
-Yes. The full repository is large (Git history plus bundled example decks and their assets), and that size is baked into the history — it can't be trimmed without breaking the many existing forks. If you only want the skill and not the full repo, use a lightweight path instead:
-
-- **Marketplace CLI**: `npx skills add hugohe3/ppt-master` or Claude Code's `/plugin install` fetch the skill files only (see the Set Up section of the README).
-- **Manual download**: grab `ppt-master-skill-*.zip` from the [Releases](https://github.com/hugohe3/ppt-master/releases) page — the skill files only (~50 MB), no full-repo clone.
-
-Either way, run `pip install -r requirements.txt` from the installed location so the post-processing scripts work.
+The lightweight skill-only paths you may see elsewhere — `npx skills add hugohe3/ppt-master`, Claude Code's `/plugin install`, or `ppt-master-skill-*.zip` from the [upstream Releases](https://github.com/hugohe3/ppt-master/releases) page — install the **upstream** hugohe3/ppt-master skill, not this fork's customizations (for example the Pretendard font lock and the Korean deck templates).
 
 ## Q: Can I use AI-generated images in my presentation?
 
@@ -67,13 +54,13 @@ Yes. PPT Master includes a built-in image generation script that supports multip
 
 Yes — pick "Web-sourced" in the Strategist's Image Usage step. PPT Master ships a zero-config `image_search.py` that searches openly-licensed images across Openverse and Wikimedia Commons (no API key needed). Zero-config search is a fallback: it works immediately, but quality can be uneven because many results are ordinary user uploads.
 
-For better contemporary stock photography, set `PEXELS_API_KEY` and/or `PIXABAY_API_KEY` in `.env` (both are free). The search will include Pexels / Pixabay automatically, which usually improves people, workplace, lifestyle, product, and illustration images. You can mix paths in one deck (e.g. AI for hero illustrations, web for team photos). If a selected image requires attribution, Executor adds a small inline credit on the affected slide.
+For better contemporary stock photography, set `PEXELS_API_KEY` and/or `PIXABAY_API_KEY` in `.env` (both free — but Pexels reportedly stopped issuing new API keys on 2026-09-30, so a new Pexels key may be unavailable; set one only if you already have it, and otherwise use Pixabay — the keyless Openverse / Wikimedia Commons search always remains). The search will include whichever of Pexels / Pixabay has a key automatically, which usually improves people, workplace, lifestyle, product, and illustration images. You can mix paths in one deck (e.g. AI for hero illustrations, web for team photos). If a selected image requires attribution, Executor adds a small inline credit on the affected slide.
 
 Be clear on what this buys you: **web search only finds *a* relevant, downloadable, license-clean image — it does not guarantee the image is good or right for that page**, because ranking sees text metadata, not the picture. During generation a multimodal model reads a thumbnail to sanity-check and re-queries a poor fit, but **the most reliable route to high quality is to search yourself**: find a better image anywhere, hand the AI its URL, and it downloads and swaps it in via `image_search.py --from-url <url>` (recorded as a manual source; rights are yours to verify). Replacement can happen any time — mid-generation or from live preview — without stopping the run. In short: treat web search as a placeholder fallback and manual picking as the polish step.
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The only PPTX export route in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. A copy of `svg_output/` (the Executor's raw SVG source) is always written to `backup/<timestamp>/svg_output/` so you can rebuild via `svg_to_pptx` without re-running the LLM; run `finalize_svg` first only when you also need self-contained SVG previews.
+Yes. The only PPTX export route in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a native PowerPoint deck to `projects/<YYYYMMDD>_<title>/exports/<title>_verN.pptx` (the version number increments on each re-export), with text, graphics, and colors directly editable as PowerPoint objects. A copy of `svg_output/` (the Executor's raw SVG source) is always written to `backup/<timestamp>/svg_output/` so you can rebuild via `svg_to_pptx` without re-running the LLM; run `finalize_svg` first only when you also need self-contained SVG previews.
 
 `finalize_svg.py` is an on-demand Step 7 operation because native PPTX export reads `svg_output/` directly. Run it when you need self-contained files in `svg_final/` for visual inspection or manual insertion into another deck as SVG pictures. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
@@ -81,7 +68,7 @@ Yes. The only PPTX export route in the SVG pipeline is PPT Master's own `svg_out
 
 By default, mergeable body-text paragraphs export as one editable PowerPoint text frame with multiple paragraphs. Resizing the box reflows text inside it.
 
-If you need strict line-layout fidelity, re-export with `--no-merge`:
+If you need strict line-layout fidelity, re-export with `--no-merge` (keep any other flags you used before; run `verify_deck.py <project_path>` afterward):
 
 ```bash
 python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
@@ -130,11 +117,11 @@ For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/mon
 
 By default, charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate default over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint, and they render pixel-consistently across PowerPoint / Keynote / LibreOffice / WPS.
 
-If your workflow specifically requires Excel-driven data editing, export with `--native-objects`: supported data charts and pure text-grid tables then ship as **real editable PowerPoint chart / table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The trade-off is cross-app rendering — native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, which is why SVG shapes stay the default.
+If your workflow specifically requires Excel-driven data editing, export with `--native-objects`: supported data charts and pure text-grid tables then ship as **real editable PowerPoint chart / table objects backed by data** (saved as `exports/<title>_verN_native_charts.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The trade-off is cross-app rendering — native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, which is why SVG shapes stay the default.
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. Page transitions are on by default (`fade` 0.4s); per-element entrance animation is **off by default** — a page appears as a whole instead of having elements auto-cascade in one by one (that unsolicited cascade is the strongest "AI deck" tell). Both are controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Turn element animation on explicitly when you want it:
+Yes. Page transitions are on by default (`fade` 0.4s); per-element entrance animation is **off by default** — a page appears as a whole instead of having elements auto-cascade in one by one (that unsolicited cascade is the strongest "AI deck" tell). Both are controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Turn element animation on explicitly when you want it (each re-export should repeat any other flags you used before, then run `verify_deck.py <project>`):
 
 ```bash
 python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
@@ -191,7 +178,7 @@ If generation feels slow, check your model's token throughput. The bottleneck is
 
 Default recommendation: **continuous one-shot generation**. 10–15 page decks fit comfortably in a 200K window, and cross-page visual consistency is best when the Executor can see prior pages in the same session (it actively aligns style, font sizes, and rhythm).
 
-Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<project_name>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
+Every run prints a one-line **split mode** note at the Strategist phase — a recommendation when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation), an informational line otherwise. Split mode is always your opt-in: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<YYYYMMDD>_<title>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
 
 Split mode is a **compromise** — it pays ~6K tokens (re-reading SKILL.md) to drop 60–200K of planning-session noise, then reuses the freed budget in the execution session to re-read `sources/` for richer slide content. **Not needed when signals are normal**; the hint won't appear, and you can always ignore it and stay in continuous mode.
 
@@ -212,7 +199,7 @@ Think of "using an existing PPT" as two questions: **keep its content or not**, 
 | Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
-Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../.claude/skills/ppt-master/workflows/beautify-pptx.md).
+Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette and body size (fonts are set in the locked Pretendard family, like every SVG-authored deck). Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../.claude/skills/ppt-master/workflows/beautify-pptx.md).
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
@@ -246,7 +233,7 @@ If no source PPTX exists, screenshots of the key page types still work — cover
 
 **Step 2 — Let AI Create the Template**
 
-Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
+Use an AI coding agent (Claude Code, Codex, etc.) and ask it in chat to run the **create-template workflow** (e.g. "재사용 템플릿 만들어줘" / "make a reusable template from this deck" — it is a workflow request, not a `/create-template` slash command) to convert your reference material into a template. The more context you give, the better the result — for example:
 
 - Template name and intended use case (e.g., government reports, premium consulting)
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")

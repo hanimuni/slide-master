@@ -102,8 +102,10 @@ Type B is supported with caveats:
 Run the unified preparation helper:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
+python3 ${SKILL_DIR}/scripts/pptx_template_import.py "<reference_template.pptx>" -o "/tmp/pptx_template_import/<stem>"
 ```
+
+Always pass `-o`: the default writes `<stem>_template_import/` beside the source file, which may be inside the repository or a user folder.
 
 This produces, in one workspace:
 
@@ -134,8 +136,8 @@ It is a reconstruction aid, not a final direct template conversion.
 Keep `<import_workspace>/svg/` and `<import_workspace>/svg-flat/` unchanged as the lossless import evidence. Before the Template_Designer reads any imported page SVG, create non-destructive model-facing projections:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg" -o "<import_workspace>/authoring-svg"
-python3 .claude/skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg-flat" -o "<import_workspace>/authoring-svg-flat"
+python3 ${SKILL_DIR}/scripts/svg_authoring_view.py "<import_workspace>/svg" -o "<import_workspace>/authoring-svg"
+python3 ${SKILL_DIR}/scripts/svg_authoring_view.py "<import_workspace>/svg-flat" -o "<import_workspace>/authoring-svg-flat"
 ```
 
 The projection removes opaque text payload, duplicate hidden geometry carriers, and import-only identity attributes while keeping visible shape intent, compact preset/frame metadata, structure markers, logical ids, and valid asset references. It is an inspection surface only. Never export it as a finished template and never overwrite the lossless source.
@@ -146,10 +148,10 @@ Factor large decorative vector groups out of the lightweight projections so the 
 
 ```bash
 # layered view — primary read surface in every mode
-python3 .claude/skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
+python3 ${SKILL_DIR}/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
 
 # flat view — mirror inspection and optional composition spot checks; the lossless layered/flat sources remain authoritative for mirror
-python3 .claude/skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
+python3 ${SKILL_DIR}/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
 The projected SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="..."/>` placeholders. Extracted assets live directly under `<import_workspace>/icons/`; `icons/` must contain only icon/vector assets, not rewritten page SVGs or inventories. The inventory is written beside the processed projection directory. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon directory, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
@@ -213,8 +215,8 @@ Do not treat lightweight projections as final template assets. `standard` / `fid
 First resolve the Type B source directory using the rule above. Create a non-destructive authoring projection in a throwaway analysis workspace, then run the same vector readability pass only on that projection. Do **not** rewrite the user's original source directory in place.
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_authoring_view.py "<normalized_svg_source>" -o "<svg_analysis_workspace>/authoring-svg"
-python3 .claude/skills/ppt-master/scripts/extract_svg_assets.py "<svg_analysis_workspace>/authoring-svg" --icons-dir "<svg_analysis_workspace>/icons" --inplace --id-prefix source --min-decoration-bytes 3000 --clean-stale
+python3 ${SKILL_DIR}/scripts/svg_authoring_view.py "<normalized_svg_source>" -o "<svg_analysis_workspace>/authoring-svg"
+python3 ${SKILL_DIR}/scripts/extract_svg_assets.py "<svg_analysis_workspace>/authoring-svg" --icons-dir "<svg_analysis_workspace>/icons" --inplace --id-prefix source --min-decoration-bytes 3000 --clean-stale
 ```
 
 Then `ls` the analysis workspace and `Read` every cleaned `authoring-svg/*.svg` to extract:
@@ -439,7 +441,7 @@ ls -la "<template_workspace>/images" "<template_workspace>/icons"
 Run SVG validation on the template directory:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --format <canvas_format>
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:
@@ -486,7 +488,7 @@ This step is a **hard gate**. Do not generate an optional review PPTX, register,
 Export the complete SVG roster, one prototype per slide, from the workspace root:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>"
+python3 ${SKILL_DIR}/scripts/template_preview_pptx.py "<template_workspace>"
 ```
 
 The default output is `<template_workspace>/exports/<template_id>_template_preview.pptx`; the command creates `exports/` on demand. The script consumes `templates/*.svg` directly, compiles the declared structured Master/Layout contract, and reopens the result. It does not require a project `spec_lock.md`, does not create an intermediate project, and does not infer or distill structure.
@@ -494,7 +496,7 @@ The default output is `<template_workspace>/exports/<template_id>_template_previ
 The first export refuses an existing output. After intentionally fixing the template and replacing its prior review deck, rerun with `--force`; never rely on a silent overwrite:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>" --force
+python3 ${SKILL_DIR}/scripts/template_preview_pptx.py "<template_workspace>" --force
 ```
 
 **Validation**:
@@ -521,10 +523,10 @@ Run the unified registrar with the kind flag; it derives the corresponding index
 
 ```bash
 # For deck (default)
-python3 .claude/skills/ppt-master/scripts/register_template.py <template_id> --kind deck
+python3 ${SKILL_DIR}/scripts/register_template.py <template_id> --kind deck
 
 # For layout
-python3 .claude/skills/ppt-master/scripts/register_template.py <template_id> --kind layout
+python3 ${SKILL_DIR}/scripts/register_template.py <template_id> --kind layout
 ```
 
 Outputs by kind (the JSON index is the single source of truth — READMEs describe the kind in prose but do not enumerate templates):
@@ -581,8 +583,8 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > To rebuild every entry at once (e.g. after editing many specs), run:
 >
 > ```bash
-> python3 .claude/skills/ppt-master/scripts/register_template.py --kind deck --rebuild-all
-> python3 .claude/skills/ppt-master/scripts/register_template.py --kind layout --rebuild-all
+> python3 ${SKILL_DIR}/scripts/register_template.py --kind deck --rebuild-all
+> python3 ${SKILL_DIR}/scripts/register_template.py --kind layout --rebuild-all
 > ```
 
 README files describe each kind in prose only — they do not list templates. Discovery happens against the JSON index file; the registrar does not touch READMEs.
@@ -613,11 +615,13 @@ Produce one scope-aware, evidence-driven completion card for either location:
 |------|--------|
 | `templates/01_cover.svg` | Done |
 | `templates/02_chapter.svg` | Done |
-| `templates/02_toc.svg` | Done |
+| `templates/02_toc.svg` | Done (optional TOC) |
 | `templates/03_content.svg` | Done |
 | `templates/04_ending.svg` | Done |
 | `exports/<template_id>_template_preview.pptx` | Verified, when requested |
 ```
+
+**Naming note**: the example above is a `standard` / `fidelity` roster — 2-digit role prefixes, where the optional TOC deliberately shares the `02_` prefix with `02_chapter.svg` (library compatibility, see the Standard mode naming note in [template-designer.md](../references/template-designer.md#standard-mode)). A `mirror` roster lists 3-digit source-order names instead (`001_cover.svg`, `002_toc.svg`, …).
 
 The next main-pipeline Step 3 input is the exact `<template_workspace>/` root in either scope. Step 3 resolves its `templates/design_spec.md`, ignores `exports/`, and copies or consumes `templates/` plus any existing `images/` and `icons/` as one unit. A legacy flat package root remains readable, but directory flatness alone is not a legacy Master/Layout condition and does not trigger `restore-pptx-structure`.
 

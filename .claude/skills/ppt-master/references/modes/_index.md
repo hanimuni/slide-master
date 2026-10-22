@@ -1,6 +1,6 @@
 # Modes — Index
 
-A **mode** is the deck's **narrative + persuasion skeleton** — how the argument is organized and advanced across pages. Lock **one mode per deck**; it shapes page sequencing, title voice, page-structure tendencies, and speaker-notes register.
+A **mode** is the deck's **narrative + persuasion skeleton** — how the argument is organized and advanced across pages. Lock **one mode per deck**; it shapes page sequencing, governing-message voice (titles are topic labels in every mode — [`report-craft.md`](../report-craft.md) §1), page-structure tendencies, and speaker-notes register.
 
 > A mode is *not* a visual style. **Mode = how you argue; visual style = how it looks** (see [`visual-styles/_index.md`](../visual-styles/_index.md)). The two are locked independently — any mode pairs with any visual style (a `pyramid` deck can look `swiss-minimal` or `dark-tech`).
 
@@ -16,7 +16,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 | [`narrative`](./narrative.md) | Story arc — situation → tension → resolution; suspense and turns | Pitches, case studies, brand journeys, fundraising |
 | [`instructional`](./instructional.md) | Concept decomposition; step-by-step; parallel exposition | Training, tutorials, explainers, knowledge sharing |
 | [`showcase`](./showcase.md) | Visual-led impact; big imagery / numbers; emotional rhythm | Launches, brand reveals, event / promo decks |
-| [`briefing`](./briefing.md) | Neutral, complete, scannable; topic titles, even weight, no thesis | Status updates, reference decks, catalogs, meeting packs, FAQs |
+| [`briefing`](./briefing.md) | Neutral, complete, scannable; coverage-style governing messages, even weight, no thesis | Status updates, reference decks, catalogs, meeting packs, FAQs |
 
 > The five partition presentation *intent*, not aesthetics: persuade (`pyramid`) · tell a story (`narrative`) · teach (`instructional`) · impress (`showcase`) · simply inform (`briefing`).
 >
@@ -40,7 +40,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 | Torn between | …the first when | …the second when |
 |---|---|---|
-| `pyramid` / `briefing` | it must land a recommendation — conclusion-first, every number compared | it must inform completely without arguing — topic titles, even weight |
+| `pyramid` / `briefing` | it must land a recommendation — conclusion-first, every number compared | it must inform completely without arguing — coverage governing messages, even weight |
 | `narrative` / `pyramid` | the point lands through a story arc, tension → resolution | the point lands as a conclusion stated up front, then supported |
 | `narrative` / `showcase` | an argument travels through the story | presence leads — minimal copy, one big visual per page |
 | `instructional` / `briefing` | the goal is to build understanding step by step | the goal is to lay out a complete reference to scan |

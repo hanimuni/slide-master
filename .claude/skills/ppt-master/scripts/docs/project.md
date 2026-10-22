@@ -45,8 +45,8 @@ Examples:
 
 ```bash
 python3 scripts/project_manager.py init my_presentation --format ppt169
-python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
-python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
+python3 scripts/project_manager.py validate projects/20261022_my_presentation
+python3 scripts/project_manager.py info projects/20261022_my_presentation
 ```
 
 ## `project_utils.py`

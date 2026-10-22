@@ -14,9 +14,10 @@ The user opens a new chat and gives a phrase that names a project path and signa
 
 | Pattern | Example |
 |---|---|
-| "继续生成 projects/<project_name>" | "继续生成 projects/ppt169_joe_hisaishi" |
-| "resume execution projects/<project_name>" | "resume execution projects/ppt169_joe_hisaishi" |
-| Project path + any "继续 / 恢复 / 继续做 / 接着做" semantic | "把 projects/ppt169_joe_hisaishi 继续做完" |
+| "이어서 생성 projects/<YYYYMMDD>_<title>" | "이어서 생성 projects/20260315_joe_hisaishi" |
+| "继续生成 projects/<YYYYMMDD>_<title>" | "继续生成 projects/20260315_joe_hisaishi" |
+| "resume execution projects/<YYYYMMDD>_<title>" | "resume execution projects/20260315_joe_hisaishi" |
+| Project path + any "이어서 / 계속 / 继续 / 恢复 / 接着做" semantic | "projects/20260315_joe_hisaishi 이어서 끝내줘" |
 
 **Prerequisite**: the planning session must have completed in the named project. Verified by file presence in Step 1; do NOT auto-trigger planning on missing state.
 
@@ -31,7 +32,8 @@ Verify the project's planning-session artifacts before doing anything else:
 | `<project_path>/spec_lock.md` | Always | Strategist's execution contract; Executor re-reads it at P01/P05/P09 milestones and after context compaction |
 | `<project_path>/design_spec.md` | Always | Section IX page outline; Executor cross-references it |
 | `<project_path>/images/` | `spec_lock images` references any image | Images must exist for embedding |
-| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / chart SVGs needed for batch read |
+| `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout SVGs needed for batch read |
+| `${SKILL_DIR}/templates/charts/<chart_name>.svg` | `spec_lock page_charts` references any | Chart SVGs are read from the skill library, not the project `templates/` |
 
 If any required artifact is missing → report which one(s) and stop. Do NOT auto-fall-back into planning; the user must either complete the planning session in the original chat or explicitly restart.
 
@@ -40,18 +42,12 @@ If any required artifact is missing → report which one(s) and stop. Do NOT aut
 ## Step 2: Load SKILL.md, proceed from Step 6
 
 ```
-Read .claude/skills/ppt-master/SKILL.md
+Read ${SKILL_DIR}/SKILL.md
 ```
 
-Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
+Then jump to `### Step 6: Executor Phase` and follow SKILL.md Step 6 verbatim — its reference reading list, gates, and generation order are authoritative; do not substitute a summary from this workflow. Continue into Step 7 (Post-processing & Export) exactly as SKILL.md documents it, including the mandatory final `python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>` gate.
 
-- Read references (executor-base + shared-standards + the locked `mode` file under `modes/` + the locked `visual_style` file under `visual-styles/` + image-layout-spec + svg-image-embedding)
-- Design Parameter Confirmation
-- Pre-generation Batch Read (every layout / chart SVG referenced in `spec_lock`)
-- Milestone `spec_lock` re-read (P01/P05/P09, …, plus after context compaction) + sequential page generation
-- Quality Check Gate
-- Speaker notes generation (only when requested in `design_spec.md §X`)
-- Step 7: Post-processing & Export (`total_md_split` when notes exist → `finalize_svg` only when a self-contained SVG preview is requested or already exists → `svg_to_pptx`)
+**Step 7.2 is on demand**: run `finalize_svg.py` only when the user asks for `svg_final/` previews or `svg_final/` already contains SVGs.
 
 The fresh session pays the cost of re-reading references (~14K tokens) but earns back substantially more headroom by dropping the planning session's accumulated context. Net win in both window pressure and reasoning budget per page.
 

@@ -9,7 +9,8 @@ description: >
   workflows/routing.md first. Do not use for ambiguous existing-PPTX
   optimization, reusable-template creation, raw-PPTX native filling, or
   finished-PPTX native enhancement; those are pre-route or standalone
-  workflow requests.
+  workflow requests. This skill directory also hosts the router
+  (workflows/routing.md) and every standalone workflow.
 ---
 
 # ppt-master (Codex discovery stub)

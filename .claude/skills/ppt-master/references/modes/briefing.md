@@ -8,9 +8,9 @@ Neutral information delivery. Lay the facts out plainly and completely, organize
 
 **No thesis, by design**: the deck informs rather than argues. Don't manufacture a conclusion-first claim (that's `pyramid`) or a turn (that's `narrative`) where the material is simply "here is what's true".
 
-**Topic titles, not assertions**: the page title names its subject plainly ("Q3 headcount by team", "Supported file formats") — clarity for lookup beats a persuasive finding. This is the deliberate inverse of `pyramid`'s assertion titles.
+**Topic titles, not assertions**: the page title names its subject plainly ("Q3 headcount by team", "Supported file formats") — clarity for lookup beats a persuasive finding. Under the deck-wide title structure ([`report-craft.md`](../report-craft.md) §1) every mode uses topic titles; what differs is the governing message, which here states coverage instead of `pyramid`'s assertion.
 
-**`core_message` states coverage, not a claim**: when filling `design_spec.md §IX`, write each page's `core_message` as what the page lays out ("Q3 headcount across teams"), not what it proves ("headcount is concentrating in engineering"). The §IX field reads as an assertion under the other modes; under `briefing` it names scope.
+**`Core message` states coverage, not a claim**: when filling `design_spec.md §IX`, write each page's `Core message` (rendered as its governing message) as what the page lays out with its key figure ("팀별 3분기 정원 — 총 1,240명"), not what it proves ("headcount is concentrating in engineering"). The §IX field reads as an assertion under `pyramid`; under `briefing` it names scope.
 
 **Complete over selective**: include the full reference set the audience needs to scan, not only the points that support a case. Coverage is the value here.
 
@@ -35,7 +35,8 @@ Even, factual, plain. State what the page shows without building tension or pres
 ## 4. Page skeleton example
 
 ```
-Title: "Q3 deliverables by workstream"        ← a topic label, not a claim
+Title:      "Q3 deliverables by workstream"          ← a topic label, not a claim
+Governing:  "3분기 과제 12건 — 10건 정상, 결제 연동 1건 지연"   ← coverage + key figure
 Body:  status table — workstream | owner | status | due — rows at equal weight
 Notes: "Three workstreams are on track; payments is at risk on the integration." (plain read-out)
 ```

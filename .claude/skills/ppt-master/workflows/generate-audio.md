@@ -4,13 +4,13 @@ description: Generate per-slide narration audio with AI-recommended voice select
 
 # Generate Audio Workflow
 
-> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice, then optionally re-exports a video-ready PPTX with audio embedded and per-slide auto-advance timings.
+> Standalone post-export step. Run only when the user asks for "오디오 생성" / "내레이션 녹음" / "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice"; do not offer it proactively. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice, then optionally re-exports a video-ready PPTX with audio embedded and per-slide auto-advance timings.
 
 This workflow is **independent**: it reads `notes/*.md` and queries the selected TTS voice catalog — no upstream conversation context required. Safe to invoke in a fresh session.
 
 ## When to Run
 
-- `notes/total.md` exists and has been split into per-page files at `notes/*.md` (post-processing Step 7.1 done).
+- Per-page notes at `notes/*.md`. When they are absent, this workflow generates them first (see below) — missing notes never block the run.
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
 - The workflow is page-level only: one notes file becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
@@ -46,21 +46,21 @@ Default to **edge** unless the user explicitly asks for a cloud provider / highe
 **edge backend**:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --list-voices --locale <locale>
 ```
 
 **ElevenLabs backend**:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --provider elevenlabs --list-voices
 ```
 
 **Cloud providers using explicit voice IDs/names**:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --provider minimax --list-voices
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --provider qwen --list-voices
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py --provider cosyvoice --list-voices
 ```
 
 The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
@@ -120,33 +120,35 @@ Run sequentially — do NOT bundle:
 
 ```bash
 # 1A. Generate audio with edge (default)
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> \
   --voice <chosen-ShortName> --rate <chosen-rate>
 
 # 1B. Or generate audio with ElevenLabs
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> \
   --provider elevenlabs --voice-id <chosen-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
 
 # 1C. Or generate audio with MiniMax
 # Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> \
   --provider minimax --voice-id <chosen-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 1D. Or generate audio with Qwen TTS
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> \
   --provider qwen --voice-id <chosen-voice> \
   --qwen-model qwen3-tts-flash --qwen-language-type Chinese
 
 # 1E. Or generate audio with CosyVoice
-python3 .claude/skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2. (If user kept embedding) Re-export PPTX with audio embedded
-python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --recorded-narration audio
+# 2. (If user kept embedding) Re-export PPTX with audio embedded.
+#    Run the commands sequentially with the same native-object, animation, narration, notes, and transition flags previously selected.
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
+  --recorded-narration audio   # + previously selected flags (--native-objects, -t, -a, --animation-trigger, …)
+python3 ${SKILL_DIR}/scripts/verify_deck.py <project_path>
 ```
 
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
@@ -162,4 +164,4 @@ Output one summary block listing:
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - The provider, voice, and rate/settings actually used.
 - (If embedded) the new narrated PPTX path under `<project_path>/exports/`.
-- (If skipped embedding) one-line hint on how to embed later: `python3 .claude/skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+- (If skipped embedding) one-line hint on how to embed later: `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --recorded-narration audio` plus the previously selected export flags, followed by `verify_deck.py <project_path>`.

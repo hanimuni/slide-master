@@ -13,7 +13,7 @@ python3 .claude/skills/ppt-master/scripts/project_manager.py init my_project --f
 A typical project usually contains the following:
 
 ```
-project_name_format_YYYYMMDD/
+<YYYYMMDD>_<title>/
 ├── README.md
 ├── design_spec.md
 ├── sources/

@@ -23,6 +23,8 @@
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
 | **Design Reference** | [Include only when the user explicitly designated a DESIGN.md: path + 3–5 normalized slide invariants + 0–3 prohibitions. See `references/design-reference-adaptation.md`.] |
 | **Template Adherence** | [`adaptive` / `strict` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. Also written under `spec_lock.md pptx_structure`.] |
+| **Deck Core Message** | [Working answer in one sentence + its disconfirming condition + measurable definitions of vague targets (개선 / 활성화 …) — strategist §c] |
+| **Governing-Message Form** | [Default ending form for governing messages: noun-ending ("~감소") or sentence-ending ("~감소함") — `references/report-craft.md` §2] |
 | **Created Date** | {date_str} |
 
 ---
@@ -100,9 +102,9 @@
 
 ### Font Plan
 
-> **Per-role families are expected, not optional.** Title / Body / Emphasis / Code may each use a different family (e.g., display serif title + geometric sans body). One family throughout is not required. See [strategist.md §g — Font Combinations](../references/strategist.md) for starting directions; you may propose a combination not listed.
+> **Per-role families are expected, not optional — unless a hard font lock applies** (this install: Pretendard for every role; hierarchy by weight and size). Title / Body / Emphasis / Code may each use a different family (e.g., display serif title + geometric sans body). One family throughout is not required. See [strategist.md §g — Font Combinations](../references/strategist.md) for starting directions; you may propose a combination not listed.
 >
-> **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores concrete exported Latin / EA typefaces per run — no runtime fallback. Every stack's exported Latin / EA typefaces MUST resolve to cross-platform pre-installed fonts: `"Microsoft YaHei"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that export non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) are allowed only when this spec notes the font-install or embedding requirement.
+> **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores concrete exported Latin / EA typefaces per run — no runtime fallback. Every stack's exported Latin / EA typefaces MUST resolve to the install-local locked family (`Pretendard` and its weight cuts) or cross-platform pre-installed fonts: `"Microsoft YaHei"` / `"Malgun Gothic"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that export non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) are allowed only when this spec notes the font-install or embedding requirement.
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
@@ -154,7 +156,7 @@ Two views on the same font decisions — fill both, keep them consistent:
 | Subheading | 1.1-1.3x | 35-42 | 26-31 | SemiBold |
 | **Body content** | **1x** | **32** | **24** | Regular |
 | Annotation / caption | 0.7-0.85x | 22-27 | 17-20 | Regular |
-| Page number / footnote | 0.5-0.65x | 16-21 | 12-16 | Regular |
+| Page number / footnote | 0.5-0.65x, floor 16px | 16-21 | 16 | Regular |
 
 > **Subtitle / lead-in / subheading bands overlap by design** — choose among them by *role*, not size: `subtitle` sits under a title, `lead` is a lead-in / pull-quote in the body flow, `subheading` labels a block inside the content area. Each is its own slot, declared only when the deck uses it, and then held at one size deck-wide like any structural role. Font stays at the **family** level (no new typeface per role): `subheading` → heading / `title_family`, `lead` → `body_family` or `emphasis_family` — size + weight carry the hierarchy.
 > The two px columns are illustrations for common baselines. For any other `body` value, multiply by each row's ratio. All size values here and in `spec_lock.md` are px (no pt anywhere). The checker (`svg_quality_checker._check_spec_lock_drift`) reads the live `body` (px) from `spec_lock.md` and applies the bands, so no code change is needed for a different baseline.
@@ -167,11 +169,17 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 ## V. Layout Principles
 
-### Page Structure
+### Page Structure — Deck Frame (mandatory — strategist §6.2 deck frame lock; content pages)
 
-- **Header area**: [Height and content description]
-- **Content area**: [Height and content description]
-- **Footer area**: [Height and content description]
+| Zone | x / y / w / h (px) | Contents | Size slot |
+|---|---|---|---|
+| Header | [e.g. 72 / 48 / 1136 / 126 — add one `lead` line height when any §IX page is `two-line`] | Chapter tag · topic title (§IX `Title`) · governing message (§IX `Core message`) · sticker slot top-right | kicker · `title` · `lead` · `footnote` |
+| Content | [e.g. 72 / 196 / 1136 / 464] | Body composition (varies per page) | per role |
+| Footer | [e.g. 72 / 680 / 1136 / 32] | Left: notes → footnotes → `출처: 자료명(연도)`; right: deck short title + `01/05` | `footnote` |
+
+- **Margins**: [top / right / bottom / left px]
+- **Symbol hierarchy**: [e.g. □ → ○ → - → ※ — [`report-craft.md`](../references/report-craft.md) §4]
+- **Deck short title (footer)**: [e.g. 분기별 사업 실적]
 
 ### Layout Pattern Library (combine or break as content demands)
 
@@ -248,6 +256,12 @@ Catalog read: 76 templates
 | ---- | -------- | ---- | ------------------------------------------------- | ----- |
 | P05 | grouped_bar_chart | `templates/charts/grouped_bar_chart.svg` | "Pick for 2-4 series side-by-side across the same categories (e.g. YoY/QoQ). Skip if showing composition within each category (use stacked_bar_chart)." | YoY revenue comparison by product line |
 
+**Extracted data** (only when chart values come from a chart image, table image, or PDF page — `report-craft.md` §6; shown in the confirmation bundle):
+
+| Page | Category | Series | Value | Unit | Period | Source | Status |
+| ---- | -------- | ------ | ----- | ---- | ------ | ------ | ------ |
+| P05 | 1분기 | 매출 | 120 | 억원 | 2026 | 자료명(연도) p.3 | Extracted / Needs-Manual |
+
 **Runners-up considered** (only genuinely close second-best calls; at least 1 when any viz page exists):
 
 - `<key_A>` | rejected for P05: `<reason citing this deck's specifics>`
@@ -287,8 +301,10 @@ Catalog read: 76 templates
 #### Slide 02 - [Page Name]
 
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
-- **Title**: [For AI-authored content/data pages, prefer the page's supported conclusion or claim; keep it aligned with Core message. Topic labels remain valid for covers, agendas, section dividers, exploratory questions, user-authored titles, and preservation paths.]
-- **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
+- **Title**: [Topic title — a noun-phrase label tied to the contents numbering (e.g. `Ⅱ-1. 제도 이용 실태`); never the conclusion. See `references/report-craft.md` §1.]
+- **Core message**: [the governing message rendered verbatim under the title — one sentence in the locked mode's voice (`pyramid`: assertion; `briefing`: coverage + key figure); wording per `report-craft.md` §2; within the one-line copy budget, or append `(two-line)` when deliberately planned — a planning flag, never rendered. One per page; can't name it → merge or cut the page.]
+- **Sticker**: [optional — `예비` / `추정` / `예시(가상 수치)` / `논의용` when report-craft §5 requires it]
+- **Impact**: [optional — only for pages in the strategist §6.2 impact map: one hook + one composition]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
 - **Evidence**: [External-data charts only: unit + source + uncertainty / `Needs-Manual` when unverified. Omit for internal concept diagrams and clearly identified illustrative data. Reserve visible slide space; do not place this only in speaker notes.]
 - **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:

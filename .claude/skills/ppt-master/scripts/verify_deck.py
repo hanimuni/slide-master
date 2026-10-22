@@ -366,7 +366,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Final verification gate for a finished deck.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("project", help="path to projects/<project_name>")
+    parser.add_argument("project", help="path to projects/<YYYYMMDD>_<title>")
     parser.add_argument("--strict", action="store_true",
                         help="treat warnings as failures")
     parser.add_argument("--no-render", action="store_true",

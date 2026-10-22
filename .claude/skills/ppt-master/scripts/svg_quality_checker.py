@@ -2592,7 +2592,8 @@ class SVGQualityChecker:
                 f"{body_px:.0f}px) in group '{label}' wraps (est "
                 f"{full_w:.0f}px > {available:.0f}px available) — "
                 f"redistribute the zone (repair ladder ①) or keep a "
-                f"deliberate balanced two-line break (②, no orphan tail); "
+                f"deliberate balanced two-line break (②, no orphan tail — "
+                f"for the governing message only when §IX marks it `two-line`); "
                 f"trim copy only within the bounded cap (③, redundancy only)"
             )
         elif n == 2 and _geom_sentence_count(full_text) <= 1:

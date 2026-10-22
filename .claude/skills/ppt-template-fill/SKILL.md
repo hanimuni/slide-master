@@ -1,6 +1,6 @@
 ---
 name: ppt-template-fill
-description: Fill a raw PowerPoint (.pptx) template with new content by cloning and patching native slides — no SVG conversion, original design preserved, verified through a mandatory OfficeCLI overflow/render loop. Use whenever the user supplies an existing .pptx template or deck plus new material or a topic and wants a generated PPTX, even if they don't say "template" — "use this PPT template to generate a PPTX", "fill this deck with the new content", "replace the copy in this PowerPoint", "keep the original design and swap in this material", "이 템플릿에 내용 채워줘", "이 PPT 양식으로 만들어줘", "기존 PPT 디자인 그대로 내용만 교체해줘". Do NOT use for reusable template package creation (ppt-master create-template), 1:1 beautify, SVG-pipeline deck generation, or finished-PPTX enhancement (native-enhance-pptx).
+description: Fill a raw PowerPoint (.pptx) template with new content by cloning and patching native slides — no SVG conversion, original design preserved, verified through a mandatory OfficeCLI overflow/render loop. Use when the user supplies an existing .pptx template or deck plus new material or a topic and wants that deck's slide design reused for a generated PPTX ("이 양식/템플릿/디자인 그대로"), even if they don't say "template"; when it is unclear whether the PPTX is a design to reuse or only content, workflows/routing.md asks first — "use this PPT template to generate a PPTX", "fill this deck with the new content", "replace the copy in this PowerPoint", "keep the original design and swap in this material", "이 템플릿에 내용 채워줘", "이 PPT 양식으로 만들어줘", "기존 PPT 디자인 그대로 내용만 교체해줘". Do NOT use for reusable template package creation (ppt-master create-template), 1:1 beautify, SVG-pipeline deck generation, or finished-PPTX enhancement (native-enhance-pptx).
 ---
 
 # PPT Template Fill
@@ -70,7 +70,7 @@ directly and uses its own plan, apply, OfficeCLI, and native-render gates.
 | Content material | Yes | User text, Markdown, document, URL-derived source, or a clear topic brief |
 | Target output intent | Optional | Audience, page count, tone, must-keep pages, must-drop pages |
 
-If the content material is only a topic with no supporting facts, gather or ask for source material first. Do not invent detailed factual content.
+If the content material is only a topic with no supporting facts, run [`topic-research`](../ppt-master/workflows/topic-research.md) (or ask the user for source material) first, then return to this Step 1 with `projects/<topic_slug>.md` as the content material. Do not invent detailed factual content.
 
 ---
 
@@ -82,6 +82,8 @@ Create a dedicated project directory under `projects/`. Do not write outputs dir
 python3 .claude/skills/ppt-master/scripts/project_manager.py init "<project_name>" --format ppt169
 python3 .claude/skills/ppt-master/scripts/project_manager.py import-sources "<project_dir>" "<source.pptx>" "<material...>"
 ```
+
+`<project_dir>` is the `projects/<YYYYMMDD>_<project_name>` path `init` prints — copy it from the output.
 
 **Source import rule**: `project_manager.py import-sources` copies files from outside the repository and moves repo-local files by default, unless `--copy` / `--move` is explicitly supplied. Keep this shared behavior; do not create a separate template-fill import path.
 
@@ -299,7 +301,7 @@ python3 .claude/skills/ppt-master/scripts/template_fill_pptx.py apply "<project_
 
 By default `apply` gives every cloned slide a `fade` transition (`0.5s`), preserving the v1 route contract. Override it with `--transition <effect>` (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`) and `--transition-duration <seconds>`; pass `--transition none` for no visual motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field overrides the CLI. `advance_after` keeps click advance enabled and adds timed advance; it also works with `none` (timing-only transition) and `keep` (source effect preserved, Choice/Fallback timing updated together).
 
-`apply` appends a timestamp automatically. For example, `-o "<project_dir>/exports/demo.pptx"` writes `demo_YYYYMMDD_HHMMSS.pptx`. If the filename already ends with `_YYYYMMDD_HHMMSS`, it is left unchanged.
+`apply` appends a timestamp automatically. For example, `-o "<project_dir>/exports/demo.pptx"` writes `demo_YYYYMMDD_HHMMSS.pptx`. If the filename already ends with `_YYYYMMDD_HHMMSS`, it is left unchanged. This timestamp naming is specific to template-fill; it differs from the main pipeline's `exports/<title>_verN.pptx` convention.
 
 The script:
 
@@ -310,7 +312,7 @@ The script:
 | Writes `notes` fields | Speaker notes are embedded as native PowerPoint notes slides |
 | Applies `--transition` / per-slide `transition` | Applies the requested visual-transition and slide-advance policy; `keep` may preserve no carrier and `none` may remove it |
 | Rebuilds presentation slide list | Output deck contains only the planned slide sequence |
-| Adds timestamp to PPTX filename | Matches the ppt-master SVG-to-PPTX export convention |
+| Adds timestamp to PPTX filename | Writes `<name>_YYYYMMDD_HHMMSS.pptx` (template-fill convention) |
 | Drops orphaned source parts | Output carries only the selected pages and the layouts / media / charts they still reference (reachability prune) |
 
 **Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this skill writes directly, and `apply` adds a `fade` transition by default; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. `keep` preserves direct and `mc:AlternateContent` transition effects without converting unknown effects to `fade`; explicit replacement removes the old logical carrier before writing one new carrier. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.

@@ -200,7 +200,7 @@ class BatchValidator:
             if self.summary['missing_readme'] > 0:
                 print(f"  1. Create documentation for projects missing README")
                 print(
-                    f"     Reference: examples/google_annual_report_ppt169_20251116/README.md")
+                    f"     Reference: projects/README.md")
 
             if self.summary['svg_issues'] > 0:
                 print(f"  2. Check SVG root viewBox settings")

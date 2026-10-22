@@ -75,7 +75,7 @@ New deck creation uses the same portable workspace routing in both output scopes
 | Scope | `<template_workspace>` | Difference |
 |---|---|---|
 | Library | `.claude/skills/ppt-master/templates/decks/<deck_id>/` | Register in `decks_index.json` |
-| Project | `projects/<project_name>/` | Do not register globally |
+| Project | `projects/<YYYYMMDD>_<title>/` | Do not register globally |
 
 Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`. Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
 

@@ -14,7 +14,11 @@ This guide answers three questions:
 
 ### How to trigger
 
-The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **explicit directory path** only: name the path in your initial message.
+The workflow **defaults to free design** — it will not ask whether you want a template unprompted. Three things can bring a template in:
+
+1. **An explicit directory path** in your initial message — the template flow (Step 3) starts directly.
+2. **An explicit "use a template" request** ("템플릿 써줘") or **a bare name that matches a built-in deck id** ("apple 템플릿으로") — the AI asks you **one** short question listing the matching deck path(s) (or, with no name, up to three relevant decks) plus "free design". Picking a deck confirms its path; nothing is installed without your answer.
+3. **The deck-template card on the Step 4 confirm page** — shown on every free-design run, with free design preselected; picking a deck there installs it before the spec is written.
 
 ### How to enter the template flow
 
@@ -24,17 +28,16 @@ Send the Brand/Layout/Deck workspace root in your initial message. Anywhere in t
 > "use last deck's template: `projects/last_deck/`" ✅
 > "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
-For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `.claude/skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
+For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `.claude/skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. The only exception to the initial-message rule is a **project-scoped** create-template run in the same conversation: after validation it may hand its exact `projects/<name>/` workspace root directly to Step 3, where it is consumed in place (and cannot join multi-path fusion). A library-scoped result is not handed off; name its path.
 
 > **Compatibility preflight:** Step 3 also accepts an older flat package with `design_spec.md` and SVGs directly at the supplied root. Flat placement by itself does not require restoration. Run [`restore-pptx-structure`](../.claude/skills/ppt-master/workflows/restore-pptx-structure.md) only when the SVGs use the former atomic-placeholder/unmapped Master/Layout semantics; Step 3 does not copy such a semantic-legacy package and defer migration.
 
 ### What does NOT trigger the template flow
 
-- **A bare template name without a path**: "use the academic_defense template" / "use the China Merchants Bank template" / "make a pixel_retro defense deck" → free design. The AI does not look the name up. You must give a path.
+- **A bare layout or brand name without a path**: "use the academic_defense template" / "use the anthropic brand" / "make a pixel_retro defense deck" → free design. The AI does not look the name up. You must give a path. (Bare **deck** ids are the one exception — they get the single question above, never a silent install.)
 - **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
-- **Vague intent**: "I want a template" with no path → free design.
 
-This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template, and never resolves a name to a path on your behalf. If you want a template, give the path.
+This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template, and never installs a template from a name on your behalf. The path that enters Step 3 is always one you gave or confirmed (an explicit path, your answer to the single question, or the Step 4 template card).
 
 To browse what's available in the built-in library, ask "what templates are available?" — the AI lists names and paths from the discovery index. Listing alone does not enter the template flow; you still need to send back a path to trigger Step 3.
 
@@ -42,9 +45,9 @@ To browse what's available in the built-in library, ask "what templates are avai
 
 Templates are organized into three kinds, each in its own directory:
 
-- [`templates/brands/README.md`](../.claude/skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
+- [`templates/brands/README.md`](../.claude/skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; anthropic, apple, google, jangpm, mckinsey, naver
 - [`templates/layouts/README.md`](../.claude/skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; academic_defense, government_blue/red, ai_ops, medical_university, pixel_retro, psychology_attachment
-- [`templates/decks/README.md`](../.claude/skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); China Merchants Bank, Power Construction Corporation of China, Chongqing University, China Telecom
+- [`templates/decks/README.md`](../.claude/skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); apple, growup, jangpm, larana, mckinsey, naver_ir
 
 Full data model + fusion / conflict-resolution rules: [`docs/templates-architecture.md`](./templates-architecture.md).
 
@@ -60,8 +63,8 @@ A **style** is a description ("minimalist" / "Keynote-style" / "editorial") — 
 
 | | Template | Style |
 |---|---|---|
-| How invoked | Explicit directory path in your message | Free-form description in your message |
-| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Strategist confirmation stage |
+| How invoked | Explicit directory path in your message (or a deck confirmed via the single question / Step 4 template card) | Free-form description in your message |
+| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / tone proposed in Strategist confirmation stage (typography stays on the locked Pretendard family unless you name another font) |
 | Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
 | Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
 
@@ -103,7 +106,7 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `pixel_retro` / `psychology_attachment`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography — weights and sizes; the family stays Pretendard), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `pixel_retro` / `psychology_attachment`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
 
 ---
 
@@ -111,12 +114,13 @@ When you describe a style, the AI doesn't pick a template — it interprets the 
 
 Turn a PPT you like, a brand guideline, or an existing PPTX file into a PPT Master template. This is the core of this guide.
 
-### Entry point: the `/create-template` workflow
+### Entry point: the create-template workflow
 
-Full spec in [`workflows/create-template.md`](../.claude/skills/ppt-master/workflows/create-template.md). This section is the user-facing short version — in your IDE, just say:
+Full spec in [`workflows/create-template.md`](../.claude/skills/ppt-master/workflows/create-template.md). This section is the user-facing short version. create-template is a workflow you request in chat — there is no `/create-template` slash command. Just say:
 
 ```
-Please use the /create-template workflow to generate a new template based on the reference materials below.
+이 자료로 재사용 템플릿 만들어줘
+Please run the create-template workflow to generate a new template based on the reference materials below.
 ```
 
 The workflow will then **mandatorily** confirm a template brief with you before doing anything (this gate cannot be skipped).
@@ -187,7 +191,7 @@ After generation, both scopes run [`svg_quality_checker.py`](../.claude/skills/p
 | `library` (default) | `.claude/skills/ppt-master/templates/<kind>/<id>/` | Optional `exports/<id>_template_preview.pptx` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
 | `project` | `projects/<name>/` | Optional `exports/<id>_template_preview.pptx` | Skip global index registration |
 
-Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: .claude/skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
+Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: .claude/skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. (A project-scoped run may instead hand its validated workspace straight to Step 3 in the same conversation.) A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 

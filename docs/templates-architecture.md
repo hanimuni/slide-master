@@ -32,7 +32,7 @@ native_structure_mode: structured
 ...
 ---
 
-# templates/decks/china_merchants_bank/templates/design_spec.md
+# templates/decks/mckinsey/templates/design_spec.md
 ---
 kind: deck
 native_structure_mode: structured
@@ -223,9 +223,9 @@ These indexes cover library scope only. A project-root workspace is intentionall
 ```json
 {
   "<deck_id>": {
-    "summary": "China Merchants Bank transaction banking deck",
+    "summary": "McKinsey consulting-style strategy decks",
     "canvas_format": "ppt169",
-    "page_count": 5,
+    "page_count": 10,
     "primary_color": "#XXXXXX",
     "defaults": {
       "mode": "pyramid",
@@ -293,7 +293,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 ```markdown
 > **Fused from:**
-> - deck: `templates/decks/china_merchants_bank/` (base)
+> - deck: `templates/decks/mckinsey/` (base)
 > - brand: `templates/brands/anthropic/` (identity override)
 > - layout: `templates/layouts/academic_defense/` (structure override)
 > - conflicts resolved: Color Scheme from anthropic (user picked a)
@@ -305,7 +305,7 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with SKILL.md Step 3
 
-**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for compatibility, it also accepts a legacy flat root containing `<workspace>/design_spec.md`. Flat placement is only a directory-shape compatibility case. It does not trigger `restore-pptx-structure`; restoration is required only when the SVG contract has legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — what enters Step 3 is always an explicit workspace-root path the user gave or confirmed (authoritative: SKILL.md Step 3 and [`routing.md` §5 Template Name Boundary](../.claude/skills/ppt-master/workflows/routing.md)). An explicit "use a template" intent, or a bare name matching a deck id in `decks_index.json`, triggers only one narrow disambiguation question (matching deck path(s) + free design); bare layout/brand names and style labels never trigger and fall back to free design, where the Step 4 confirm page still offers the deck-template card. Step 3 first resolves `<workspace>/templates/design_spec.md`; for compatibility, it also accepts a legacy flat root containing `<workspace>/design_spec.md`. Flat placement is only a directory-shape compatibility case. It does not trigger `restore-pptx-structure`; restoration is required only when the SVG contract has legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers. The only narrow handoff exception is a **project-scoped** `create-template` run in the current conversation: after validation, it may pass its exact `projects/<name>/` workspace root directly into Step 3, which consumes it in place (it cannot join multi-path fusion). Library-scoped results are not handed off; the user names their path. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|

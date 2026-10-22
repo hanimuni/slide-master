@@ -351,8 +351,9 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
 
     # Check directory naming format
     dir_name = project_path.name
-    if not re.search(r'_\d{8}$', dir_name):
-        msg = f"Directory name missing date suffix (_YYYYMMDD): {dir_name}"
+    # Current convention: YYYYMMDD_<title> (project_manager.py init); legacy: <name>_YYYYMMDD
+    if not (re.match(r'^\d{8}_', dir_name) or re.search(r'_\d{8}$', dir_name)):
+        msg = f"Directory name missing date (YYYYMMDD_<title>): {dir_name}"
         if use_helper and verbose:
             msg += "\n" + \
                 ErrorHelper.format_error_message('missing_date_suffix')

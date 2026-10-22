@@ -14,7 +14,7 @@ Story-arc persuasion. Carry the audience through situation → tension → resol
 
 **At least one turn**: a reframe, a reveal, a "but here's what changed". Flat exposition is not narrative.
 
-Titles read as beats that advance the arc ("Then the numbers stopped adding up"), not as labels.
+Topic titles stay plain labels (deck-wide structure, [`report-craft.md`](../report-craft.md) §1); the governing message carries the beat that advances the arc ("그런데 숫자가 맞지 않기 시작했다").
 
 ---
 

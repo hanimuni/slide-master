@@ -137,12 +137,12 @@ Single-pass (default) files omit `stage`; a staged file adds `"stage": "stage1"`
   "typography": {
     "selected": 0,
     "candidates": [
-      { "name": "...", "note": "...",
+      { "name": "Pretendard", "note": "...",
         "sample_heading": "主题标题示例", "sample_heading_latin": "Topic Title",
         "sample_body": "关键信息摘要", "sample_body_latin": "Key message summary",
-        "heading": { "cjk": "思源黑体", "latin": "Inter", "css": "'Source Han Sans SC','Inter',sans-serif" },
-        "body":    { "cjk": "思源黑体", "latin": "Inter", "css": "..." },
-        "body_size": 20 }
+        "heading": { "cjk": "Pretendard", "latin": "Pretendard", "css": "Pretendard, \"Malgun Gothic\", sans-serif" },
+        "body":    { "cjk": "Pretendard", "latin": "Pretendard", "css": "Pretendard, \"Malgun Gothic\", sans-serif" },
+        "body_size": 24 }
     ]
   },
   "image_strategy": {
@@ -167,7 +167,7 @@ Single-pass (default) files omit `stage`; a staged file adds `"stage": "stage1"`
 }
 ```
 
-> Each `candidates` array above shows **one** entry for brevity — `color` and `typography` must each carry **≥3** in a real file (a hard-locked field — install-local font lock, template-declared skin — is an honest-shortfall case and carries the single locked plan), while `image_strategy.candidates` should carry **exactly 3 non-custom recommendation** entries when AI image generation is offered. The UI adds the fourth **Custom** card itself; `selected` indexes the recommended default among the recommendation entries.
+> Each `candidates` array above shows **one** entry for brevity — `color` and `typography` must each carry **≥3** in a real file (a hard-locked field — install-local font lock, template-declared skin — is an honest-shortfall case and carries the single locked plan; the typography example above is that single locked Pretendard plan, the default on this install), while `image_strategy.candidates` should carry **exactly 3 non-custom recommendation** entries when AI image generation is offered. The UI adds the fourth **Custom** card itself; `selected` indexes the recommended default among the recommendation entries.
 
 - `recommend.*` names the recommended `id` for each enumerable field (must match a `catalogs.json` id, or be a free string for a recommended custom value). The page badges and pre-selects it. **Guarantee**: if a `recommend.*` is omitted, the page falls back to the first catalog option so every enumerable field always shows one badged recommendation — but the AI should still set them for a meaningful default. Legacy aliases are accepted for old files (`line` → `tabler-outline`, `filled` → `tabler-filled`, `monochrome` → `chunk-filled`, `search` → `web`, `default` / `builtin` / `host-native` / `manual` → `auto`), but new files should write canonical ids.
 - `time_budget_minutes`, `audience_profile`, `desired_outcome`, and `recommend.evidence_rigor` are always Stage-1 intent anchors in new projects. Blank time means unspecified; the other missing-field defaults are `mixed` / `neutral`, `understand`, and `explanatory`, so old `recommendations.json` files continue to open. `desired_outcome.detail` stays free prose. `content_priority` is optional and appears only when the object is present; author it only for bulky / multi-source inputs. Later-stage refreshes fold these confirmed values from `result.json` back into the served recommendations.

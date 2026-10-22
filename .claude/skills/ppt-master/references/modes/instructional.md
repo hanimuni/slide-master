@@ -16,7 +16,7 @@ Teaching-led exposition. Decompose a concept into ordered, digestible parts and 
 
 **Signpost**: orient the learner — what we covered, what comes next.
 
-Titles state what the page teaches ("How attention weights are computed") — clear over clever.
+Topic titles name the step or concept; the governing message states what the page teaches ("어텐션 가중치는 질의와 각 토큰의 유사도로 계산됨") — clear over clever ([`report-craft.md`](../report-craft.md) §1).
 
 ---
 
@@ -39,7 +39,8 @@ Patient, explanatory. Define before using; analogy then principle. Anticipate th
 ## 4. Page skeleton example
 
 ```
-Title:  "Step 2 — Scoring each token against the query"
+Title:      "Step 2 — 토큰 점수 계산"
+Governing:  "질의와 각 토큰의 내적이 곧 점수 — 클수록 주목도가 높음"
 Body:   concrete example (3 tokens) → the rule it illustrates → one diagram
 Notes:  "Remember the query from the last page? Here's what it does next…"
 ```

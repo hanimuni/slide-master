@@ -61,7 +61,7 @@ Content purpose?
 
 | Format | Title Area | Content Area | Special Notes |
 |--------|-----------|--------------|---------------|
-| PPT | 80-100px | Full width utilization | Page number bottom-right |
+| PPT | 80-100px (title + governing message) | Full width utilization | Source line bottom-left, page number `01/05` bottom-right ([`report-craft.md`](report-craft.md) §7) |
 | Instagram Card | 160-220px (bold) | Generous vertical whitespace | Brand/CTA area at bottom 120-160px |
 | Xiaohongshu (RED) | 180-240px (bold) | Generous top/bottom whitespace | Brand area at bottom 120-160px |
 | WeChat Moments | 200-280px | Center 500-600px | QR code area at bottom 150-200px |

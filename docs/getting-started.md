@@ -28,8 +28,11 @@ For the first, give the AI your `.pptx` plus your material (or a topic) and ask 
 **To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a PPT Master template via create-template:
 
 ```
-You: Replicate this as a template via /create-template: projects/brand/our_deck.pptx
+You: Turn this into a reusable template with the create-template workflow: projects/brand/our_deck.pptx
+You: 이 PPT로 재사용 템플릿 만들어줘: projects/brand/our_deck.pptx
 ```
+
+create-template is a workflow you request in chat — there is no `/create-template` slash command.
 
 That runs `pptx_template_import.py` and rebuilds the file into a reusable workspace — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The workspace root is what you point to at generation time.
 
@@ -42,7 +45,7 @@ A created template lives in one of two places:
 | **Registered in the skill library** | `.claude/skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
 | **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
-Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
+Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. Only a **project-scoped** create-template run that just validated its `projects/<name>/` workspace in the same conversation may hand that exact root directly to Step 3; a library-scoped result must be named by path. A bare layout/brand name never triggers the template flow; an explicit "use a template" request or a bare name matching a built-in deck id gets one short question (matching deck path(s) or free design) instead of a silent install, and otherwise the Step 4 confirm page still offers a deck-template card. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
 You: Make a deck from sources/report.pdf with template .claude/skills/ppt-master/templates/layouts/academic_defense/
@@ -54,7 +57,7 @@ Full guide → [Templates Guide](./templates-guide.md)
 
 ## Generate your first deck
 
-The whole loop is three steps. Install first — you only need Python; see [Quick Start](../README.md#quick-start).
+The whole loop is three steps. Install first — you only need Python; see [설치 (10분)](../README.md#설치-10분).
 
 1. **Drop your source material** into `projects/` — a PDF, DOCX, Markdown file, a URL, or just text you'll paste.
 2. **Tell the AI in chat** what to turn into a deck (add a template path if you set one up above; otherwise it's free design):
@@ -62,7 +65,7 @@ The whole loop is three steps. Install first — you only need Python; see [Quic
    You: Make a deck from projects/q3-report/sources/report.pdf
    You: Turn this text into a deck: <paste your text>
    ```
-3. **Get an editable `.pptx`** at `exports/<name>_<timestamp>.pptx` — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
+3. **Get an editable `.pptx`** at `projects/<YYYYMMDD>_<title>/exports/<title>_verN.pptx` (`_ver1`, `_ver2`, … on each re-export) — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
 
 Before it starts, the AI confirms a short design spec (template, format, page count, …); from there it handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on.
 
@@ -74,7 +77,7 @@ A browser preview opens at `http://localhost:5050` while the deck is being gener
 
 - **Watch pages render live** as the AI produces them.
 - **Edit directly, no AI** — select an element to change its text, color, font, or size in the side panel; drag it to reposition, or nudge with the arrow keys (`Shift` = 10px). `Ctrl+Z` undoes. Edits preview instantly and write to `svg_output/` when you click **Apply changes**.
-- **Or annotate for the AI** — click an element, type what you want changed, hit **Submit annotations**, then say "apply my annotations" in chat and the AI rewrites that region and re-exports the PPTX.
+- **Or annotate for the AI** — click an element, type what you want changed, hit **Submit annotations**, then say "apply my annotations" / "주석 반영해줘" in chat and the AI rewrites that region and re-exports the PPTX. Annotations are applied after generation and export finish — ones submitted while pages are still rendering wait until then.
 
 PPT Master was chat-only by design; visual editing was folded in after enough users asked for it (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)).
 
@@ -94,7 +97,7 @@ Full guide → [Animations & Transitions](../.claude/skills/ppt-master/reference
 
 ## Narration & video
 
-Turn the speaker notes into per-slide voice narration, embed the audio back into the PPTX, and let PowerPoint export the deck as a synced-narration MP4 — no third-party tools.
+Turn the speaker notes into per-slide voice narration (notes are opt-in during generation; a narration request writes them on demand if the deck has none), embed the audio back into the PPTX, and let PowerPoint export the deck as a synced-narration MP4 — no third-party tools.
 
 ```
 You: Generate narration for this deck and re-export with audio embedded.

@@ -25,7 +25,7 @@ Restore an existing SVG-authored project or template before quality checking or 
 | Legacy-flat template package whose SVG roots and slots already satisfy the current structured contract | Consume it through the compatibility reader; do not restore or relocate it solely because `design_spec.md` and SVGs are flat |
 | Current template workspace with `templates/` and optional `images/`, `icons/`, or `exports/` | Inspect SVG metadata to decide whether restoration is needed; the workspace folders themselves do not prove or disprove structure |
 | Raw PPTX intended as a reusable template | Run [`create-template`](./create-template.md), not this workflow |
-| Existing PPTX receiving notes/audio/timing/transitions | Keep the direct [`native-enhance-pptx`](./native-enhance-pptx.md) route; do not create SVGs |
+| Existing PPTX receiving notes/audio/timing/transitions | Keep the direct [`native-enhance-pptx` skill](../../native-enhance-pptx/SKILL.md) route; do not create SVGs |
 | Raw PPTX template receiving new content | Keep the direct [`ppt-template-fill` skill](../../ppt-template-fill/SKILL.md) route |
 
 **Hard rule**: Keep restoration in the main agent and inspect the complete page roster. Do not delegate page classification, cluster by visual similarity, or write a batch SVG generator.
@@ -36,11 +36,12 @@ Restore an existing SVG-authored project or template before quality checking or 
 
 ## 2. Preserve the Pre-Migration State
 
-Before editing, copy the current `svg_output/` and `spec_lock.md` into one new timestamped directory under:
+Before editing, copy the pre-migration contract into one new timestamped backup directory:
 
-```text
-<project>/backup/<timestamp>/restore-pptx-structure/
-```
+| Input | Copy | Backup directory |
+|---|---|---|
+| Project | `svg_output/` and `spec_lock.md` | `<project>/backup/<timestamp>/restore-pptx-structure/` |
+| Template workspace | `templates/` (legacy-flat package: root `design_spec.md` plus every sibling template SVG) | `<workspace>_backup/<timestamp>/restore-pptx-structure/` — a sibling of the workspace, so the template package contents stay unchanged |
 
 Record the source evidence used for restoration in a short `README.md` inside that backup directory: original PPTX/native facts, legacy template SVGs, or completed SVG pages only.
 
@@ -162,31 +163,51 @@ After every SVG has its final metadata, replace the legacy structure sections as
 
 ## 6. Validate and Resume
 
+`visual_review.py` renders through the live-preview server and exits `2` when it is not running. Start it once before the first render (skip when it is already running for this project):
+
+```bash
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py "<project_path>" --daemon --no-browser
+```
+
+**Template inputs**: both scripts read `svg_output/`. For a template workspace, create a scratch render root outside the workspace, copy the affected template SVGs into `<render_root>/svg_output/` (copy the workspace `images/` / `icons/` beside it when the SVGs reference them), and use `<render_root>` as `<project_path>` in the render commands below. Copy each restored SVG into `<render_root>/svg_output/` again before the after-render.
+
 Before flattening each affected page, render and retain its baseline outside `.preview/`:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/visual_review.py "<project_path>" --pages "<page_stem>"
+python3 ${SKILL_DIR}/scripts/visual_review.py "<project_path>" --pages "<page_stem>"
 cp "<project_path>/.preview/<page_stem>.png" "<backup_path>/<page_stem>.before.png"
 ```
 
 After restoring that page, render again and compare it with the retained baseline:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/visual_review.py "<project_path>" --pages "<page_stem>"
+python3 ${SKILL_DIR}/scripts/visual_review.py "<project_path>" --pages "<page_stem>"
 python3 -c 'from PIL import Image, ImageChops; import sys; a=Image.open(sys.argv[1]).convert("RGBA"); b=Image.open(sys.argv[2]).convert("RGBA"); raise SystemExit(0 if a.size == b.size and ImageChops.difference(a, b).getbbox() is None else 1)' "<backup_path>/<page_stem>.before.png" "<project_path>/.preview/<page_stem>.png"
 ```
 
 Require exit code 0. If the render differs, repair the transform/style materialization before continuing. Pure metadata edits that do not change or reparent visible children do not require this comparison.
 
-Then run:
+When rendering is finished, stop the server: `python3 ${SKILL_DIR}/scripts/svg_editor/server.py "<project_path>" --shutdown`.
+
+Then run the quality gate for the input type:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/svg_quality_checker.py "<project_path>"
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py "<project_path>"                      # project
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py "<workspace>/templates" --template-mode  # template workspace (legacy-flat package: its root directory)
 ```
 
 Fix every error. The gate must confirm root Master/Layout identity, root-level atomic fixed elements, slot bounds, carrier/proxy rules, complete lock mappings, and same-key contract equality.
 
-After the checker reports zero errors, return to `SKILL.md` Step 7.2 and Step 7.3. Run the commands sequentially with the same native-object, animation, narration, notes, and transition flags previously selected.
+After the checker reports zero errors, hand back to the step that invoked restoration:
+
+| Restoration ran | Return to |
+|---|---|
+| Before Step 3 consumed the template (template install / reuse) | `SKILL.md` Step 3 |
+| Before structured generation (e.g. a legacy prototype picked in Step 4 or [`refine-spec`](./refine-spec.md)) | `SKILL.md` Step 6 |
+| Before export of a completed deck | `SKILL.md` Step 7.3, then the mandatory `verify_deck.py` gate |
+| Template workspace restored standalone | Stop and report the workspace path; no export |
+
+Run Step 7.2 (`finalize_svg.py`) only when the user asks for `svg_final/` previews or `svg_final/` already contains SVGs. Run every export command sequentially with the same native-object, animation, narration, notes, and transition flags previously selected.
 
 ```markdown
 ## ✅ PPTX Structure Restoration Complete

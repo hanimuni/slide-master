@@ -24,10 +24,10 @@ This file remains only as a compatibility reference for older agents and links. 
 `native_narration_pptx.py` may remain as a backward-compatible implementation entry point, but user-facing workflow execution must use:
 
 ```bash
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
-python3 .claude/skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py plan "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py validate "<project>"
+python3 ${SKILL_DIR}/scripts/native_enhance_pptx.py apply "<project>"
 ```
 
 **Source import rule**: The active workflow archives the source PPTX into `<project>/sources/`; sources already under the repo's `projects/` tree are moved, and external sources are copied.

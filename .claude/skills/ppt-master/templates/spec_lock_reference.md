@@ -15,7 +15,7 @@
 ## mode
 - mode: pyramid
 
-> Strategist: the deck's narrative skeleton, locked at confirmation `d` Layer 1. One of `pyramid` / `narrative` / `instructional` / `showcase` / `briefing` — see [`references/modes/_index.md`](../references/modes/_index.md). Executor reads only the locked mode's file. Deck-wide. Or the literal `custom` for a bespoke direction no preset captures (a special cadence, a multi-mode fusion, a particular posture) — user-requested or Strategist-recommended (user confirms, like every lock). Then add a sibling `- mode_behavior:` paragraph (how the argument advances, title voice, page rhythm, register) that the Executor follows in place of a preset file. One deck locks one value; don't default to `custom` when a preset fits.
+> Strategist: the deck's narrative skeleton, locked at confirmation `d` Layer 1. One of `pyramid` / `narrative` / `instructional` / `showcase` / `briefing` — see [`references/modes/_index.md`](../references/modes/_index.md). Executor reads only the locked mode's file. Deck-wide. Or the literal `custom` for a bespoke direction no preset captures (a special cadence, a multi-mode fusion, a particular posture) — user-requested or Strategist-recommended (user confirms, like every lock). Then add a sibling `- mode_behavior:` paragraph (how the argument advances, governing-message voice, page rhythm, register) that the Executor follows in place of a preset file. One deck locks one value; don't default to `custom` when a preset fits.
 
 ## visual_style
 - visual_style: swiss-minimal
@@ -51,10 +51,10 @@
 > ```
 
 ## typography
-- font_family: "Microsoft YaHei", Arial, sans-serif
-- title_family: Georgia, SimSun, serif
-- body_family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif
-- emphasis_family: Georgia, SimSun, serif
+- font_family: Pretendard, "Malgun Gothic", sans-serif
+- title_family: "Pretendard SemiBold", Pretendard, "Malgun Gothic", sans-serif
+- body_family: Pretendard, "Malgun Gothic", sans-serif
+- emphasis_family: "Pretendard SemiBold", Pretendard, "Malgun Gothic", sans-serif
 - code_family: Consolas, "Courier New", monospace
 - body: 24
 - title: 42
@@ -77,7 +77,7 @@
 >
 > **Structured Master defaults**: `pptx_structure.mode: structured` requires unitless `title` and `body`. Native export writes `title` into every Master `titleStyle` default and `body` into every `bodyStyle` / `otherStyle` default, changing only `a:defRPr@sz`. Direct page-run sizes and role-specific Layout placeholder prototype sizes remain unchanged.
 >
-> **⚠️ PPT-safe stack discipline (HARD rule).** Structured export maps `title_family` to the PowerPoint theme major font and `body_family` (or `font_family`) to the theme minor font. Runs whose resolved face matches either role use `+mj-*` / `+mn-*` theme tokens; other role families remain concrete per-run typefaces. Every exported Latin / EA face MUST therefore resolve to cross-platform pre-installed fonts: `"Microsoft YaHei"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that resolve to non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) may be used only when the Design Spec notes the font-install or embedding requirement.
+> **⚠️ PPT-safe stack discipline (HARD rule).** Structured export maps `title_family` to the PowerPoint theme major font and `body_family` (or `font_family`) to the theme minor font. Runs whose resolved face matches either role use `+mj-*` / `+mn-*` theme tokens; other role families remain concrete per-run typefaces. Every exported Latin / EA face MUST therefore resolve to the install-local locked family (`Pretendard` and its weight cuts) or cross-platform pre-installed fonts: `"Microsoft YaHei"` / `"Malgun Gothic"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that resolve to non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) may be used only when the Design Spec notes the font-install or embedding requirement.
 >
 > **Stack length discipline.** 3-4 fonts per stack is the sweet spot. Converter only writes the **first** Latin and **first** CJK font into PPTX — everything after is silently dropped. macOS-only families (`Songti SC`, `Menlo`, `Monaco`, `Helvetica`) are auto-mapped to Windows equivalents via `FONT_FALLBACK_WIN` (see `scripts/svg_to_pptx/drawingml/utils.py`); stacking both is redundant. Lead with Windows-preinstalled fonts (`Microsoft YaHei` / `SimSun` / `Arial` / `Georgia` / `Consolas`); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
 
@@ -116,7 +116,7 @@
 > One entry per page. Key: `P<NN>` (zero-padded, matching `§IX Content Outline` in `design_spec.md`). Value: one of the three rhythm tags. Executor reads per page and applies the tag's layout discipline — breaks the "every page looks the same" pattern.
 >
 > **Vocabulary** (exactly these three values):
-> - `anchor` — Structural pages (cover / chapter opener / TOC / ending). Follow the template as-is.
+> - `anchor` — Structural pages (cover / chapter opener / TOC / ending) and planned full-frame `Impact` pages (strategist §6.2 impact map). Structural pages follow the template as-is.
 > - `dense` — Information-heavy pages (data, KPIs, comparisons, multi-point lists). Card grids, multi-column layouts, tables, charts all permitted.
 > - `breathing` — Low-density pages (single concept, hero quote, big image + caption, section transition). Avoid **multi-card grid layouts** (multiple parallel rounded containers as the primary structure); organize via naked text, dividers, whitespace, or full-bleed imagery. Single rounded elements (hero image corners, callouts, tags, one emphasis block) are fine. Proportions follow information weight — not a preset ratio menu.
 >

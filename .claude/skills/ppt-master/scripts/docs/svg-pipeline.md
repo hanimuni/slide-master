@@ -83,7 +83,7 @@ python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 
 Behavior:
 - Default output (default-flow mode, no `-o`):
-  - `exports/<project_name>_<timestamp>.pptx` — native editable pptx (canonical output)
+  - `exports/<title>_verN.pptx` — native editable pptx (canonical output)
   - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, always written so the pptx can be rebuilt via `svg_to_pptx` without re-running the LLM; finalize first only when previews are also needed
 - When requested, `finalize_svg.py` creates `svg_final/` independently of export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX.
 - Explicit `-o/--output` changes the native PPTX destination and skips `backup/`.
@@ -120,7 +120,7 @@ Behavior:
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
   - Narration timing is merged into the existing slide timing DOM; object entrance rows and the resolved page transition are preserved rather than regenerated
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
-  - Either narration flag names the default-flow export `<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports in the same directory
+  - Either narration flag names the default-flow export `<title>_verN_narrated.pptx`, telling it apart from silent exports in the same directory
   - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"
   - Long-audio import and automatic long-audio splitting are not supported; keep narration assets page-level
   - Voice choices can be listed with `python3 scripts/notes_to_audio.py --list-common-voices`, `python3 scripts/notes_to_audio.py --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
