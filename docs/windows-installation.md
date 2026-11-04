@@ -89,7 +89,7 @@ With Python and `requirements.txt` installed, you already have everything needed
 | **Pandoc** — legacy document formats | You need to convert `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python. | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
 | **OfficeCLI** — exported-PPTX checks | Optional for the main pipeline (adds OpenXML validation + a contact-sheet render to the post-export check), but **required** if you use the `ppt-template-fill` route, whose verification loop is a mandatory gate. Needs Node.js. | `npm install -g @officecli/officecli@1.0.135` | `officecli --version` |
 
-> The PowerPoint effects skills (`pptx-com-effects`, `html-slide-effects`) are not part of this repository. If you want them, install them separately from [hanimuni/slide-effects-skills](https://github.com/hanimuni/slide-effects-skills) into `.claude/skills/`.
+> The PowerPoint effects skills (`pptx-com-effects`, `html-slide-effects`) are not part of this repository. If you want them, install them separately from [hanimuni/slide-effects-skills](https://github.com/hanimuni/slide-effects-skills) into the global `~/.claude/skills/`; for Codex, add junctions under this repo's `.claude/skills/` and re-run `sync_codex_stubs.py` (see the README, step 6). Remove a junction with `cmd /c rmdir <link>`, never `Remove-Item -Recurse`, which can delete the global original.
 
 ---
 

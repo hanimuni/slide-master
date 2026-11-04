@@ -182,13 +182,22 @@ npm install -g @officecli/officecli@1.0.135
 
 **6단계 (선택) — 효과 스킬 설치**
 
-모핑·도형 병합·3D 같은 PowerPoint 고유 효과나 HTML 웹 덱이 필요하면 [hanimuni/slide-effects-skills](https://github.com/hanimuni/slide-effects-skills)의 두 스킬을 `.claude/skills/`에 복사합니다. 이 저장소에는 포함되어 있지 않으며 `.gitignore`로 제외됩니다.
+모핑·도형 병합·3D 같은 PowerPoint 고유 효과나 HTML 웹 덱이 필요하면 [hanimuni/slide-effects-skills](https://github.com/hanimuni/slide-effects-skills)의 두 스킬을 **전역**(`~/.claude/skills/`)에 설치합니다. 이 저장소에는 포함되어 있지 않으며 `.gitignore`로 제외됩니다. Claude Code는 전역 스킬을 바로 찾으므로 복사본을 따로 둘 필요가 없습니다.
 
 ```bash
-git clone https://github.com/hanimuni/slide-effects-skills.git /tmp/slide-effects-skills
-cp -r /tmp/slide-effects-skills/pptx-com-effects /tmp/slide-effects-skills/html-slide-effects .claude/skills/
-python3 .claude/skills/ppt-master/scripts/sync_codex_stubs.py   # Codex 스텁 갱신
+git clone https://github.com/hanimuni/slide-effects-skills.git ~/slide-effects-skills
+cp -r ~/slide-effects-skills/pptx-com-effects ~/slide-effects-skills/html-slide-effects ~/.claude/skills/
 ```
+
+Codex에서도 쓰려면 이 저장소의 `.claude/skills/`에 전역 폴더로 가는 링크를 두고 스텁을 갱신합니다(Windows는 관리자 권한이 필요 없는 정션):
+
+```powershell
+New-Item -ItemType Junction -Path .claude\skills\pptx-com-effects -Target $HOME\.claude\skills\pptx-com-effects
+New-Item -ItemType Junction -Path .claude\skills\html-slide-effects -Target $HOME\.claude\skills\html-slide-effects
+python .claude/skills/ppt-master/scripts/sync_codex_stubs.py   # Codex 스텁 갱신
+```
+
+> 링크를 없앨 때는 `cmd /c rmdir .claude\skills\pptx-com-effects`처럼 링크만 지웁니다. `Remove-Item -Recurse`는 링크 너머 전역 원본까지 지울 수 있으니 쓰지 마세요. 링크 자리에 `cp -r`로 덮어쓰는 것도 원본을 바꿉니다. macOS/Linux는 `ln -s ~/.claude/skills/pptx-com-effects .claude/skills/`로 같은 효과를 냅니다.
 
 > `pptx-com-effects`는 Windows + 데스크톱 PowerPoint(COM), PowerShell, ffmpeg가 필요하고, `html-slide-effects`는 헤드리스 Chrome/Edge(검증 시 Playwright)가 필요합니다.
 
